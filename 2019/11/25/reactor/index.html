@@ -7,18 +7,19 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-<title>Hello World - zixcon·blog</title>
+<title>reactor和preactor模型 - zixcon·blog</title>
 
 
-    <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+    <meta name="description" content="Reactor模型Reactor的核心思想： 将关注的I&#x2F;O事件注册到多路复用器上，一旦有I&#x2F;O事件触发，将事件分发到事件处理器中，执行就绪I&#x2F;O事件对应的处理函数中。模型中有三个重要的组件：  多路复用器：由操作系统提供接口，Linux提供的I&#x2F;O复用接口有select、poll、epoll； 事件分离器：将多路复用器返回的就绪事件分发到事件处理器中； 事件处理器：处理就绪事件处理函数。">
+<meta name="keywords" content="LINUX,I&#x2F;O">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;14&#x2F;hello-world&#x2F;index.html">
+<meta property="og:title" content="reactor和preactor模型">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;25&#x2F;reactor&#x2F;index.html">
 <meta property="og:site_name" content="zixcon·blog">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta property="og:description" content="Reactor模型Reactor的核心思想： 将关注的I&#x2F;O事件注册到多路复用器上，一旦有I&#x2F;O事件触发，将事件分发到事件处理器中，执行就绪I&#x2F;O事件对应的处理函数中。模型中有三个重要的组件：  多路复用器：由操作系统提供接口，Linux提供的I&#x2F;O复用接口有select、poll、epoll； 事件分离器：将多路复用器返回的就绪事件分发到事件处理器中； 事件处理器：处理就绪事件处理函数。">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;og_image.png">
-<meta property="og:updated_time" content="2019-11-14T02:29:07.000Z">
+<meta property="og:updated_time" content="2019-11-25T09:11:55.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;og_image.png">
 
@@ -78,7 +79,7 @@
         <div class="navbar-brand is-flex-center">
             <a class="navbar-item navbar-logo" href="/">
             
-                <img src="/images/logo.svg" alt="Hello World" height="28">
+                <img src="/images/logo.svg" alt="reactor和preactor模型" height="28">
             
             </a>
         </div>
@@ -134,13 +135,13 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-11-14T02:29:07.000Z">2019-11-14</time>
+                <time class="level-item has-text-grey" datetime="2019-11-25T08:29:25.000Z">2019-11-25</time>
                 
                 
                 <span class="level-item has-text-grey">
                     
                     
-                    a minute read (About 123 words)
+                    7 minutes read (About 1039 words)
                 </span>
                 
                 
@@ -149,24 +150,77 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                Hello World
+                reactor和preactor模型
             
         </h1>
         <div class="content">
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="hljs-string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+            <h4 id="Reactor模型"><a href="#Reactor模型" class="headerlink" title="Reactor模型"></a>Reactor模型</h4><p><strong>Reactor的核心思想：</strong></p>
+<p>将关注的I/O事件注册到多路复用器上，一旦有I/O事件触发，将事件分发到事件处理器中，执行就绪I/O事件对应的处理函数中。模型中有三个重要的组件：</p>
+<ul>
+<li><strong>多路复用器：</strong>由操作系统提供接口，Linux提供的I/O复用接口有select、poll、epoll；</li>
+<li><strong>事件分离器：</strong>将多路复用器返回的就绪事件分发到事件处理器中；</li>
+<li><strong>事件处理器：</strong>处理就绪事件处理函数。</li>
+</ul>
+<p><img src="./reactor/reactor_1.jpg" alt></p>
+<ul>
+<li><p><strong>Handle：</strong>标示文件描述符；</p>
+</li>
+<li><p><strong>Event Demultiplexer：</strong>执行多路事件分解操作，对操作系统内核实现I/O复用接口的封装；用于阻塞等待发生在句柄集合上的一个或多个事件（如select/poll/epoll）；</p>
+</li>
+<li><p><strong>Event Handler：</strong>事件处理接口；</p>
+</li>
+<li><p><strong>Event Handler A(B)：</strong>实现应用程序所提供的特定事件处理逻辑；</p>
+</li>
+<li><p><strong>Reactor：</strong>反应器，定义一个接口，实现以下功能：</p>
+<p>a)供应用程序注册和删除关注的事件句柄；</p>
+<p>b)运行事件处理循环； </p>
+<p>c)等待的就绪事件触发，分发事件到之前注册的回调函数上处理.</p>
+</li>
+</ul>
+<h4 id="经典Reactor模式"><a href="#经典Reactor模式" class="headerlink" title="经典Reactor模式"></a>经典Reactor模式</h4><p><img src="./reactor/reactor_2.png" alt></p>
+<p><strong>在经典Reactor模式中，包含以下角色：</strong></p>
+<ul>
+<li><strong>Reactor ：</strong>将I/O事件发派给对应的Handler</li>
+<li><strong>Acceptor ：</strong>处理客户端连接请求</li>
+<li><strong>Handlers ：</strong>执行非阻塞读/写</li>
+</ul>
+<h4 id="多工作线程Reactor模式"><a href="#多工作线程Reactor模式" class="headerlink" title="多工作线程Reactor模式"></a>多工作线程Reactor模式</h4><p><img src="./reactor/reactor_3.png" alt></p>
+<h4 id="多Reactor的Reactor模式"><a href="#多Reactor的Reactor模式" class="headerlink" title="多Reactor的Reactor模式"></a>多Reactor的Reactor模式</h4><p><img src="./reactor/reactor_4.png" alt></p>
+<h4 id="Proactor模型"><a href="#Proactor模型" class="headerlink" title="Proactor模型"></a>Proactor模型</h4><p>​    与Reactor不同的是，Proactor使用异步I/O系统接口将I/O操作托管给操作系统，Proactor模型中分发处理异步I/O完成事件，并调用相应的事件处理接口来处理业务逻辑。</p>
+<p><img src="./reactor/preactor_1.png" alt></p>
+<p><strong>Proactor类结构中包含有如下角色：</strong></p>
+<ul>
+<li><strong>Handle：</strong>用来标识socket连接或是打开文件；</li>
+<li><strong>Async Operation Processor：</strong>异步操作处理器；负责执行异步操作，一般由操作系统内核实现；</li>
+<li><strong>Async Operation：</strong>异步操作；</li>
+<li><strong>Completion Event Queue：</strong>完成事件队列；异步操作完成的结果放到队列中等待后续使用；</li>
+<li><strong>Proactor：</strong>主动器；为应用程序进程提供事件循环；从完成事件队列中取出异步操作的结果，分发调用相应的后续处理逻辑；</li>
+<li><strong>Completion Handler：</strong>完成事件接口；一般是由回调函数组成的接口；</li>
+<li><strong>Completion Handler A(B)：</strong>完成事件处理逻辑；实现接口定义特定的应用处理逻辑。</li>
+</ul>
+<h4 id="支持情况"><a href="#支持情况" class="headerlink" title="支持情况"></a>支持情况</h4><p>​    windows对异步I/O提供了非常好的支持，常用Proactor的模型实现服务器；而Linux对异步I/O操作(aio接口)的支持并不是特别理想，而且不能直接处理accept，因此Linux平台上还是以Reactor模型为主。</p>
+<p>​    目前实现了纯异步操作的操作系统少，实现优秀的如windows IOCP，但由于其windows系统用于服务器的局限性，目前应用范围较小；而Unix/Linux系统对纯异步的支持有限，应用事件驱动的主流还是通过select/epoll来实现；</p>
+<p><strong>java提供Asynchronous I/O相关接口以支持异步I/O，AIO有两种api进行操作：</strong></p>
+<ul>
+<li><p>Future 方式</p>
+<p>即提交一个 I/O 操作请求，返回一个 Future。然后您可以对 Future 进行检查，确定它是否完成，或者阻塞 IO 操作直到操作正常完成或者超时异常。</p>
+</li>
+<li><p>Callback 方式</p>
+<p>即提交一个 I/O 操作请求，并且指定一个 CompletionHandler。当异步 I/O 操作完成时，便发送一个通知，此时这个 CompletionHandler 对象的 completed 或者 failed 方法将会被调用。</p>
+</li>
+</ul>
+<p>参照：</p>
+<p><a href="https://www.jianshu.com/p/b4de9b85c79d" target="_blank" rel="noopener">https://www.jianshu.com/p/b4de9b85c79d</a></p>
 
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/I-O/" rel="tag">I/O</a>, <a class="has-link-grey -link" href="/tags/LINUX/" rel="tag">LINUX</a>
+                </div>
+            </div>
         </div>
         
         
@@ -215,13 +269,13 @@
 <div class="card card-transparent">
     <div class="level post-navigation is-flex-wrap is-mobile">
         
-        <div class="level-start">
-            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/11/14/linux%E5%86%85%E5%AD%98swap/">
-                <i class="level-item fas fa-chevron-left"></i>
-                <span class="level-item">linux内存swap</span>
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/11/25/io-learning/">
+                <span class="level-item">I/O模型(同步，异步，阻塞，非阻塞)</span>
+                <i class="level-item fas fa-chevron-right"></i>
             </a>
         </div>
-        
         
     </div>
 </div>
@@ -763,7 +817,7 @@
             <div class="level-start has-text-centered-mobile">
                 <a class="footer-logo is-block has-mb-6" href="/">
                 
-                    <img src="/images/logo.svg" alt="Hello World" height="28">
+                    <img src="/images/logo.svg" alt="reactor和preactor模型" height="28">
                 
                 </a>
                 <p class="is-size-7">

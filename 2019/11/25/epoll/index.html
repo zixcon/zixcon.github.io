@@ -7,18 +7,19 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-<title>Hello World - zixcon·blog</title>
+<title>epoll理论解读 - zixcon·blog</title>
 
 
-    <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+    <meta name="description" content="I&#x2F;O的操作  首先我们来定义流的概念，一个流可以是文件，socket，pipe等等可以进行I&#x2F;O操作的内核对象。   不管是文件，还是套接字，还是管道，我们都可以把他们看作流。   之后我们来讨论I&#x2F;O的操作，通过read，我们可以从流中读入数据；通过write，我们可以往流写入数据。现在假定一个情形，我们需要从流中读数据，但是流中还没有数据，（典型的例子为，客户端要从socket读如数据，但是">
+<meta name="keywords" content="LINUX,I&#x2F;O">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;14&#x2F;hello-world&#x2F;index.html">
+<meta property="og:title" content="epoll理论解读">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;25&#x2F;epoll&#x2F;index.html">
 <meta property="og:site_name" content="zixcon·blog">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta property="og:description" content="I&#x2F;O的操作  首先我们来定义流的概念，一个流可以是文件，socket，pipe等等可以进行I&#x2F;O操作的内核对象。   不管是文件，还是套接字，还是管道，我们都可以把他们看作流。   之后我们来讨论I&#x2F;O的操作，通过read，我们可以从流中读入数据；通过write，我们可以往流写入数据。现在假定一个情形，我们需要从流中读数据，但是流中还没有数据，（典型的例子为，客户端要从socket读如数据，但是">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;og_image.png">
-<meta property="og:updated_time" content="2019-11-14T02:29:07.000Z">
+<meta property="og:updated_time" content="2019-11-25T07:51:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;og_image.png">
 
@@ -78,7 +79,7 @@
         <div class="navbar-brand is-flex-center">
             <a class="navbar-item navbar-logo" href="/">
             
-                <img src="/images/logo.svg" alt="Hello World" height="28">
+                <img src="/images/logo.svg" alt="epoll理论解读" height="28">
             
             </a>
         </div>
@@ -134,13 +135,13 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-11-14T02:29:07.000Z">2019-11-14</time>
+                <time class="level-item has-text-grey" datetime="2019-11-25T02:54:20.000Z">2019-11-25</time>
                 
                 
                 <span class="level-item has-text-grey">
                     
                     
-                    a minute read (About 123 words)
+                    8 minutes read (About 1176 words)
                 </span>
                 
                 
@@ -149,24 +150,62 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                Hello World
+                epoll理论解读
             
         </h1>
         <div class="content">
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="hljs-string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+            <h4 id="I-O的操作"><a href="#I-O的操作" class="headerlink" title="I/O的操作"></a>I/O的操作</h4><p>  首先我们来定义流的概念，一个流可以是文件，socket，pipe等等可以进行I/O操作的内核对象。</p>
+<p>  不管是文件，还是套接字，还是管道，我们都可以把他们看作流。</p>
+<p>  之后我们来讨论I/O的操作，通过read，我们可以从流中读入数据；通过write，我们可以往流写入数据。现在假定一个情形，我们需要从流中读数据，但是流中还没有数据，（典型的例子为，客户端要从socket读如数据，但是服务器还没有把数据传回来），这时候该怎么办？</p>
+<h4 id="阻塞非阻塞"><a href="#阻塞非阻塞" class="headerlink" title="阻塞非阻塞"></a>阻塞非阻塞</h4><h5 id="阻塞I-O模式"><a href="#阻塞I-O模式" class="headerlink" title="阻塞I/O模式"></a>阻塞I/O模式</h5><p>阻塞I/O模式下，一个线程只能处理一个流的I/O事件。如果想要同时处理多个流，要么多进程(fork)，要么多线程(pthread_create)，很不幸这两种方法效率都不高。</p>
+<h5 id="非阻塞忙轮询的I-O"><a href="#非阻塞忙轮询的I-O" class="headerlink" title="非阻塞忙轮询的I/O"></a>非阻塞忙轮询的I/O</h5><p>  于是再来考虑非阻塞忙轮询的I/O方式，我们发现我们可以同时处理多个流了（把一个流从阻塞模式切换到非阻塞模式再此不予讨论）：</p>
+<p>while true {</p>
+<p>for i in stream[]; {</p>
+<p>if i has data</p>
+<p>read until unavailable</p>
+<p>}</p>
+<p>}</p>
+<p>  我们只要不停的把所有流从头到尾问一遍，又从头开始。这样就可以处理多个流了，但这样的做法显然不好，因为如果所有的流都没有数据，那么只会白白浪费CPU。这里要补充一点，阻塞模式下，内核对于I/O事件的处理是阻塞或者唤醒，而非阻塞模式下则把I/O事件交给其他对象（后文介绍的select以及epoll）处理甚至直接忽略。</p>
+<h5 id="select"><a href="#select" class="headerlink" title="select"></a>select</h5><p> 为了避免CPU空转，可以引进了一个代理（一开始有一位叫做select的代理，后来又有一位叫做poll的代理，不过两者的本质是一样的）。这个代理比较厉害，可以同时观察许多流的I/O事件，在空闲的时候，会把当前线程阻塞掉，当有一个或多个流有I/O事件时，就从阻塞态中醒来，于是我们的程序就会轮询一遍所有的流（于是我们可以把“忙”字去掉了）。代码长这样:</p>
+<p>while true {</p>
+<p>select(streams[])</p>
+<p>for i in streams[] {</p>
+<p>if i has data</p>
+<p>read until unavailable</p>
+<p>}</p>
+<p>}</p>
+<p>  于是，如果没有I/O事件产生，我们的程序就会阻塞在select处。但是依然有个问题，我们从select那里仅仅知道了，有I/O事件发生了，但却并不知道是那几个流（可能有一个，多个，甚至全部），我们只能无差别轮询所有流，找出能读出数据，或者写入数据的流，对他们进行操作。</p>
+<p>  但是使用select，我们有O(n)的无差别轮询复杂度，同时处理的流越多，没一次无差别轮询时间就越长。再次</p>
+<p>说了这么多，终于能好好解释epoll了</p>
+<h5 id="epoll"><a href="#epoll" class="headerlink" title="epoll"></a>epoll</h5><p>  epoll可以理解为event poll，不同于忙轮询和无差别轮询，epoll之会把哪个流发生了怎样的I/O事件通知我们。此时我们对这些流的操作都是有意义的。（复杂度降低到了O(1)）</p>
+<p>  在讨论epoll的实现细节之前，先把epoll的相关操作列出：</p>
+<p>epoll_create 创建一个epoll对象，一般epollfd = epoll_create()</p>
+<p>epoll_ctl （epoll_add/epoll_del的合体），往epoll对象中增加/删除某一个流的某一个事件</p>
+<p>比如</p>
+<p>epoll_ctl(epollfd, EPOLL_CTL_ADD, socket, EPOLLIN);//注册缓冲区非空事件，即有数据流入</p>
+<p>epoll_ctl(epollfd, EPOLL_CTL_DEL, socket, EPOLLOUT);//注册缓冲区非满事件，即流可以被写入</p>
+<p>epoll_wait(epollfd,…)等待直到注册的事件发生</p>
+<p>（注：当对一个非阻塞流的读写发生缓冲区满或缓冲区空，write/read会返回-1，并设置errno=EAGAIN。而epoll只关心缓冲区非满和缓冲区非空事件）。</p>
+<p>一个epoll模式的代码大概的样子是：</p>
+<p>while true {</p>
+<p>active_stream[] = epoll_wait(epollfd)</p>
+<p>for i in active_stream[] {</p>
+<p>read or write till</p>
+<p>}</p>
+<p>}</p>
+<p>参照：</p>
+<p>通俗解读：<a href="https://blog.csdn.net/u011671986/article/details/79449853" target="_blank" rel="noopener">https://blog.csdn.net/u011671986/article/details/79449853</a></p>
+<p>详细解读：<a href="https://bbs.gameres.com/thread_842984_1_1.html" target="_blank" rel="noopener">https://bbs.gameres.com/thread_842984_1_1.html</a></p>
 
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/I-O/" rel="tag">I/O</a>, <a class="has-link-grey -link" href="/tags/LINUX/" rel="tag">LINUX</a>
+                </div>
+            </div>
         </div>
         
         
@@ -216,12 +255,19 @@
     <div class="level post-navigation is-flex-wrap is-mobile">
         
         <div class="level-start">
-            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/11/14/linux%E5%86%85%E5%AD%98swap/">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/11/25/io-learning/">
                 <i class="level-item fas fa-chevron-left"></i>
-                <span class="level-item">linux内存swap</span>
+                <span class="level-item">I/O模型(同步，异步，阻塞，非阻塞)</span>
             </a>
         </div>
         
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/11/14/linux%E5%86%85%E5%AD%98swap/">
+                <span class="level-item">linux内存swap</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
         
     </div>
 </div>
@@ -763,7 +809,7 @@
             <div class="level-start has-text-centered-mobile">
                 <a class="footer-logo is-block has-mb-6" href="/">
                 
-                    <img src="/images/logo.svg" alt="Hello World" height="28">
+                    <img src="/images/logo.svg" alt="epoll理论解读" height="28">
                 
                 </a>
                 <p class="is-size-7">
