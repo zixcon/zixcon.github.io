@@ -7,16 +7,19 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-<title>Categories - zixcon·blog</title>
+<title>redis学习（三） - zixcon·blog</title>
 
 
-    <meta name="keywords" content="LINUX,I&#x2F;O,linux ,REDIS">
-<meta property="og:type" content="website">
-<meta property="og:title" content="zixcon·blog">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;categories&#x2F;index.html">
+    <meta name="description" content="缓存的击穿 穿透 和 雪崩缓存雪崩​    缓存雪崩是指在我们设置缓存时采用了相同的过期时间，导致缓存在某一时刻同时失效，请求全部转发到，瞬时压力过重雪崩。或在大部分数据都没缓存的时候被一次性同时访问。 解决方案：    缓存失效时的雪崩效应对底层系统的冲击非常可怕。我们可以用以下方式来避免：    1.数据预热：            可以通过缓存reload机制，预先去更新缓存，再即将发生大并">
+<meta name="keywords" content="REDIS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis学习（三）">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;26&#x2F;redis-learning-3&#x2F;index.html">
 <meta property="og:site_name" content="zixcon·blog">
+<meta property="og:description" content="缓存的击穿 穿透 和 雪崩缓存雪崩​    缓存雪崩是指在我们设置缓存时采用了相同的过期时间，导致缓存在某一时刻同时失效，请求全部转发到，瞬时压力过重雪崩。或在大部分数据都没缓存的时候被一次性同时访问。 解决方案：    缓存失效时的雪崩效应对底层系统的冲击非常可怕。我们可以用以下方式来避免：    1.数据预热：            可以通过缓存reload机制，预先去更新缓存，再即将发生大并">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;og_image.png">
+<meta property="og:updated_time" content="2019-11-26T10:05:16.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;og_image.png">
 
@@ -76,7 +79,7 @@
         <div class="navbar-brand is-flex-center">
             <a class="navbar-item navbar-logo" href="/">
             
-                <img src="/images/logo.svg" alt="zixcon·blog" height="28">
+                <img src="/images/logo.svg" alt="redis学习（三）" height="28">
             
             </a>
         </div>
@@ -90,7 +93,7 @@
                 <a class="navbar-item"
                 href="/archives">Archives</a>
                 
-                <a class="navbar-item is-active"
+                <a class="navbar-item"
                 href="/categories">Categories</a>
                 
                 <a class="navbar-item"
@@ -126,18 +129,111 @@
         <div class="container">
             <div class="columns">
                 <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main">
-<div class="card widget">
-    <div class="card-content">
-        <div class="menu">
-            <h3 class="menu-label">
-                Categories
-            </h3>
-            <ul class="menu-list">
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-11-26T08:56:38.000Z">2019-11-26</time>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    7 minutes read (About 1074 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-            </ul>
+                redis学习（三）
+            
+        </h1>
+        <div class="content">
+            <h4 id="缓存的击穿-穿透-和-雪崩"><a href="#缓存的击穿-穿透-和-雪崩" class="headerlink" title="缓存的击穿 穿透 和 雪崩"></a>缓存的击穿 穿透 和 雪崩</h4><h5 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h5><p>​    <em>缓存雪崩是指在我们设置缓存时采用了相同的过期时间，导致缓存在某一时刻同时失效</em>，请求全部转发到，瞬时压力过重雪崩。或在大部分数据都没缓存的时候被一次性同时访问。</p>
+<p>解决方案：<br>    缓存失效时的雪崩效应对底层系统的冲击非常可怕。我们可以用以下方式来避免：<br>    <strong>1.数据预热：</strong><br>            可以通过缓存reload机制，预先去更新缓存，再即将发生大并发访问前手动触发加载缓存不同的key，设置不同的过期时间，让缓存失效的时间点尽量均匀<br>    <strong>2.做二级缓存，或者双缓存策略：</strong><br>A1为原始缓存，A2为拷贝缓存，A1失效时，可以访问A2，A1缓存失效时间设置为短期，A2设置<br>为长期。<br>    <strong>3.缓存永远不过期：</strong><br>        这里的“永远不过期”包含两层意思：<br>        1)从缓存上看，确实没有设置过期时间，这就保证了，不会出现热点key过期问题，也就是“物理”不过期。<br>        2)从功能上看，如果不过期，那不就成静态的了吗？所以我们把过期时间存在key对应的里，如果发现要过期了，通过一个后台的异步线程进行缓存的构建，也就是“逻辑”过期.</p>
+<h4 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h4><p>​    对于一些设置了过期时间的key，如果这些key可能会在某些时间点被超高并发地访问，是一种非常“热点”的数据，这个时候，需要考虑一个问题：缓存被“击穿”的问题。</p>
+<p>​    这个和缓存雪崩的区别在于这里针对某一key缓存，前者则是很多key。<strong>缓存在某个时间点过期的时候，恰好在这个时间点对这个Key有大量的并发请求过来，这些请求发现缓存过期一般都会从后端DB加载数据并回设到缓存，这个时候大并发的请求可能会瞬间把后端DB压垮。</strong></p>
+<p>解决方案：<br>    <strong>使用互斥锁(mutex key)</strong><br>    业界比较常用的做法，是使用mutex。简单地来说，就是在缓存失效的时候（判断拿出来的值为空），不是立即去load db，而是先使用缓存工具的某些带成功操作返回值的操作（比如mutex key，当操作返回成功时，再进行Redis的SETNX或者Memcache的ADD）去set一个的操作并回设缓存；否则，就重试整个get缓存的方法。</p>
+<h4 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h4><p>​    缓存穿透是指查询一个一定不存在的数据，由于缓存是不命中时被动写的，并且出于容错考虑，如果从存储层查不到数据则不写入缓存，这将导致这个不存在的数据每次请求都要到存储层去查询，失去了缓存的意义。在流量大时，可能DB就挂掉了，要是有人利用不存在的key频繁攻击我们的应用，这就是漏洞。</p>
+<p>解决方案：<br>    有很多种方法可以有效地解决缓存穿透问题，</p>
+<p>​    1.最常见的则是采用<strong>布隆过滤器</strong>，将所有可能存在的数据哈希到一个足够大的bitmap中，一个一定不存在的数据会被这个bitmap拦截掉，从而避免了对底层存储系统的查询压力。</p>
+<p>​    2.另外也有一个更为简单粗暴的方法，如果一个查询返回的数据为空（不管是数据不存在，还是系统故障），我们仍然把这个空结果进行缓存，但它的过期时间会很短，最长不超过五分钟。</p>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/REDIS/" rel="tag">REDIS</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="menu-label has-text-centered">Like this article? Support the author with</h3>
+        <div class="buttons is-centered">
+            
+                
+<div class="notification is-danger">
+    You forgot to set the <code>qrcode</code> for Alipay. Please set it in <code>_config.yml</code>.
+</div>
+
+                
+                
+<div class="notification is-danger">
+    You forgot to set the <code>qrcode</code> for Wechat. Please set it in <code>_config.yml</code>.
+</div>
+
+                
+                <!-- Visit https://www.paypal.com/donate/buttons/ to get your donate button -->
+
+<div class="notification is-danger">
+    You forgot to set the <code>business</code> and <code>currency_code</code> for Paypal. Please set it in <code>_config.yml</code>.
+</div>
+
+                
+                
+<div class="notification is-danger">
+    You forgot to set the <code>url</code> Patreon. Please set it in <code>_config.yml</code>.
+</div>
+
+                
         </div>
     </div>
-</div></div>
+</div>
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/11/26/redis-learning-2/">
+                <span class="level-item">redis学习（二）</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+</div>
                 
 
 
@@ -687,7 +783,7 @@
             <div class="level-start has-text-centered-mobile">
                 <a class="footer-logo is-block has-mb-6" href="/">
                 
-                    <img src="/images/logo.svg" alt="zixcon·blog" height="28">
+                    <img src="/images/logo.svg" alt="redis学习（三）" height="28">
                 
                 </a>
                 <p class="is-size-7">

@@ -132,6 +132,328 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-11-26T08:56:38.000Z">2019-11-26</time>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    7 minutes read (About 1074 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/11/26/redis-learning-3/">redis学习（三）</a>
+            
+        </h1>
+        <div class="content">
+            <h4 id="缓存的击穿-穿透-和-雪崩"><a href="#缓存的击穿-穿透-和-雪崩" class="headerlink" title="缓存的击穿 穿透 和 雪崩"></a>缓存的击穿 穿透 和 雪崩</h4><h5 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h5><p>​    <em>缓存雪崩是指在我们设置缓存时采用了相同的过期时间，导致缓存在某一时刻同时失效</em>，请求全部转发到，瞬时压力过重雪崩。或在大部分数据都没缓存的时候被一次性同时访问。</p>
+<p>解决方案：<br>    缓存失效时的雪崩效应对底层系统的冲击非常可怕。我们可以用以下方式来避免：<br>    <strong>1.数据预热：</strong><br>            可以通过缓存reload机制，预先去更新缓存，再即将发生大并发访问前手动触发加载缓存不同的key，设置不同的过期时间，让缓存失效的时间点尽量均匀<br>    <strong>2.做二级缓存，或者双缓存策略：</strong><br>A1为原始缓存，A2为拷贝缓存，A1失效时，可以访问A2，A1缓存失效时间设置为短期，A2设置<br>为长期。<br>    <strong>3.缓存永远不过期：</strong><br>        这里的“永远不过期”包含两层意思：<br>        1)从缓存上看，确实没有设置过期时间，这就保证了，不会出现热点key过期问题，也就是“物理”不过期。<br>        2)从功能上看，如果不过期，那不就成静态的了吗？所以我们把过期时间存在key对应的里，如果发现要过期了，通过一个后台的异步线程进行缓存的构建，也就是“逻辑”过期.</p>
+<h4 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h4><p>​    对于一些设置了过期时间的key，如果这些key可能会在某些时间点被超高并发地访问，是一种非常“热点”的数据，这个时候，需要考虑一个问题：缓存被“击穿”的问题。</p>
+<p>​    这个和缓存雪崩的区别在于这里针对某一key缓存，前者则是很多key。<strong>缓存在某个时间点过期的时候，恰好在这个时间点对这个Key有大量的并发请求过来，这些请求发现缓存过期一般都会从后端DB加载数据并回设到缓存，这个时候大并发的请求可能会瞬间把后端DB压垮。</strong></p>
+<p>解决方案：<br>    <strong>使用互斥锁(mutex key)</strong><br>    业界比较常用的做法，是使用mutex。简单地来说，就是在缓存失效的时候（判断拿出来的值为空），不是立即去load db，而是先使用缓存工具的某些带成功操作返回值的操作（比如mutex key，当操作返回成功时，再进行Redis的SETNX或者Memcache的ADD）去set一个的操作并回设缓存；否则，就重试整个get缓存的方法。</p>
+<h4 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h4><p>​    缓存穿透是指查询一个一定不存在的数据，由于缓存是不命中时被动写的，并且出于容错考虑，如果从存储层查不到数据则不写入缓存，这将导致这个不存在的数据每次请求都要到存储层去查询，失去了缓存的意义。在流量大时，可能DB就挂掉了，要是有人利用不存在的key频繁攻击我们的应用，这就是漏洞。</p>
+<p>解决方案：<br>    有很多种方法可以有效地解决缓存穿透问题，</p>
+<p>​    1.最常见的则是采用<strong>布隆过滤器</strong>，将所有可能存在的数据哈希到一个足够大的bitmap中，一个一定不存在的数据会被这个bitmap拦截掉，从而避免了对底层存储系统的查询压力。</p>
+<p>​    2.另外也有一个更为简单粗暴的方法，如果一个查询返回的数据为空（不管是数据不存在，还是系统故障），我们仍然把这个空结果进行缓存，但它的过期时间会很短，最长不超过五分钟。</p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-11-26T08:24:03.000Z">2019-11-26</time>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    13 minutes read (About 1914 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/11/26/redis-learning-2/">redis学习（二）</a>
+            
+        </h1>
+        <div class="content">
+            <p>参见：<a href="https://segmentfault.com/a/1190000018887256" target="_blank" rel="noopener">文章地址</a></p>
+<h2 id="Redis对象类型简介"><a href="#Redis对象类型简介" class="headerlink" title="Redis对象类型简介"></a>Redis对象类型简介</h2><ul>
+<li>Redis是一种key/value型数据库，其中，每个key和value都是使用对象表示的。<br>比如，我们执行以下代码：</li>
+</ul>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis＞ SET message &quot;hello redis&quot;</span><br></pre></td></tr></table></figure>
+
+<p>其中的key是message，是一个包含了字符串”message”的对象。而value是一个包含了”hello redis”的对象。<br>Redis共有五种对象的类型，分别是：</p>
+<table>
+<thead>
+<tr>
+<th>类型常量</th>
+<th>对象的名称</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>REDIS_STRING</td>
+<td>字符串对象</td>
+</tr>
+<tr>
+<td>REDIS_LIST</td>
+<td>列表对象</td>
+</tr>
+<tr>
+<td>REDIS_HASH</td>
+<td>哈希对象</td>
+</tr>
+<tr>
+<td>REDIS_SET</td>
+<td>集合对象</td>
+</tr>
+<tr>
+<td>REDIS_ZSET</td>
+<td>有序集合对象</td>
+</tr>
+</tbody></table>
+<p>Redis中的一个对象的结构体表示如下：</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">typedef struct redisObject &#123;  </span><br><span class="line">  </span><br><span class="line">    // 类型  </span><br><span class="line">    unsigned type:4;          </span><br><span class="line"></span><br><span class="line">    // 编码方式  </span><br><span class="line">    unsigned encoding: 4;  </span><br><span class="line">  </span><br><span class="line">    // 引用计数  </span><br><span class="line">    int refcount;  </span><br><span class="line">  </span><br><span class="line">    // 指向对象的值  </span><br><span class="line">    void *ptr;  </span><br><span class="line">  </span><br><span class="line">&#125; robj;</span><br></pre></td></tr></table></figure>
+
+<p>type表示了该对象的对象类型，即上面五个中的一个。但为了提高存储效率与程序执行效率，每种对象的底层数据结构实现都可能不止一种。encoding就表示了对象底层所使用的编码。</p>
+<ul>
+<li>Redis对象底层数据结构</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>编码常量</th>
+<th>编码所对应的底层数据结构</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>REDIS_ENCODING_INT</td>
+<td>long 类型的整数</td>
+</tr>
+<tr>
+<td>REDIS_ENCODING_EMBSTR</td>
+<td>embstr 编码的简单动态字符串</td>
+</tr>
+<tr>
+<td>REDIS_ENCODING_RAW</td>
+<td>简单动态字符串</td>
+</tr>
+<tr>
+<td>REDIS_ENCODING_HT</td>
+<td>字典</td>
+</tr>
+<tr>
+<td>REDIS_ENCODING_LINKEDLIST</td>
+<td>双端链表</td>
+</tr>
+<tr>
+<td>REDIS_ENCODING_ZIPLIST</td>
+<td>压缩列表</td>
+</tr>
+<tr>
+<td>REDIS_ENCODING_INTSET</td>
+<td>整数集合</td>
+</tr>
+<tr>
+<td>REDIS_ENCODING_SKIPLIST</td>
+<td>跳跃表和字典</td>
+</tr>
+</tbody></table>
+<ul>
+<li>字符串对象</li>
+</ul>
+<p>字符串对象的编码可以是int、raw或者embstr<br>如果一个字符串的内容可以转换为long，那么该字符串就会被转换成为long类型，对象的ptr就会指向该long，并且对象类型也用int类型表示。<br>普通的字符串有两种，embstr和raw。embstr应该是Redis 3.0新增的数据结构,在2.8中是没有的。如果字符串对象的长度小于39字节，就用embstr对象。否则用传统的raw对象。</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#define REDIS_ENCODING_EMBSTR_SIZE_LIMIT 44  </span><br><span class="line">robj *createStringObject(char *ptr, size_t len) &#123;  </span><br><span class="line">    if (len &lt;= REDIS_ENCODING_EMBSTR_SIZE_LIMIT)  </span><br><span class="line">        return createEmbeddedStringObject(ptr,len);  </span><br><span class="line">    else  </span><br><span class="line">        return createRawStringObject(ptr,len);  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>embstr的好处有如下几点：</p>
+<ol>
+<li>embstr的创建只需分配一次内存，而raw为两次（一次为<a href="https://github.com/antirez/redis/blob/unstable/src/sds.h" target="_blank" rel="noopener"><code>sds</code></a>分配对象，另一次为objet分配对象，embstr省去了第一次）。</li>
+<li>相对地，释放内存的次数也由两次变为一次。</li>
+<li>embstr的objet和sds放在一起，更好地利用缓存带来的优势。</li>
+</ol>
+<p>raw和embstr的区别可以用下面两幅图所示：</p>
+<p><img src="https://wt-box.worktile.com/public/db936e4c-844f-47f5-8c90-9c1c901b383c" alt="图-1.png"></p>
+<p><img src="https://wt-box.worktile.com/public/493f6e5b-e1ef-4943-a47f-35f574e5fee6" alt="图-2.png"></p>
+<ul>
+<li>列表对象</li>
+</ul>
+<p>列表对象的编码可以是ziplist或者linkedlist</p>
+<ol>
+<li>ziplist是一种压缩链表，它的好处是更能节省内存空间，因为它所存储的内容都是在连续的内存区域当中的。当列表对象元素不大，每个元素也不大的时候，就采用ziplist存储但当数据量过大时就ziplist就不是那么好用了。因为为了保证他存储内容在内存中的连续性，插入的复杂度是O(N)，即每次插入都会重新进行realloc。如下图所示，对象结构中ptr所指向的就是一个ziplist整个ziplist只需要malloc一次，它们在内存中是一块连续的区域。</li>
+</ol>
+<p><img src="https://wt-box.worktile.com/public/fa5419e6-b374-44a1-9af3-9a387c595d82" alt="图-3.png"></p>
+<ol>
+<li>linkedlist是一种双向链表。它的结构比较简单，节点中存放pre和next两个指针，还有节点相关的信息。当每增加一个node的时候，就需要重新malloc一块内存。</li>
+</ol>
+<p><img src="https://wt-box.worktile.com/public/aca6bdb6-6557-466f-b0d6-b7c53fbae051" alt="图-4.png"></p>
+<ul>
+<li>哈希对象</li>
+</ul>
+<p>哈希对象的底层实现可以是ziplist或者hashtable。<br>ziplist中的哈希对象是按照key1,value1,key2,value2这样的顺序存放来存储的。当对象数目不多且内容不大时，这种方式效率是很高的。</p>
+<p>hashtable的是由dict这个结构来实现的, dict是一个字典，其中的指针dicht ht[2] 指向了两个哈希表</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">typedef struct dict &#123;  </span><br><span class="line">    dictType *type;  </span><br><span class="line">    void *privdata;  </span><br><span class="line">    dictht ht[2];  </span><br><span class="line">    long rehashidx; /* rehashing not in progress if rehashidx == -1 */  </span><br><span class="line">    int iterators; /* number of iterators currently running */  </span><br><span class="line">&#125; dict;  </span><br><span class="line">typedef struct dictht &#123;  </span><br><span class="line">    dictEntry **table;  </span><br><span class="line">    unsigned long size;  </span><br><span class="line">    unsigned long sizemask;  </span><br><span class="line">    unsigned long used;  </span><br><span class="line">&#125; dictht;</span><br></pre></td></tr></table></figure>
+
+<p>dicht[0] 是用于真正存放数据，dicht[1]一般在哈希表元素过多进行rehash的时候用于中转数据。<br>dictht中的table用语真正存放元素了，每个key/value对用一个dictEntry表示，放在dictEntry数组中。</p>
+<p><img src="https://wt-box.worktile.com/public/76fb0cf2-b867-4c8c-8d16-484248842abb" alt="图-5.png"></p>
+<ul>
+<li>集合对象</li>
+</ul>
+<p>集合对象的编码可以是intset或者hashtable<br>intset是一个整数集合，里面存的为某种同一类型的整数，支持如下三种长度的整数：</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#define INTSET_ENC_INT16 (sizeof(int16_t))  </span><br><span class="line">#define INTSET_ENC_INT32 (sizeof(int32_t))  </span><br><span class="line">#define INTSET_ENC_INT64 (sizeof(int64_t))</span><br></pre></td></tr></table></figure>
+
+<p>intset是一个有序集合，查找元素的复杂度为O(logN)，但插入时不一定为O(logN)，因为有可能涉及到升级操作。比如当集合里全是int16_t型的整数，这时要插入一个int32_t，那么为了维持集合中数据类型的一致，那么所有的数据都会被转换成int32_t类型，涉及到内存的重新分配，这时插入的复杂度就为O(N)了。<br>intset不支持降级操作。</p>
+<ul>
+<li>有序集合对象</li>
+</ul>
+<p>有序集合的编码可能两种，一种是ziplist，另一种是skiplist与dict的结合。<br>ziplist作为集合和作为哈希对象是一样的，member和score顺序存放。按照score从小到大顺序排列<br>skiplist是一种跳跃表，它实现了有序集合中的快速查找，在大多数情况下它的速度都可以和平衡树差不多。但它的实现比较简单，可以作为平衡树的替代品。它的结构比较特殊。下面分别是跳跃表skiplist和它内部的节点skiplistNode的结构体：</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">/* </span><br><span class="line"> * 跳跃表 </span><br><span class="line"> */  </span><br><span class="line">typedef struct zskiplist &#123;  </span><br><span class="line">    // 头节点，尾节点  </span><br><span class="line">    struct zskiplistNode *header, *tail;  </span><br><span class="line">    // 节点数量  </span><br><span class="line">    unsigned long length;  </span><br><span class="line">    // 目前表内节点的最大层数  </span><br><span class="line">    int level;  </span><br><span class="line">&#125; zskiplist;  </span><br><span class="line">/* ZSETs use a specialized version of Skiplists */  </span><br><span class="line">/* </span><br><span class="line"> * 跳跃表节点 </span><br><span class="line"> */  </span><br><span class="line">typedef struct zskiplistNode &#123;  </span><br><span class="line">    // member 对象  </span><br><span class="line">    robj *obj;  </span><br><span class="line">    // 分值  </span><br><span class="line">    double score;  </span><br><span class="line">    // 后退指针  </span><br><span class="line">    struct zskiplistNode *backward;  </span><br><span class="line">    // 层  </span><br><span class="line">    struct zskiplistLevel &#123;  </span><br><span class="line">        // 前进指针  </span><br><span class="line">        struct zskiplistNode *forward;  </span><br><span class="line">        // 这个层跨越的节点数量  </span><br><span class="line">        unsigned int span;  </span><br><span class="line">    &#125; level[];  </span><br><span class="line">&#125; zskiplistNode;</span><br></pre></td></tr></table></figure>
+
+<p>head和tail分别指向头节点和尾节点，然后每个skiplistNode里面的结构又是分层的(即level数组)<br>用图表示，大概是下面这个样子：</p>
+<p><img src="https://wt-box.worktile.com/public/b2457e1c-5910-422a-90c3-6f637924e557" alt="图-6.png"></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上简单介绍了Redis的简介，特性以及五种对象类型和五种对象类型的底层实现。事实上，Redis的高效性和灵活性正是得益于同一个对象类型采用不同的底层结构，并且在必要的时候对二者进行转换，还有就是各种底层结构对内存的合理利用。</p>
+<p>本文作者：Worktile高级工程师 龚林杰</p>
+<p>文章来源：<a href="https://worktile.com/blog/tech?utm_source=segmentfault&utm_medium=meiyang" target="_blank" rel="noopener">Worktile技术博客</a></p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-11-26T05:49:53.000Z">2019-11-26</time>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    6 minutes read (About 968 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/11/26/redis-learning-1/">redis学习（一）</a>
+            
+        </h1>
+        <div class="content">
+            <h4 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h4><p>REmote DIctionary Server(Redis) 是一个由SalvatoreSanfilippo写的key-value存储系统。</p>
+<p>Redis是一个开源的使用ANSI C语言编写、遵守BSD协议、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。</p>
+<p>它通常被称为数据结构服务器，因为值（value）可以是字符串(String), 哈希(Map), 列表(list), 集合(sets) 和有序集合(sorted sets)等类型。</p>
+<p>Redis 与其他 key - value 缓存产品有以下三个特点：</p>
+<ul>
+<li>Redis支持数据的持久化，可以将内存中的数据保持在磁盘中，重启的时候可以再次加载进行使用。</li>
+<li>Redis不仅仅支持简单的key-value类型的数据，同时还提供list，set，zset，hash等数据结构的存储。</li>
+<li>Redis支持数据的备份，即master-slave模式的数据备份。</li>
+</ul>
+<h4 id="redis数据类型"><a href="#redis数据类型" class="headerlink" title="redis数据类型"></a>redis数据类型</h4><ul>
+<li>String</li>
+<li>Hash</li>
+<li>List</li>
+<li>Set</li>
+<li>Sorted set</li>
+</ul>
+<h4 id="redis常用命令"><a href="#redis常用命令" class="headerlink" title="redis常用命令"></a>redis常用命令</h4><ul>
+<li>Key（键）</li>
+<li>String</li>
+<li>Hash</li>
+<li>List</li>
+<li>Set</li>
+<li>Sorted set</li>
+<li>pub/sub（发布／订阅）</li>
+<li>Transactions（事物）</li>
+<li>Script（脚本）</li>
+<li>Conection（链接）</li>
+<li>Server（服务器）</li>
+</ul>
+<p>后面五个不常用，具体命令操作参见地址：</p>
+<p><a href="https://redis.io/commands" target="_blank" rel="noopener">官方</a></p>
+<p><a href="http://doc.redisfans.com/" target="_blank" rel="noopener">翻译</a></p>
+<h4 id="redis持久化（RDB／AOF）"><a href="#redis持久化（RDB／AOF）" class="headerlink" title="redis持久化（RDB／AOF）"></a>redis持久化（RDB／AOF）</h4><ul>
+<li>RDB 持久化可以在指定的时间间隔内生成数据集的时间点快照（point-in-time snapshot）。</li>
+<li>AOF 持久化记录服务器执行的所有写操作命令，并在服务器启动时，通过重新执行这些命令来还原数据集。 AOF 文件中的命令全部以 Redis 协议的格式来保存，新命令会被追加到文件的末尾。 Redis 还可以在后台对 AOF 文件进行重写（rewrite），使得 AOF 文件的体积不会超出保存数据集状态所需的实际大小。</li>
+<li>Redis 还可以同时使用 AOF 持久化和 RDB 持久化。 在这种情况下， 当 Redis 重启时， 它会优先使用 AOF 文件来还原数据集， 因为 AOF 文件保存的数据集通常比 RDB 文件所保存的数据集更完整。</li>
+<li>你甚至可以关闭持久化功能，让数据只在服务器运行时存在。</li>
+</ul>
+<p>缺点：</p>
+<p>RDB：</p>
+<p>1.设置不同的保存点（save point）来控制保存 RDB 文件的频率，一旦发生故障可能会丢失数据。</p>
+<p>2.每次保存 RDB 的时候，Redis 都要 <code>fork()</code> 出一个子进程，并由子进程来进行实际的持久化工作。 在数据集比较庞大时， <code>fork()</code> 可能会非常耗时，造成服务器在某某毫秒内停止处理客户端；</p>
+<p>AOF：</p>
+<p>1.相同的数据集来说，AOF 文件的体积通常要大于 RDB 文件的体积。</p>
+<p>2….</p>
+<p>优点：</p>
+<p>RDB：</p>
+<p>1.保存了 Redis 在某个时间点上的数据集。 这种文件非常适合用于进行备份</p>
+<p>2.速度快，无论保存还是恢复</p>
+<p>AOF：</p>
+<p>1.非常耐久（much more durable）</p>
+<p>2.AOF 文件是一个只进行追加操作的日志文件（append only log）， 因此对 AOF 文件的写入不需要进行 <code>seek</code> </p>
+<p>3.在 AOF 文件体积变得过大时，自动地在后台对 AOF 进行重写： 重写后的新 AOF 文件包含了恢复当前数据集所需的最小命令集合。 </p>
+<p>4.AOF 文件有序地保存了对数据库执行的所有写入操作， 这些写入操作以 Redis 协议的格式保存， 因此 AOF 文件的内容非常容易被人读懂， 对文件进行分析（parse）也很轻松。 </p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2019-11-25T08:29:25.000Z">2019-11-25</time>
                 
                 
@@ -540,7 +862,7 @@
                     </p>
                     <a href="/archives">
                         <p class="title has-text-weight-normal">
-                            5
+                            8
                         </p>
                     </a>
                 </div>
@@ -564,7 +886,7 @@
                     </p>
                     <a href="/tags">
                         <p class="title has-text-weight-normal">
-                            3
+                            4
                         </p>
                     </a>
                 </div>
@@ -677,7 +999,7 @@
         <h3 class="menu-label">
             Tag Cloud
         </h3>
-        <a href="/tags/I-O/" style="font-size: 15px;">I/O</a> <a href="/tags/LINUX/" style="font-size: 20px;">LINUX</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a>
+        <a href="/tags/I-O/" style="font-size: 15px;">I/O</a> <a href="/tags/LINUX/" style="font-size: 20px;">LINUX</a> <a href="/tags/REDIS/" style="font-size: 20px;">REDIS</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a>
     </div>
 </div>
     
@@ -689,6 +1011,63 @@
         <h3 class="menu-label">
             Recent
         </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/11/26/redis-learning-3/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="redis学习（三）">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-26T08:56:38.000Z">2019-11-26</time></div>
+                    <a href="/2019/11/26/redis-learning-3/" class="title has-link-black-ter is-size-6 has-text-weight-normal">redis学习（三）</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/11/26/redis-learning-2/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="redis学习（二）">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-26T08:24:03.000Z">2019-11-26</time></div>
+                    <a href="/2019/11/26/redis-learning-2/" class="title has-link-black-ter is-size-6 has-text-weight-normal">redis学习（二）</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/11/26/redis-learning-1/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="redis学习（一）">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-26T05:49:53.000Z">2019-11-26</time></div>
+                    <a href="/2019/11/26/redis-learning-1/" class="title has-link-black-ter is-size-6 has-text-weight-normal">redis学习（一）</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -728,63 +1107,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/11/25/epoll/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="epoll理论解读">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-25T02:54:20.000Z">2019-11-25</time></div>
-                    <a href="/2019/11/25/epoll/" class="title has-link-black-ter is-size-6 has-text-weight-normal">epoll理论解读</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2019/11/14/linux%E5%86%85%E5%AD%98swap/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="linux内存swap">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-14T09:38:51.000Z">2019-11-14</time></div>
-                    <a href="/2019/11/14/linux%E5%86%85%E5%AD%98swap/" class="title has-link-black-ter is-size-6 has-text-weight-normal">linux内存swap</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2019/11/14/hello-world/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="Hello World">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-14T02:29:07.000Z">2019-11-14</time></div>
-                    <a href="/2019/11/14/hello-world/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Hello World</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
         
@@ -802,7 +1124,7 @@
                     <span class="level-item">November 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">5</span>
+                    <span class="level-item tag">8</span>
                 </span>
             </a>
         </li>
@@ -830,6 +1152,13 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/LINUX/">
                         <span class="tag">LINUX</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/REDIS/">
+                        <span class="tag">REDIS</span>
                         <span class="tag is-grey">3</span>
                     </a>
                 </div>
@@ -865,6 +1194,63 @@
         
         <article class="media">
             
+            <a href="/2019/11/26/redis-learning-3/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="redis学习（三）">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-26T08:56:38.000Z">2019-11-26</time></div>
+                    <a href="/2019/11/26/redis-learning-3/" class="title has-link-black-ter is-size-6 has-text-weight-normal">redis学习（三）</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/11/26/redis-learning-2/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="redis学习（二）">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-26T08:24:03.000Z">2019-11-26</time></div>
+                    <a href="/2019/11/26/redis-learning-2/" class="title has-link-black-ter is-size-6 has-text-weight-normal">redis学习（二）</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/11/26/redis-learning-1/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="redis学习（一）">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-26T05:49:53.000Z">2019-11-26</time></div>
+                    <a href="/2019/11/26/redis-learning-1/" class="title has-link-black-ter is-size-6 has-text-weight-normal">redis学习（一）</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
             <a href="/2019/11/25/reactor/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="/images/thumbnail.svg" alt="reactor和preactor模型">
@@ -901,63 +1287,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/11/25/epoll/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="epoll理论解读">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-25T02:54:20.000Z">2019-11-25</time></div>
-                    <a href="/2019/11/25/epoll/" class="title has-link-black-ter is-size-6 has-text-weight-normal">epoll理论解读</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2019/11/14/linux%E5%86%85%E5%AD%98swap/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="linux内存swap">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-14T09:38:51.000Z">2019-11-14</time></div>
-                    <a href="/2019/11/14/linux%E5%86%85%E5%AD%98swap/" class="title has-link-black-ter is-size-6 has-text-weight-normal">linux内存swap</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2019/11/14/hello-world/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="Hello World">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-14T02:29:07.000Z">2019-11-14</time></div>
-                    <a href="/2019/11/14/hello-world/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Hello World</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
     
@@ -975,7 +1304,7 @@
                     <span class="level-item">November 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">5</span>
+                    <span class="level-item tag">8</span>
                 </span>
             </a>
         </li>
@@ -1003,6 +1332,13 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/LINUX/">
                         <span class="tag">LINUX</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/REDIS/">
+                        <span class="tag">REDIS</span>
                         <span class="tag is-grey">3</span>
                     </a>
                 </div>

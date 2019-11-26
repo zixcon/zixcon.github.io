@@ -7,16 +7,19 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-<title>Categories - zixcon·blog</title>
+<title>redis学习（一） - zixcon·blog</title>
 
 
-    <meta name="keywords" content="LINUX,I&#x2F;O,linux ,REDIS">
-<meta property="og:type" content="website">
-<meta property="og:title" content="zixcon·blog">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;categories&#x2F;index.html">
+    <meta name="description" content="简介REmote DIctionary Server(Redis) 是一个由SalvatoreSanfilippo写的key-value存储系统。 Redis是一个开源的使用ANSI C语言编写、遵守BSD协议、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。 它通常被称为数据结构服务器，因为值（value）可以是字符串(String), 哈希(Map),">
+<meta name="keywords" content="REDIS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis学习（一）">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;26&#x2F;redis-learning-1&#x2F;index.html">
 <meta property="og:site_name" content="zixcon·blog">
+<meta property="og:description" content="简介REmote DIctionary Server(Redis) 是一个由SalvatoreSanfilippo写的key-value存储系统。 Redis是一个开源的使用ANSI C语言编写、遵守BSD协议、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。 它通常被称为数据结构服务器，因为值（value）可以是字符串(String), 哈希(Map),">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;og_image.png">
+<meta property="og:updated_time" content="2019-11-26T08:28:58.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;og_image.png">
 
@@ -76,7 +79,7 @@
         <div class="navbar-brand is-flex-center">
             <a class="navbar-item navbar-logo" href="/">
             
-                <img src="/images/logo.svg" alt="zixcon·blog" height="28">
+                <img src="/images/logo.svg" alt="redis学习（一）" height="28">
             
             </a>
         </div>
@@ -90,7 +93,7 @@
                 <a class="navbar-item"
                 href="/archives">Archives</a>
                 
-                <a class="navbar-item is-active"
+                <a class="navbar-item"
                 href="/categories">Categories</a>
                 
                 <a class="navbar-item"
@@ -126,18 +129,163 @@
         <div class="container">
             <div class="columns">
                 <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main">
-<div class="card widget">
-    <div class="card-content">
-        <div class="menu">
-            <h3 class="menu-label">
-                Categories
-            </h3>
-            <ul class="menu-list">
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-11-26T05:49:53.000Z">2019-11-26</time>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    6 minutes read (About 968 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-            </ul>
+                redis学习（一）
+            
+        </h1>
+        <div class="content">
+            <h4 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h4><p>REmote DIctionary Server(Redis) 是一个由SalvatoreSanfilippo写的key-value存储系统。</p>
+<p>Redis是一个开源的使用ANSI C语言编写、遵守BSD协议、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。</p>
+<p>它通常被称为数据结构服务器，因为值（value）可以是字符串(String), 哈希(Map), 列表(list), 集合(sets) 和有序集合(sorted sets)等类型。</p>
+<p>Redis 与其他 key - value 缓存产品有以下三个特点：</p>
+<ul>
+<li>Redis支持数据的持久化，可以将内存中的数据保持在磁盘中，重启的时候可以再次加载进行使用。</li>
+<li>Redis不仅仅支持简单的key-value类型的数据，同时还提供list，set，zset，hash等数据结构的存储。</li>
+<li>Redis支持数据的备份，即master-slave模式的数据备份。</li>
+</ul>
+<h4 id="redis数据类型"><a href="#redis数据类型" class="headerlink" title="redis数据类型"></a>redis数据类型</h4><ul>
+<li>String</li>
+<li>Hash</li>
+<li>List</li>
+<li>Set</li>
+<li>Sorted set</li>
+</ul>
+<h4 id="redis常用命令"><a href="#redis常用命令" class="headerlink" title="redis常用命令"></a>redis常用命令</h4><ul>
+<li>Key（键）</li>
+<li>String</li>
+<li>Hash</li>
+<li>List</li>
+<li>Set</li>
+<li>Sorted set</li>
+<li>pub/sub（发布／订阅）</li>
+<li>Transactions（事物）</li>
+<li>Script（脚本）</li>
+<li>Conection（链接）</li>
+<li>Server（服务器）</li>
+</ul>
+<p>后面五个不常用，具体命令操作参见地址：</p>
+<p><a href="https://redis.io/commands" target="_blank" rel="noopener">官方</a></p>
+<p><a href="http://doc.redisfans.com/" target="_blank" rel="noopener">翻译</a></p>
+<h4 id="redis持久化（RDB／AOF）"><a href="#redis持久化（RDB／AOF）" class="headerlink" title="redis持久化（RDB／AOF）"></a>redis持久化（RDB／AOF）</h4><ul>
+<li>RDB 持久化可以在指定的时间间隔内生成数据集的时间点快照（point-in-time snapshot）。</li>
+<li>AOF 持久化记录服务器执行的所有写操作命令，并在服务器启动时，通过重新执行这些命令来还原数据集。 AOF 文件中的命令全部以 Redis 协议的格式来保存，新命令会被追加到文件的末尾。 Redis 还可以在后台对 AOF 文件进行重写（rewrite），使得 AOF 文件的体积不会超出保存数据集状态所需的实际大小。</li>
+<li>Redis 还可以同时使用 AOF 持久化和 RDB 持久化。 在这种情况下， 当 Redis 重启时， 它会优先使用 AOF 文件来还原数据集， 因为 AOF 文件保存的数据集通常比 RDB 文件所保存的数据集更完整。</li>
+<li>你甚至可以关闭持久化功能，让数据只在服务器运行时存在。</li>
+</ul>
+<p>缺点：</p>
+<p>RDB：</p>
+<p>1.设置不同的保存点（save point）来控制保存 RDB 文件的频率，一旦发生故障可能会丢失数据。</p>
+<p>2.每次保存 RDB 的时候，Redis 都要 <code>fork()</code> 出一个子进程，并由子进程来进行实际的持久化工作。 在数据集比较庞大时， <code>fork()</code> 可能会非常耗时，造成服务器在某某毫秒内停止处理客户端；</p>
+<p>AOF：</p>
+<p>1.相同的数据集来说，AOF 文件的体积通常要大于 RDB 文件的体积。</p>
+<p>2….</p>
+<p>优点：</p>
+<p>RDB：</p>
+<p>1.保存了 Redis 在某个时间点上的数据集。 这种文件非常适合用于进行备份</p>
+<p>2.速度快，无论保存还是恢复</p>
+<p>AOF：</p>
+<p>1.非常耐久（much more durable）</p>
+<p>2.AOF 文件是一个只进行追加操作的日志文件（append only log）， 因此对 AOF 文件的写入不需要进行 <code>seek</code> </p>
+<p>3.在 AOF 文件体积变得过大时，自动地在后台对 AOF 进行重写： 重写后的新 AOF 文件包含了恢复当前数据集所需的最小命令集合。 </p>
+<p>4.AOF 文件有序地保存了对数据库执行的所有写入操作， 这些写入操作以 Redis 协议的格式保存， 因此 AOF 文件的内容非常容易被人读懂， 对文件进行分析（parse）也很轻松。 </p>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/REDIS/" rel="tag">REDIS</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="menu-label has-text-centered">Like this article? Support the author with</h3>
+        <div class="buttons is-centered">
+            
+                
+<div class="notification is-danger">
+    You forgot to set the <code>qrcode</code> for Alipay. Please set it in <code>_config.yml</code>.
+</div>
+
+                
+                
+<div class="notification is-danger">
+    You forgot to set the <code>qrcode</code> for Wechat. Please set it in <code>_config.yml</code>.
+</div>
+
+                
+                <!-- Visit https://www.paypal.com/donate/buttons/ to get your donate button -->
+
+<div class="notification is-danger">
+    You forgot to set the <code>business</code> and <code>currency_code</code> for Paypal. Please set it in <code>_config.yml</code>.
+</div>
+
+                
+                
+<div class="notification is-danger">
+    You forgot to set the <code>url</code> Patreon. Please set it in <code>_config.yml</code>.
+</div>
+
+                
         </div>
     </div>
-</div></div>
+</div>
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/11/26/redis-learning-2/">
+                <i class="level-item fas fa-chevron-left"></i>
+                <span class="level-item">redis学习（二）</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/11/25/reactor/">
+                <span class="level-item">reactor和preactor模型</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+</div>
                 
 
 
@@ -687,7 +835,7 @@
             <div class="level-start has-text-centered-mobile">
                 <a class="footer-logo is-block has-mb-6" href="/">
                 
-                    <img src="/images/logo.svg" alt="zixcon·blog" height="28">
+                    <img src="/images/logo.svg" alt="redis学习（一）" height="28">
                 
                 </a>
                 <p class="is-size-7">
