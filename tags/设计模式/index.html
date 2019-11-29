@@ -7,19 +7,15 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-<title>reactor和preactor模型 - zixcon·blog</title>
+<title>Tag: 设计模式 - zixcon·blog</title>
 
 
-    <meta name="description" content="Reactor模型Reactor的核心思想： 将关注的I&#x2F;O事件注册到多路复用器上，一旦有I&#x2F;O事件触发，将事件分发到事件处理器中，执行就绪I&#x2F;O事件对应的处理函数中。模型中有三个重要的组件：  多路复用器：由操作系统提供接口，Linux提供的I&#x2F;O复用接口有select、poll、epoll； 事件分离器：将多路复用器返回的就绪事件分发到事件处理器中； 事件处理器：处理就绪事件处理函数。">
-<meta name="keywords" content="LINUX,I&#x2F;O">
-<meta property="og:type" content="article">
-<meta property="og:title" content="reactor和preactor模型">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;25&#x2F;reactor&#x2F;index.html">
+    <meta property="og:type" content="website">
+<meta property="og:title" content="zixcon·blog">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;tags&#x2F;%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F&#x2F;index.html">
 <meta property="og:site_name" content="zixcon·blog">
-<meta property="og:description" content="Reactor模型Reactor的核心思想： 将关注的I&#x2F;O事件注册到多路复用器上，一旦有I&#x2F;O事件触发，将事件分发到事件处理器中，执行就绪I&#x2F;O事件对应的处理函数中。模型中有三个重要的组件：  多路复用器：由操作系统提供接口，Linux提供的I&#x2F;O复用接口有select、poll、epoll； 事件分离器：将多路复用器返回的就绪事件分发到事件处理器中； 事件处理器：处理就绪事件处理函数。">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;og_image.png">
-<meta property="og:updated_time" content="2019-11-25T09:11:55.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;og_image.png">
 
@@ -79,7 +75,7 @@
         <div class="navbar-brand is-flex-center">
             <a class="navbar-item navbar-logo" href="/">
             
-                <img src="/images/logo.svg" alt="reactor和preactor模型" height="28">
+                <img src="/images/logo.svg" alt="zixcon·blog" height="28">
             
             </a>
         </div>
@@ -128,20 +124,31 @@
     <section class="section">
         <div class="container">
             <div class="columns">
-                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
+    <div class="card-content">
+        <nav class="breadcrumb" aria-label="breadcrumbs">
+        <ul>
+            <li><a href="/tags">Tags</a></li>
+            <li class="is-active"><a href="#" aria-current="page">设计模式</a></li>
+        </ul>
+        </nav>
+    </div>
+</div>
+
+    
 <div class="card">
     
     <div class="card-content article ">
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-11-25T08:29:25.000Z">2019-11-25</time>
+                <time class="level-item has-text-grey" datetime="2019-11-29T05:54:08.000Z">2019-11-29</time>
                 
                 
                 <span class="level-item has-text-grey">
                     
                     
-                    7 minutes read (About 1039 words)
+                    17 minutes read (About 2617 words)
                 </span>
                 
                 
@@ -150,77 +157,165 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                reactor和preactor模型
+                <a class="has-link-black-ter" href="/2019/11/29/j2ee-log/">LOG日志桥接关系</a>
             
         </h1>
         <div class="content">
-            <h4 id="Reactor模型"><a href="#Reactor模型" class="headerlink" title="Reactor模型"></a>Reactor模型</h4><p><strong>Reactor的核心思想：</strong></p>
-<p>将关注的I/O事件注册到多路复用器上，一旦有I/O事件触发，将事件分发到事件处理器中，执行就绪I/O事件对应的处理函数中。模型中有三个重要的组件：</p>
-<ul>
-<li><strong>多路复用器：</strong>由操作系统提供接口，Linux提供的I/O复用接口有select、poll、epoll；</li>
-<li><strong>事件分离器：</strong>将多路复用器返回的就绪事件分发到事件处理器中；</li>
-<li><strong>事件处理器：</strong>处理就绪事件处理函数。</li>
-</ul>
-<p><img src="./reactor/reactor_1.jpg" alt></p>
-<ul>
-<li><p><strong>Handle：</strong>标示文件描述符；</p>
-</li>
-<li><p><strong>Event Demultiplexer：</strong>执行多路事件分解操作，对操作系统内核实现I/O复用接口的封装；用于阻塞等待发生在句柄集合上的一个或多个事件（如select/poll/epoll）；</p>
-</li>
-<li><p><strong>Event Handler：</strong>事件处理接口；</p>
-</li>
-<li><p><strong>Event Handler A(B)：</strong>实现应用程序所提供的特定事件处理逻辑；</p>
-</li>
-<li><p><strong>Reactor：</strong>反应器，定义一个接口，实现以下功能：</p>
-<p>a)供应用程序注册和删除关注的事件句柄；</p>
-<p>b)运行事件处理循环； </p>
-<p>c)等待的就绪事件触发，分发事件到之前注册的回调函数上处理.</p>
-</li>
-</ul>
-<h4 id="经典Reactor模式"><a href="#经典Reactor模式" class="headerlink" title="经典Reactor模式"></a>经典Reactor模式</h4><p><img src="./reactor/reactor_2.png" alt></p>
-<p><strong>在经典Reactor模式中，包含以下角色：</strong></p>
-<ul>
-<li><strong>Reactor ：</strong>将I/O事件发派给对应的Handler</li>
-<li><strong>Acceptor ：</strong>处理客户端连接请求</li>
-<li><strong>Handlers ：</strong>执行非阻塞读/写</li>
-</ul>
-<h4 id="多工作线程Reactor模式"><a href="#多工作线程Reactor模式" class="headerlink" title="多工作线程Reactor模式"></a>多工作线程Reactor模式</h4><p><img src="./reactor/reactor_3.png" alt></p>
-<h4 id="多Reactor的Reactor模式"><a href="#多Reactor的Reactor模式" class="headerlink" title="多Reactor的Reactor模式"></a>多Reactor的Reactor模式</h4><p><img src="./reactor/reactor_4.png" alt></p>
-<h4 id="Proactor模型"><a href="#Proactor模型" class="headerlink" title="Proactor模型"></a>Proactor模型</h4><p>​    与Reactor不同的是，Proactor使用异步I/O系统接口将I/O操作托管给操作系统，Proactor模型中分发处理异步I/O完成事件，并调用相应的事件处理接口来处理业务逻辑。</p>
-<p><img src="./reactor/preactor_1.png" alt></p>
-<p><strong>Proactor类结构中包含有如下角色：</strong></p>
-<ul>
-<li><strong>Handle：</strong>用来标识socket连接或是打开文件；</li>
-<li><strong>Async Operation Processor：</strong>异步操作处理器；负责执行异步操作，一般由操作系统内核实现；</li>
-<li><strong>Async Operation：</strong>异步操作；</li>
-<li><strong>Completion Event Queue：</strong>完成事件队列；异步操作完成的结果放到队列中等待后续使用；</li>
-<li><strong>Proactor：</strong>主动器；为应用程序进程提供事件循环；从完成事件队列中取出异步操作的结果，分发调用相应的后续处理逻辑；</li>
-<li><strong>Completion Handler：</strong>完成事件接口；一般是由回调函数组成的接口；</li>
-<li><strong>Completion Handler A(B)：</strong>完成事件处理逻辑；实现接口定义特定的应用处理逻辑。</li>
-</ul>
-<h4 id="支持情况"><a href="#支持情况" class="headerlink" title="支持情况"></a>支持情况</h4><p>​    windows对异步I/O提供了非常好的支持，常用Proactor的模型实现服务器；而Linux对异步I/O操作(aio接口)的支持并不是特别理想，而且不能直接处理accept，因此Linux平台上还是以Reactor模型为主。</p>
-<p>​    目前实现了纯异步操作的操作系统少，实现优秀的如windows IOCP，但由于其windows系统用于服务器的局限性，目前应用范围较小；而Unix/Linux系统对纯异步的支持有限，应用事件驱动的主流还是通过select/epoll来实现；</p>
-<p><strong>java提供Asynchronous I/O相关接口以支持异步I/O，AIO有两种api进行操作：</strong></p>
-<ul>
-<li><p>Future 方式</p>
-<p>即提交一个 I/O 操作请求，返回一个 Future。然后您可以对 Future 进行检查，确定它是否完成，或者阻塞 IO 操作直到操作正常完成或者超时异常。</p>
-</li>
-<li><p>Callback 方式</p>
-<p>即提交一个 I/O 操作请求，并且指定一个 CompletionHandler。当异步 I/O 操作完成时，便发送一个通知，此时这个 CompletionHandler 对象的 completed 或者 failed 方法将会被调用。</p>
-</li>
-</ul>
-<p>参照：</p>
-<p><a href="https://www.jianshu.com/p/b4de9b85c79d" target="_blank" rel="noopener">https://www.jianshu.com/p/b4de9b85c79d</a></p>
+            <p><img src="./j2ee-log/log_1.png" alt></p>
+<p>这里思考几个问题：</p>
+<p>1.日志框架是给Java应用提供的方便进行记录日志的，那为什么又不让在应用中直接使用其API呢？</p>
+<p>2.这里面推崇使用的SLF4J是什么呢？</p>
+<p>3.所谓的门面模式又是什么东西呢？</p>
+<p>4.它是怎么做到统一的呢？</p>
+<h4 id="门面模式"><a href="#门面模式" class="headerlink" title="门面模式"></a>门面模式</h4><p><strong>迪米特法则</strong>：<strong>talk only to your immediate friends</strong></p>
+<pre><code>迪米特法则的[初衷](https://baike.baidu.com/item/初衷)在于降低类之间的[耦合](https://baike.baidu.com/item/耦合/2821124)。由于每个类尽量减少对其他类的依赖，因此，很容易使得系统的功能模块功能独立，相互之间不存在（或很少有）依赖关系。
 
-        </div>
-        
-        <div class="level is-size-7 is-uppercase">
-            <div class="level-start">
-                <div class="level-item">
-                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
-                    <a class="has-link-grey -link" href="/tags/I-O/" rel="tag">I/O</a>, <a class="has-link-grey -link" href="/tags/LINUX/" rel="tag">LINUX</a>
-                </div>
-            </div>
+迪米特法[友元类](https://baike.baidu.com/item/友元类/518734)转达。因此，应用迪米特法则有可能造成的一个后果就是：系统中存在大量的中介类，这些类之所以存在完全是为了传递类之间的相互调用关系这在一定程度上增加了系统的复杂度。</code></pre><p><img src="./j2ee-log/log_2.png" alt></p>
+<p>​    外观模式创造出一个外观对象，将客户端所涉及的属于一个子系统的协作伙伴的数量减到最少，使得客户端与子系统内部的对象的相互作用被外观对象所取代。外观类充当了客户类与子系统类之间的“第三者”，降低了客户类与子系统类之间的耦合度  </p>
+<p>更形象点：</p>
+<p><img src="./j2ee-log/log_3.png" alt></p>
+<p><img src="./j2ee-log/log_4.png" alt></p>
+<p><strong>优点</strong>:</p>
+<p>　　<strong>-</strong> <strong>松耦合</strong></p>
+<p>　　用户与子系统解耦，屏蔽子系统；可以提高子系统的独立性； </p>
+<p>　　<strong>-</strong> <strong>简单易用</strong></p>
+<p>　　简化用户与子系统的依赖关系；<br>    用户只与门面对接，有统一的入口；不需要知道所有子系统及内部构造；</p>
+<p>　　<strong>-</strong> <strong>更好的划分访问层次</strong></p>
+<p>　　有些方法是对系统外的，有些方法是系统内部相互交互的使用的。子系统把那些暴露给外部的功能集中到门面中，这样就可以实现客户端的使用，很好的隐藏了子系统内部的细节。</p>
+<p><strong>缺点</strong>:</p>
+<pre><code>不能很好地限制客户使用子系统类，如果对客户访问子系统类做太多的限制则减少了可变性和灵活性。
+
+在不引入抽象外观类的情况下，增加新的子系统可能需要修改外观类或客户端的源代码，违背了“开闭原则”。</code></pre><p>开闭原则两个主要特征：</p>
+<p>（1）对于扩展是开放的（Open for extension）。</p>
+<p>（2）对于修改是关闭的（Closed for modification）。</p>
+<p><strong>错误使用行为</strong></p>
+<pre><code>不要通过继承一个外观类在子系统中加入新的行为，这种做法是错误的。
+
+外观模式的用意是为子系统提供一个集中化和简化的沟通渠道，而不是向子系统加入新的行为，新的行为的增加应该通过修改原有子系统类或增加新的子系统类来实现，不能通过外观类来实现。</code></pre><h4 id="Log日志框架关系"><a href="#Log日志框架关系" class="headerlink" title="Log日志框架关系"></a>Log日志框架关系</h4><ol>
+<li>1996年早期，欧洲安全电子市场项目组决定编写它自己的程序跟踪API(Tracing API)。经过不断的完善，这个API终于成为一个十分受欢迎的Java日志软件包，即Log4j。后来Log4j成为Apache基金会项目中的一员。</li>
+<li>期间Log4j近乎成了Java社区的日志标准。据说Apache基金会还曾经建议Sun引入Log4j到java的标准库中，但Sun拒绝了。</li>
+<li>2002年Java1.4发布，Sun推出了自己的日志库JUL(Java Util Logging),其实现基本模仿了Log4j的实现。在JUL出来以前，Log4j就已经成为一项成熟的技术，使得Log4j在选择上占据了一定的优势。</li>
+<li>接着，Apache推出了Jakarta Commons Logging，JCL只是定义了一套日志接口(其内部也提供一个Simple Log的简单实现)，支持运行时动态加载日志组件的实现，也就是说，在你应用代码里，只需调用Commons Logging的接口，底层实现可以是Log4j，也可以是Java Util Logging。</li>
+<li>后来(2006年)，Ceki Gülcü离开了Apache。然后先后创建了Slf4j(日志门面接口，类似于Commons Logging)和Logback(Slf4j的实现)两个项目，并回瑞典创建了QOS公司，QOS官网上是这样描述Logback的：The Generic，Reliable Fast&amp;Flexible Logging Framework(一个通用，可靠，快速且灵活的日志框架)。从此以后，Java日志领域被划分为两大阵营：Commons Logging阵营和Slf4j阵营。</li>
+<li>2012年，Apache重写了Log4j 1.x，成立了新的项目Log4j 2</li>
+</ol>
+<p><img src="./j2ee-log/log_5.png" alt></p>
+<p>Commons Logging和Slf4j是日志门面</p>
+<p>Log4j和Logback则是具体的日志实现方案</p>
+<p><img src="./j2ee-log/log_6.png" alt></p>
+<p>这里可以看出分为三个层次：</p>
+<p>抽象层：提供应用直接调用api</p>
+<p>适配层：提供于抽象层和实现层的适配实现</p>
+<p>实现层：api的实现</p>
+<p><strong>通过log4j-slf4j-impl来看是如何桥接</strong></p>
+<p><img src="./j2ee-log/log_7.png" alt></p>
+<table>
+<thead>
+<tr>
+<th>jar包名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>slf4j-log4j12-1.7.13.jar</strong></td>
+<td>Log4j1.2版本的桥接器，你需要将Log4j.jar加入Classpath。</td>
+</tr>
+<tr>
+<td><strong>slf4j-jdk14-1.7.13.jar</strong></td>
+<td>java.util.logging的桥接器，Jdk原生日志框架。</td>
+</tr>
+<tr>
+<td><strong>slf4j-nop-1.7.13.jar</strong></td>
+<td>NOP桥接器，默默丢弃一切日志。</td>
+</tr>
+<tr>
+<td><strong>slf4j-simple-1.7.13.jar</strong></td>
+<td>一个简单实现的桥接器，该实现输出所有事件到System.err.  只有Info以及高于该级别的消息被打印，在小型应用中它也许是有用的。</td>
+</tr>
+<tr>
+<td><strong>slf4j-jcl-1.7.13.jar</strong></td>
+<td>Jakarta Commons Logging 的桥接器.  这个桥接器将Slf4j所有日志委派给Jcl。</td>
+</tr>
+<tr>
+<td><strong>logback-classic-1.0.13.jar(requires  logback-core-1.0.13.jar)</strong></td>
+<td>Slf4j的原生实现，Logback直接实现了Slf4j的接口，因此使用Slf4j与Logback的结合使用也意味更小的内存与计算开销</td>
+</tr>
+</tbody></table>
+<p><strong>如何将日志框架指向SLF4J</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>jar包名</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>log4j-over-slf4j.jar</strong></td>
+<td>将Log4j  1重定向到Slf4j</td>
+</tr>
+<tr>
+<td><strong>jcl-over-slf4j.jar</strong></td>
+<td>将Commons  Logging里的Simple  Logger重定向到slf4j</td>
+</tr>
+<tr>
+<td><strong>jul-to-slf4j.jar</strong></td>
+<td>将Java  Util  Logging重定向到Slf4j</td>
+</tr>
+<tr>
+<td><strong>log4j-to-slf4j</strong></td>
+<td>log4j 2 API到slf4j的适配</td>
+</tr>
+</tbody></table>
+<p><strong>Slf4j/log4j2集成举例</strong></p>
+<p>如果我们在系统中需要使用slf4j和log4j2来进行日志输出的话，我们需要引入下面的jar包：</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">log4j2核心jar包：log4j-api-2.7.jar和log4j-core-2.7.jar</span><br><span class="line">slf4j核心jar包：slf4j-api-1.6.4.jar</span><br><span class="line">slf4j与log4j2的桥接包：log4j-slf4j-impl-2.7.jar，这个包的作用就是使用slf4j的api，但是底层实现是基于log4j2</span><br></pre></td></tr></table></figure>
+
+<p><strong>死循环问题</strong></p>
+<table>
+<thead>
+<tr>
+<th>多个日志jar包形成死循环的条件</th>
+<th>产生原因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>log4j-over-slf4j.jar和slf4j-log4j12.jar</strong></td>
+<td>由于slf4j-log4j12.jar的存在会将所有日志调用委托给log4j。但由于同时由于log4j-over-slf4j.jar的存在，会将所有对log4j  api的调用委托给相应等值的slf4j,所以log4j-over-slf4j.jar和slf4j-log4j12.jar同时存在会形成死循环</td>
+</tr>
+<tr>
+<td><strong>jcl-over-slf4j</strong> <strong>与</strong> <strong>slf4j-jcl</strong></td>
+<td>Jcl-over-slf4j  : commons-logging切换到slf4j  slf4j-jcl  : slf4j切换到commons-logging</td>
+</tr>
+<tr>
+<td><strong>jul-to-slf4j.jar和slf4j-jdk14.jar</strong></td>
+<td>由于slf4j-jdk14.jar的存在会将所有日志调用委托给jdk的log。但由于同时jul-to-slf4j.jar的存在，会将所有对jul api的调用委托给相应等值的slf4j，所以jul-to-slf4j.jar和slf4j-jdk14.jar同时存在会形成死循环</td>
+</tr>
+</tbody></table>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">死循环日志：</span><br><span class="line">SLF4J: Detected both log4j-over-slf4j.jar AND slf4j-log4j12.jar on the class path, preempting StackOverflowError.   </span><br><span class="line">SLF4J: See also http://www.slf4j.org/codes.html#log4jDelegationLoop for more details.</span><br></pre></td></tr></table></figure>
+
+<p>看到这里，是不是很头大，这么多工具类，怎么管理这些包之间的关系，使得日志的使用情况和预期一致，并且规避日志引起的问题呢？</p>
+<h4 id="日志依赖包管理方案"><a href="#日志依赖包管理方案" class="headerlink" title="日志依赖包管理方案"></a><strong>日志依赖包管理方案</strong></h4><p><strong>方案1:采用maven的exclusion方案</strong>  </p>
+<p><img src="./j2ee-log/log_8.png" alt></p>
+<p>优点是exclusion是maven原生提供的</p>
+<p>不足之处是如果有多个组件都依赖了commons-logging，则需要在很多处增加，使用起来不太方便</p>
+<p><strong>方案2: 在maven声明commons-logging的scope为provided</strong>  </p>
+<p>​    这种方案在调试代码时还是有可能导致IDE将commons-logging放置在classpath下，从而导致程序运行时出现异常</p>
+<p><strong>方案3:在maven私服中增加虚拟的版本号</strong> 【建议方案】</p>
+<p><img src="./j2ee-log/log_9.png" alt></p>
+<p>​    好处是声明方式比较简单，用IDE调试代码时也不会出现问题，不足之处是maven中央仓库中是不存在的，需要发布到自己的maven私服中。</p>
+<p>​    但是，这种方式得注意，由于maven的加载关系，必须得把此配置声明放在顶级pom文件中，保证优先加载此空jar包</p>
+<p><strong>虚拟版本号原理</strong></p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Maven 解析 pom.xml 文件时，同一个 jar 包只会保留一个，这样有效的避免因引入两个 jar 包导致的工程运行不稳定性。</span><br><span class="line"></span><br><span class="line">  	举例：假设 A-&gt;B-&gt;C-&gt;D1, E-&gt;F-&gt;D2，D1,D2 分别为 D 的不同版本。那么会引入哪个版本？</span><br></pre></td></tr></table></figure>
+
+<p>  <strong>Maven</strong> <strong>默认处理策略</strong></p>
+<ol>
+<li><p><strong>最短路径优先</strong></p>
+<pre><code>Maven 面对 D1 和 D2 时，会默认选择最短路径的那个 jar 包，即 D2。E-&gt;F-&gt;D2 比 A-&gt;B-&gt;C-&gt;D1 路径短 1。</code></pre></li>
+<li><p><strong>最先声明优先</strong>     </p>
+</li>
+</ol>
+<p>​        如果路径一样的话，举个： A-&gt;B-&gt;C1, E-&gt;F-&gt;C2 ，两个依赖路径长度都是 2，那么就选择最先声明。</p>
+
         </div>
         
         
@@ -230,62 +325,9 @@
 
 
 
-<div class="card">
-    <div class="card-content">
-        <h3 class="menu-label has-text-centered">Like this article? Support the author with</h3>
-        <div class="buttons is-centered">
-            
-                
-<div class="notification is-danger">
-    You forgot to set the <code>qrcode</code> for Alipay. Please set it in <code>_config.yml</code>.
-</div>
-
-                
-                
-<div class="notification is-danger">
-    You forgot to set the <code>qrcode</code> for Wechat. Please set it in <code>_config.yml</code>.
-</div>
-
-                
-                <!-- Visit https://www.paypal.com/donate/buttons/ to get your donate button -->
-
-<div class="notification is-danger">
-    You forgot to set the <code>business</code> and <code>currency_code</code> for Paypal. Please set it in <code>_config.yml</code>.
-</div>
-
-                
-                
-<div class="notification is-danger">
-    You forgot to set the <code>url</code> Patreon. Please set it in <code>_config.yml</code>.
-</div>
-
-                
-        </div>
-    </div>
-</div>
 
 
 
-<div class="card card-transparent">
-    <div class="level post-navigation is-flex-wrap is-mobile">
-        
-        <div class="level-start">
-            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/11/26/redis-learning-1/">
-                <i class="level-item fas fa-chevron-left"></i>
-                <span class="level-item">redis学习（一）</span>
-            </a>
-        </div>
-        
-        
-        <div class="level-end">
-            <a class="level level-item has-link-grey  article-nav-next" href="/2019/11/25/io-learning/">
-                <span class="level-item">I/O模型(同步，异步，阻塞，非阻塞)</span>
-                <i class="level-item fas fa-chevron-right"></i>
-            </a>
-        </div>
-        
-    </div>
-</div>
 
 
 </div>
@@ -894,7 +936,7 @@
             <div class="level-start has-text-centered-mobile">
                 <a class="footer-logo is-block has-mb-6" href="/">
                 
-                    <img src="/images/logo.svg" alt="reactor和preactor模型" height="28">
+                    <img src="/images/logo.svg" alt="zixcon·blog" height="28">
                 
                 </a>
                 <p class="is-size-7">

@@ -132,13 +132,265 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-11-29T05:54:08.000Z">2019-11-29</time>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    17 minutes read (About 2617 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/11/29/j2ee-log/">LOG日志桥接关系</a>
+            
+        </h1>
+        <div class="content">
+            <p><img src="./j2ee-log/log_1.png" alt></p>
+<p>这里思考几个问题：</p>
+<p>1.日志框架是给Java应用提供的方便进行记录日志的，那为什么又不让在应用中直接使用其API呢？</p>
+<p>2.这里面推崇使用的SLF4J是什么呢？</p>
+<p>3.所谓的门面模式又是什么东西呢？</p>
+<p>4.它是怎么做到统一的呢？</p>
+<h4 id="门面模式"><a href="#门面模式" class="headerlink" title="门面模式"></a>门面模式</h4><p><strong>迪米特法则</strong>：<strong>talk only to your immediate friends</strong></p>
+<pre><code>迪米特法则的[初衷](https://baike.baidu.com/item/初衷)在于降低类之间的[耦合](https://baike.baidu.com/item/耦合/2821124)。由于每个类尽量减少对其他类的依赖，因此，很容易使得系统的功能模块功能独立，相互之间不存在（或很少有）依赖关系。
+
+迪米特法[友元类](https://baike.baidu.com/item/友元类/518734)转达。因此，应用迪米特法则有可能造成的一个后果就是：系统中存在大量的中介类，这些类之所以存在完全是为了传递类之间的相互调用关系这在一定程度上增加了系统的复杂度。</code></pre><p><img src="./j2ee-log/log_2.png" alt></p>
+<p>​    外观模式创造出一个外观对象，将客户端所涉及的属于一个子系统的协作伙伴的数量减到最少，使得客户端与子系统内部的对象的相互作用被外观对象所取代。外观类充当了客户类与子系统类之间的“第三者”，降低了客户类与子系统类之间的耦合度  </p>
+<p>更形象点：</p>
+<p><img src="./j2ee-log/log_3.png" alt></p>
+<p><img src="./j2ee-log/log_4.png" alt></p>
+<p><strong>优点</strong>:</p>
+<p>　　<strong>-</strong> <strong>松耦合</strong></p>
+<p>　　用户与子系统解耦，屏蔽子系统；可以提高子系统的独立性； </p>
+<p>　　<strong>-</strong> <strong>简单易用</strong></p>
+<p>　　简化用户与子系统的依赖关系；<br>    用户只与门面对接，有统一的入口；不需要知道所有子系统及内部构造；</p>
+<p>　　<strong>-</strong> <strong>更好的划分访问层次</strong></p>
+<p>　　有些方法是对系统外的，有些方法是系统内部相互交互的使用的。子系统把那些暴露给外部的功能集中到门面中，这样就可以实现客户端的使用，很好的隐藏了子系统内部的细节。</p>
+<p><strong>缺点</strong>:</p>
+<pre><code>不能很好地限制客户使用子系统类，如果对客户访问子系统类做太多的限制则减少了可变性和灵活性。
+
+在不引入抽象外观类的情况下，增加新的子系统可能需要修改外观类或客户端的源代码，违背了“开闭原则”。</code></pre><p>开闭原则两个主要特征：</p>
+<p>（1）对于扩展是开放的（Open for extension）。</p>
+<p>（2）对于修改是关闭的（Closed for modification）。</p>
+<p><strong>错误使用行为</strong></p>
+<pre><code>不要通过继承一个外观类在子系统中加入新的行为，这种做法是错误的。
+
+外观模式的用意是为子系统提供一个集中化和简化的沟通渠道，而不是向子系统加入新的行为，新的行为的增加应该通过修改原有子系统类或增加新的子系统类来实现，不能通过外观类来实现。</code></pre><h4 id="Log日志框架关系"><a href="#Log日志框架关系" class="headerlink" title="Log日志框架关系"></a>Log日志框架关系</h4><ol>
+<li>1996年早期，欧洲安全电子市场项目组决定编写它自己的程序跟踪API(Tracing API)。经过不断的完善，这个API终于成为一个十分受欢迎的Java日志软件包，即Log4j。后来Log4j成为Apache基金会项目中的一员。</li>
+<li>期间Log4j近乎成了Java社区的日志标准。据说Apache基金会还曾经建议Sun引入Log4j到java的标准库中，但Sun拒绝了。</li>
+<li>2002年Java1.4发布，Sun推出了自己的日志库JUL(Java Util Logging),其实现基本模仿了Log4j的实现。在JUL出来以前，Log4j就已经成为一项成熟的技术，使得Log4j在选择上占据了一定的优势。</li>
+<li>接着，Apache推出了Jakarta Commons Logging，JCL只是定义了一套日志接口(其内部也提供一个Simple Log的简单实现)，支持运行时动态加载日志组件的实现，也就是说，在你应用代码里，只需调用Commons Logging的接口，底层实现可以是Log4j，也可以是Java Util Logging。</li>
+<li>后来(2006年)，Ceki Gülcü离开了Apache。然后先后创建了Slf4j(日志门面接口，类似于Commons Logging)和Logback(Slf4j的实现)两个项目，并回瑞典创建了QOS公司，QOS官网上是这样描述Logback的：The Generic，Reliable Fast&amp;Flexible Logging Framework(一个通用，可靠，快速且灵活的日志框架)。从此以后，Java日志领域被划分为两大阵营：Commons Logging阵营和Slf4j阵营。</li>
+<li>2012年，Apache重写了Log4j 1.x，成立了新的项目Log4j 2</li>
+</ol>
+<p><img src="./j2ee-log/log_5.png" alt></p>
+<p>Commons Logging和Slf4j是日志门面</p>
+<p>Log4j和Logback则是具体的日志实现方案</p>
+<p><img src="./j2ee-log/log_6.png" alt></p>
+<p>这里可以看出分为三个层次：</p>
+<p>抽象层：提供应用直接调用api</p>
+<p>适配层：提供于抽象层和实现层的适配实现</p>
+<p>实现层：api的实现</p>
+<p><strong>通过log4j-slf4j-impl来看是如何桥接</strong></p>
+<p><img src="./j2ee-log/log_7.png" alt></p>
+<table>
+<thead>
+<tr>
+<th>jar包名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>slf4j-log4j12-1.7.13.jar</strong></td>
+<td>Log4j1.2版本的桥接器，你需要将Log4j.jar加入Classpath。</td>
+</tr>
+<tr>
+<td><strong>slf4j-jdk14-1.7.13.jar</strong></td>
+<td>java.util.logging的桥接器，Jdk原生日志框架。</td>
+</tr>
+<tr>
+<td><strong>slf4j-nop-1.7.13.jar</strong></td>
+<td>NOP桥接器，默默丢弃一切日志。</td>
+</tr>
+<tr>
+<td><strong>slf4j-simple-1.7.13.jar</strong></td>
+<td>一个简单实现的桥接器，该实现输出所有事件到System.err.  只有Info以及高于该级别的消息被打印，在小型应用中它也许是有用的。</td>
+</tr>
+<tr>
+<td><strong>slf4j-jcl-1.7.13.jar</strong></td>
+<td>Jakarta Commons Logging 的桥接器.  这个桥接器将Slf4j所有日志委派给Jcl。</td>
+</tr>
+<tr>
+<td><strong>logback-classic-1.0.13.jar(requires  logback-core-1.0.13.jar)</strong></td>
+<td>Slf4j的原生实现，Logback直接实现了Slf4j的接口，因此使用Slf4j与Logback的结合使用也意味更小的内存与计算开销</td>
+</tr>
+</tbody></table>
+<p><strong>如何将日志框架指向SLF4J</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>jar包名</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>log4j-over-slf4j.jar</strong></td>
+<td>将Log4j  1重定向到Slf4j</td>
+</tr>
+<tr>
+<td><strong>jcl-over-slf4j.jar</strong></td>
+<td>将Commons  Logging里的Simple  Logger重定向到slf4j</td>
+</tr>
+<tr>
+<td><strong>jul-to-slf4j.jar</strong></td>
+<td>将Java  Util  Logging重定向到Slf4j</td>
+</tr>
+<tr>
+<td><strong>log4j-to-slf4j</strong></td>
+<td>log4j 2 API到slf4j的适配</td>
+</tr>
+</tbody></table>
+<p><strong>Slf4j/log4j2集成举例</strong></p>
+<p>如果我们在系统中需要使用slf4j和log4j2来进行日志输出的话，我们需要引入下面的jar包：</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">log4j2核心jar包：log4j-api-2.7.jar和log4j-core-2.7.jar</span><br><span class="line">slf4j核心jar包：slf4j-api-1.6.4.jar</span><br><span class="line">slf4j与log4j2的桥接包：log4j-slf4j-impl-2.7.jar，这个包的作用就是使用slf4j的api，但是底层实现是基于log4j2</span><br></pre></td></tr></table></figure>
+
+<p><strong>死循环问题</strong></p>
+<table>
+<thead>
+<tr>
+<th>多个日志jar包形成死循环的条件</th>
+<th>产生原因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>log4j-over-slf4j.jar和slf4j-log4j12.jar</strong></td>
+<td>由于slf4j-log4j12.jar的存在会将所有日志调用委托给log4j。但由于同时由于log4j-over-slf4j.jar的存在，会将所有对log4j  api的调用委托给相应等值的slf4j,所以log4j-over-slf4j.jar和slf4j-log4j12.jar同时存在会形成死循环</td>
+</tr>
+<tr>
+<td><strong>jcl-over-slf4j</strong> <strong>与</strong> <strong>slf4j-jcl</strong></td>
+<td>Jcl-over-slf4j  : commons-logging切换到slf4j  slf4j-jcl  : slf4j切换到commons-logging</td>
+</tr>
+<tr>
+<td><strong>jul-to-slf4j.jar和slf4j-jdk14.jar</strong></td>
+<td>由于slf4j-jdk14.jar的存在会将所有日志调用委托给jdk的log。但由于同时jul-to-slf4j.jar的存在，会将所有对jul api的调用委托给相应等值的slf4j，所以jul-to-slf4j.jar和slf4j-jdk14.jar同时存在会形成死循环</td>
+</tr>
+</tbody></table>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">死循环日志：</span><br><span class="line">SLF4J: Detected both log4j-over-slf4j.jar AND slf4j-log4j12.jar on the class path, preempting StackOverflowError.   </span><br><span class="line">SLF4J: See also http://www.slf4j.org/codes.html#log4jDelegationLoop for more details.</span><br></pre></td></tr></table></figure>
+
+<p>看到这里，是不是很头大，这么多工具类，怎么管理这些包之间的关系，使得日志的使用情况和预期一致，并且规避日志引起的问题呢？</p>
+<h4 id="日志依赖包管理方案"><a href="#日志依赖包管理方案" class="headerlink" title="日志依赖包管理方案"></a><strong>日志依赖包管理方案</strong></h4><p><strong>方案1:采用maven的exclusion方案</strong>  </p>
+<p><img src="./j2ee-log/log_8.png" alt></p>
+<p>优点是exclusion是maven原生提供的</p>
+<p>不足之处是如果有多个组件都依赖了commons-logging，则需要在很多处增加，使用起来不太方便</p>
+<p><strong>方案2: 在maven声明commons-logging的scope为provided</strong>  </p>
+<p>​    这种方案在调试代码时还是有可能导致IDE将commons-logging放置在classpath下，从而导致程序运行时出现异常</p>
+<p><strong>方案3:在maven私服中增加虚拟的版本号</strong> 【建议方案】</p>
+<p><img src="./j2ee-log/log_9.png" alt></p>
+<p>​    好处是声明方式比较简单，用IDE调试代码时也不会出现问题，不足之处是maven中央仓库中是不存在的，需要发布到自己的maven私服中。</p>
+<p>​    但是，这种方式得注意，由于maven的加载关系，必须得把此配置声明放在顶级pom文件中，保证优先加载此空jar包</p>
+<p><strong>虚拟版本号原理</strong></p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Maven 解析 pom.xml 文件时，同一个 jar 包只会保留一个，这样有效的避免因引入两个 jar 包导致的工程运行不稳定性。</span><br><span class="line"></span><br><span class="line">  	举例：假设 A-&gt;B-&gt;C-&gt;D1, E-&gt;F-&gt;D2，D1,D2 分别为 D 的不同版本。那么会引入哪个版本？</span><br></pre></td></tr></table></figure>
+
+<p>  <strong>Maven</strong> <strong>默认处理策略</strong></p>
+<ol>
+<li><p><strong>最短路径优先</strong></p>
+<pre><code>Maven 面对 D1 和 D2 时，会默认选择最短路径的那个 jar 包，即 D2。E-&gt;F-&gt;D2 比 A-&gt;B-&gt;C-&gt;D1 路径短 1。</code></pre></li>
+<li><p><strong>最先声明优先</strong>     </p>
+</li>
+</ol>
+<p>​        如果路径一样的话，举个： A-&gt;B-&gt;C1, E-&gt;F-&gt;C2 ，两个依赖路径长度都是 2，那么就选择最先声明。</p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-11-28T08:41:45.000Z">2019-11-28</time>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    7 minutes read (About 992 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/11/28/algorithm-lru/">lru算法</a>
+            
+        </h1>
+        <div class="content">
+            <h4 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h4><p>​    LRU（Least Recently Used）直译为“最近最少使用”。其实很多老外发明的词直译过来对于我们来说并不是特别好理解，甚至有些词并不在国人的思维模式之内，比如快速排序中的Pivot，模拟信号中的Analog 等等。笔者认为最好的理解方式就是看他诞生的原因，看这个概念的出现如何一步一步演变为现在的样子。为了力求方便理解，下面我们先来看看LRU是什么，主要是为了解决什么问题。</p>
+<p>​    我们的内存是有限的。所以当缓存数据在内存越来越多，以至于无法存放即将到来的新缓存数据时，就必须扔掉最不常用的缓存数据。所以对于LRU的抽象总结如下：</p>
+<ul>
+<li>缓存的容量是有限的</li>
+<li>当缓存容量不足以存放需要缓存的新数据时，必须丢掉最不常用的缓存数据</li>
+</ul>
+<h4 id="实现LRU"><a href="#实现LRU" class="headerlink" title="实现LRU"></a>实现LRU</h4><p>​    1.用一个数组来存储数据，给每一个数据项标记一个访问时间戳，每次插入新数据项的时候，先把数组中存在的数据项的时间戳更新。当数组空间已满时，将时间戳最小的数据项淘汰。</p>
+<p>​    2.利用一个链表来实现，每次新插入数据的时候将新数据插到链表的头部；每次缓存命中（即数据被访问），则将数据移到链表头部；那么当链表满的时候，就将链表尾部的数据丢弃。</p>
+<p>​    3.利用链表和hashmap。当需要插入新的数据项的时候，如果新数据项在链表中存在（一般称为命中），则把该节点移到链表头部，如果不存在，则新建一个节点，放到链表头部，若缓存满了，则把链表最后一个节点删除即可。在访问数据的时候，如果数据项在链表中存在，则把该节点移到链表头部，否则返回-1。这样一来在链表尾部的节点就是最近最久未访问的数据项。</p>
+<p><strong>比较</strong></p>
+<p>​    对于第一种方法，需要不停地维护数据项的访问时间戳，另外，在插入数据、删除数据以及访问数据时，时间复杂度都是O(n)。对于第二种方法，链表在定位数据的时候时间复杂度为O(n)。所以在一般使用第三种方式来是实现LRU算法。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LruLinkedHashMap</span>&lt;<span class="hljs-title">K</span>, <span class="hljs-title">V</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-title">LinkedHashMap</span>&lt;<span class="hljs-title">K</span>, <span class="hljs-title">V</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">private</span> Integer cacheSize;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">LruLinkedHashMap</span><span class="hljs-params">(<span class="hljs-keyword">int</span> initialCapacity)</span> </span>&#123;</span><br><span class="line">         </span><br><span class="line">        <span class="hljs-comment">// 由于LinkedHashMap是为自动扩容的，当table数组中元素大于Capacity * loadFactor的时候，就会自动进行两倍扩容。但是为了使缓存大小固定，就需要在初始化的时候传入容量大小和负载因子。为了使得到达设置缓存大小不会进行自动扩容，需要将初始化的大小进行计算再传入</span></span><br><span class="line">        <span class="hljs-keyword">int</span> capacity = (<span class="hljs-keyword">int</span>)Math.ceil(initialCapacity / <span class="hljs-number">0.75f</span>) + <span class="hljs-number">1</span>;</span><br><span class="line">      	<span class="hljs-comment">/*</span></span><br><span class="line"><span class="hljs-comment">         * 第三个参数设置为true，代表linkedlist按访问顺序排序，可作为LRU缓存</span></span><br><span class="line"><span class="hljs-comment">         * 第三个参数设置为false，代表按插入顺序排序，可作为FIFO缓存</span></span><br><span class="line"><span class="hljs-comment">         */</span></span><br><span class="line">        <span class="hljs-keyword">super</span>(capacity, <span class="hljs-number">0.75f</span>, <span class="hljs-keyword">true</span>);</span><br><span class="line">        cacheSize = initialCapacity;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">removeEldestEntry</span><span class="hljs-params">(Map.Entry&lt;K, V&gt; eldest)</span> </span>&#123;</span><br><span class="line">      	<span class="hljs-comment">//当返回true的时候，就会remove其中最久的元素</span></span><br><span class="line">        <span class="hljs-keyword">return</span> size() &gt; cacheSize;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>参见：<a href="[https://github.com/AobingJava/JavaFamily/blob/master/docs/redis/%E9%9B%86%E7%BE%A4%E9%AB%98%E5%8F%AF%E7%94%A8%E3%80%81%E5%93%A8%E5%85%B5%E3%80%81%E6%8C%81%E4%B9%85%E5%8C%96%E3%80%81LRU.md](https://github.com/AobingJava/JavaFamily/blob/master/docs/redis/集群高可用、哨兵、持久化、LRU.md)">LRU</a></p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2019-11-26T08:56:38.000Z">2019-11-26</time>
                 
                 
                 <span class="level-item has-text-grey">
                     
                     
-                    7 minutes read (About 1074 words)
+                    10 minutes read (About 1455 words)
                 </span>
                 
                 
@@ -152,14 +404,31 @@
         </h1>
         <div class="content">
             <h4 id="缓存的击穿-穿透-和-雪崩"><a href="#缓存的击穿-穿透-和-雪崩" class="headerlink" title="缓存的击穿 穿透 和 雪崩"></a>缓存的击穿 穿透 和 雪崩</h4><h5 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h5><p>​    <em>缓存雪崩是指在我们设置缓存时采用了相同的过期时间，导致缓存在某一时刻同时失效</em>，请求全部转发到，瞬时压力过重雪崩。或在大部分数据都没缓存的时候被一次性同时访问。</p>
-<p>解决方案：<br>    缓存失效时的雪崩效应对底层系统的冲击非常可怕。我们可以用以下方式来避免：<br>    <strong>1.数据预热：</strong><br>            可以通过缓存reload机制，预先去更新缓存，再即将发生大并发访问前手动触发加载缓存不同的key，设置不同的过期时间，让缓存失效的时间点尽量均匀<br>    <strong>2.做二级缓存，或者双缓存策略：</strong><br>A1为原始缓存，A2为拷贝缓存，A1失效时，可以访问A2，A1缓存失效时间设置为短期，A2设置<br>为长期。<br>    <strong>3.缓存永远不过期：</strong><br>        这里的“永远不过期”包含两层意思：<br>        1)从缓存上看，确实没有设置过期时间，这就保证了，不会出现热点key过期问题，也就是“物理”不过期。<br>        2)从功能上看，如果不过期，那不就成静态的了吗？所以我们把过期时间存在key对应的里，如果发现要过期了，通过一个后台的异步线程进行缓存的构建，也就是“逻辑”过期.</p>
+<p>解决方案：<br>    缓存失效时的雪崩效应对底层系统的冲击非常可怕。我们可以用以下方式来避免：<br>    <strong>1.数据预热：</strong><br>        可以通过缓存reload机制，预先去更新缓存，再即将发生大并发访问前手动触发加载缓存不同的key，设置不同的过期时间，让缓存失效的时间点尽量均匀<br>    <strong>2.做二级缓存，或者双缓存策略：</strong><br>    A1为原始缓存，A2为拷贝缓存，A1失效时，可以访问A2，A1缓存失效时间设置为短期，A2设置<br>为长期。<br>    <strong>3.缓存永远不过期：</strong><br>        这里的“永远不过期”包含两层意思：<br>        1)从缓存上看，确实没有设置过期时间，这就保证了，不会出现热点key过期问题，也就是“物理”不过期。<br>        2)从功能上看，如果不过期，那不就成静态的了吗？所以我们把过期时间存在key对应的里，如果发现要过期了，通过一个后台的异步线程进行缓存的构建，也就是“逻辑”过期.</p>
+<p>​    4.用主从模式和集群模式来尽量保证缓存服务的高可用。</p>
 <h4 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h4><p>​    对于一些设置了过期时间的key，如果这些key可能会在某些时间点被超高并发地访问，是一种非常“热点”的数据，这个时候，需要考虑一个问题：缓存被“击穿”的问题。</p>
 <p>​    这个和缓存雪崩的区别在于这里针对某一key缓存，前者则是很多key。<strong>缓存在某个时间点过期的时候，恰好在这个时间点对这个Key有大量的并发请求过来，这些请求发现缓存过期一般都会从后端DB加载数据并回设到缓存，这个时候大并发的请求可能会瞬间把后端DB压垮。</strong></p>
-<p>解决方案：<br>    <strong>使用互斥锁(mutex key)</strong><br>    业界比较常用的做法，是使用mutex。简单地来说，就是在缓存失效的时候（判断拿出来的值为空），不是立即去load db，而是先使用缓存工具的某些带成功操作返回值的操作（比如mutex key，当操作返回成功时，再进行Redis的SETNX或者Memcache的ADD）去set一个的操作并回设缓存；否则，就重试整个get缓存的方法。</p>
+<p>解决方案：<br>    1.<strong>使用互斥锁(mutex key)</strong><br>    业界比较常用的做法，是使用mutex。简单地来说，就是在缓存失效的时候（判断拿出来的值为空），不是立即去load db，而是先使用缓存工具的某些带成功操作返回值的操作（比如mutex key，当操作返回成功时，再进行Redis的SETNX或者Memcache的ADD）去set一个的操作并回设缓存；否则，就重试整个get缓存的方法。</p>
+<p>​    2.<strong>设置热点数据永远不过期</strong></p>
 <h4 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h4><p>​    缓存穿透是指查询一个一定不存在的数据，由于缓存是不命中时被动写的，并且出于容错考虑，如果从存储层查不到数据则不写入缓存，这将导致这个不存在的数据每次请求都要到存储层去查询，失去了缓存的意义。在流量大时，可能DB就挂掉了，要是有人利用不存在的key频繁攻击我们的应用，这就是漏洞。</p>
 <p>解决方案：<br>    有很多种方法可以有效地解决缓存穿透问题，</p>
 <p>​    1.最常见的则是采用<strong>布隆过滤器</strong>，将所有可能存在的数据哈希到一个足够大的bitmap中，一个一定不存在的数据会被这个bitmap拦截掉，从而避免了对底层存储系统的查询压力。</p>
 <p>​    2.另外也有一个更为简单粗暴的方法，如果一个查询返回的数据为空（不管是数据不存在，还是系统故障），我们仍然把这个空结果进行缓存，但它的过期时间会很短，最长不超过五分钟。</p>
+<p>​    3.<strong>Nginx对单个IP每秒访问次数进行限制</strong></p>
+<p>一般避免以上情况发生我们从三个时间段去分析下：</p>
+<ul>
+<li><p>事前：<strong>Redis</strong> 高可用，主从+哨兵，<strong>Redis cluster</strong>，避免全盘崩溃。</p>
+</li>
+<li><p>事中：本地 <strong>ehcache</strong> 缓存 + <strong>Hystrix</strong> 限流+降级，避免** MySQL** 被打死。</p>
+</li>
+<li><p>事后：<strong>Redis</strong> 持久化 <strong>RDB</strong>+<strong>AOF</strong>，一旦重启，自动从磁盘上加载数据，快速恢复缓存数据。</p>
+</li>
+</ul>
+<p>  限流组件，可以设置每秒的请求，有多少能通过组件，剩余的未通过的请求，怎么办？<strong>走降级</strong>！可以返回一些默认的值，或者友情提示，或者空白的值。</p>
+<p><strong>好处：</strong></p>
+<p>​    数据库绝对不会死，限流组件确保了每秒只有多少个请求能通过。 只要数据库不死，就是说，对用户来说，3/5 的请求都是可以被处理的。 只要有 3/5 的请求可以被处理，就意味着你的系统没死，对用户来说，可能就是点击几次刷不出来页面，但是多点几次，就可以刷出来一次。</p>
+<p>​    <strong>这个在目前主流的互联网大厂里面是最常见的</strong></p>
+<p>参见：<a href="https://www.cnblogs.com/aobing/p/11801118.html" target="_blank" rel="noopener">敖丙的系列</a></p>
 
         </div>
         
@@ -365,7 +634,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    6 minutes read (About 968 words)
+                    12 minutes read (About 1847 words)
                 </span>
                 
                 
@@ -387,13 +656,20 @@
 <li>Redis不仅仅支持简单的key-value类型的数据，同时还提供list，set，zset，hash等数据结构的存储。</li>
 <li>Redis支持数据的备份，即master-slave模式的数据备份。</li>
 </ul>
-<h4 id="redis数据类型"><a href="#redis数据类型" class="headerlink" title="redis数据类型"></a>redis数据类型</h4><ul>
+<h4 id="redis常用数据类型"><a href="#redis常用数据类型" class="headerlink" title="redis常用数据类型"></a>redis常用数据类型</h4><ul>
 <li>String</li>
 <li>Hash</li>
 <li>List</li>
 <li>Set</li>
 <li>Sorted set</li>
 </ul>
+<h4 id="redis其他数据类型"><a href="#redis其他数据类型" class="headerlink" title="redis其他数据类型"></a>redis其他数据类型</h4><p>​    Bitmap:位图是支持按 bit 位来存储信息，可以用来实现 <strong>布隆过滤器（BloomFilter）</strong>；</p>
+<p>​    HyperLogLog:供不精确的去重计数功能，比较适合用来做大规模数据的去重统计，例如统计 UV；</p>
+<p>​    Geospatial:可以用来保存地理位置，并作位置距离计算或者根据半径计算位置等。</p>
+<p>​    …</p>
+<p>​    Pipeline：执行批量指令，一次性返回全部结果，可以减少频繁的请求应答。</p>
+<p>​    Lua：脚本，可以执行一系列的功能。利用他的原子性。</p>
+<p>​    事物：<strong>Redis</strong> 提供的不是严格的事务，只保证串行执行命令，并且能保证全部执行，但是执行命令失败时并不会回滚，而是会继续执行下去。</p>
 <h4 id="redis常用命令"><a href="#redis常用命令" class="headerlink" title="redis常用命令"></a>redis常用命令</h4><ul>
 <li>Key（键）</li>
 <li>String</li>
@@ -432,6 +708,26 @@
 <p>2.AOF 文件是一个只进行追加操作的日志文件（append only log）， 因此对 AOF 文件的写入不需要进行 <code>seek</code> </p>
 <p>3.在 AOF 文件体积变得过大时，自动地在后台对 AOF 进行重写： 重写后的新 AOF 文件包含了恢复当前数据集所需的最小命令集合。 </p>
 <p>4.AOF 文件有序地保存了对数据库执行的所有写入操作， 这些写入操作以 Redis 协议的格式保存， 因此 AOF 文件的内容非常容易被人读懂， 对文件进行分析（parse）也很轻松。 </p>
+<p><strong>setex和setnx命令区别</strong></p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">SETEX key seconds value</span><br><span class="line">将值 value 关联到 key ，并将 key 的生存时间设为 seconds (以秒为单位)。</span><br><span class="line">如果 key 已经存在， SETEX 命令将覆写旧值。</span><br><span class="line">  </span><br><span class="line">这个命令类似于以下两个命令：</span><br><span class="line">  SET key value</span><br><span class="line">  EXPIRE key seconds  # 设置生存时间</span><br><span class="line"></span><br><span class="line">不同之处是， SETEX 是一个原子性(atomic)操作，关联值和设置生存时间两个动作会在同一时间内完成，该命令在 Redis 用作缓存时，非常实用。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SETNX key value</span><br><span class="line">将 key 的值设为 value ，当且仅当 key 不存在。</span><br><span class="line">若给定的 key 已经存在，则 SETNX 不做任何动作。</span><br><span class="line">SETNX 是『SET if Not eXists』(如果不存在，则 SET)的简写。</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="Redis-事物"><a href="#Redis-事物" class="headerlink" title="Redis 事物"></a>Redis 事物</h5><h5 id="redis-数据库一致性"><a href="#redis-数据库一致性" class="headerlink" title="redis 数据库一致性"></a>redis 数据库一致性</h5><h5 id="数据淘汰策略"><a href="#数据淘汰策略" class="headerlink" title="数据淘汰策略"></a>数据淘汰策略</h5><p><strong>redis 提供 6种数据淘汰策略：</strong></p>
+<ol>
+<li><strong>volatile-lru</strong>：从已设置过期时间的数据集（server.db[i].expires）中挑选最近最少使用的数据淘汰</li>
+<li><strong>volatile-ttl</strong>：从已设置过期时间的数据集（server.db[i].expires）中挑选将要过期的数据淘汰</li>
+<li><strong>volatile-random</strong>：从已设置过期时间的数据集（server.db[i].expires）中任意选择数据淘汰</li>
+<li><strong>allkeys-lru</strong>：当内存不足以容纳新写入数据时，在键空间中，移除最近最少使用的key（这个是最常用的）.</li>
+<li><strong>allkeys-random</strong>：从数据集（server.db[i].dict）中任意选择数据淘汰</li>
+<li><strong>no-eviction</strong>：禁止驱逐数据，也就是说当内存不足以容纳新写入数据时，新写入操作会报错。</li>
+</ol>
+<p>TTL设置过期时间，Redis如何对这批key进行删除？</p>
+<p>​    <strong>定期删除+惰性删除</strong></p>
+<p>​    定期删除，指的是redis默认是每隔100ms就随机抽取一些设置了过期时间的key，随机抽取一些key来检查和删除的。（全部检查，那redis基本上就死了，cpu负载会很高的，消耗在你的检查过期key上了。）</p>
+<p>​    问题是，定期删除可能会导致很多过期key到了时间并没有被删除掉，那咋整呢？所以就是惰性删除了。这就是说，在你获取某个key的时候，redis会检查一下 ，这个key如果设置了过期时间那么是否过期了？如果过期了此时就会删除，不会给你返回任何东西。</p>
 
         </div>
         
@@ -862,7 +1158,7 @@
                     </p>
                     <a href="/archives">
                         <p class="title has-text-weight-normal">
-                            8
+                            10
                         </p>
                     </a>
                 </div>
@@ -886,7 +1182,7 @@
                     </p>
                     <a href="/tags">
                         <p class="title has-text-weight-normal">
-                            4
+                            8
                         </p>
                     </a>
                 </div>
@@ -999,7 +1295,7 @@
         <h3 class="menu-label">
             Tag Cloud
         </h3>
-        <a href="/tags/I-O/" style="font-size: 15px;">I/O</a> <a href="/tags/LINUX/" style="font-size: 20px;">LINUX</a> <a href="/tags/REDIS/" style="font-size: 20px;">REDIS</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a>
+        <a href="/tags/I-O/" style="font-size: 15px;">I/O</a> <a href="/tags/J2EE/" style="font-size: 10px;">J2EE</a> <a href="/tags/LINUX/" style="font-size: 20px;">LINUX</a> <a href="/tags/LOG/" style="font-size: 10px;">LOG</a> <a href="/tags/REDIS/" style="font-size: 20px;">REDIS</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10px;">设计模式</a>
     </div>
 </div>
     
@@ -1011,6 +1307,44 @@
         <h3 class="menu-label">
             Recent
         </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/11/29/j2ee-log/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="LOG日志桥接关系">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-29T05:54:08.000Z">2019-11-29</time></div>
+                    <a href="/2019/11/29/j2ee-log/" class="title has-link-black-ter is-size-6 has-text-weight-normal">LOG日志桥接关系</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/11/28/algorithm-lru/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="lru算法">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-28T08:41:45.000Z">2019-11-28</time></div>
+                    <a href="/2019/11/28/algorithm-lru/" class="title has-link-black-ter is-size-6 has-text-weight-normal">lru算法</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -1069,44 +1403,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/11/25/reactor/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="reactor和preactor模型">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-25T08:29:25.000Z">2019-11-25</time></div>
-                    <a href="/2019/11/25/reactor/" class="title has-link-black-ter is-size-6 has-text-weight-normal">reactor和preactor模型</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2019/11/25/io-learning/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="I/O模型(同步，异步，阻塞，非阻塞)">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-25T06:20:44.000Z">2019-11-25</time></div>
-                    <a href="/2019/11/25/io-learning/" class="title has-link-black-ter is-size-6 has-text-weight-normal">I/O模型(同步，异步，阻塞，非阻塞)</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
         
@@ -1124,7 +1420,7 @@
                     <span class="level-item">November 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">8</span>
+                    <span class="level-item tag">10</span>
                 </span>
             </a>
         </li>
@@ -1150,9 +1446,23 @@
                 </div>
                 
                 <div class="control">
+                    <a class="tags has-addons" href="/tags/J2EE/">
+                        <span class="tag">J2EE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
                     <a class="tags has-addons" href="/tags/LINUX/">
                         <span class="tag">LINUX</span>
                         <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/LOG/">
+                        <span class="tag">LOG</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -1166,6 +1476,20 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/linux/">
                         <span class="tag">linux </span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%AE%97%E6%B3%95/">
+                        <span class="tag">算法</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">
+                        <span class="tag">设计模式</span>
                         <span class="tag is-grey">1</span>
                     </a>
                 </div>
@@ -1194,6 +1518,44 @@
         
         <article class="media">
             
+            <a href="/2019/11/29/j2ee-log/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="LOG日志桥接关系">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-29T05:54:08.000Z">2019-11-29</time></div>
+                    <a href="/2019/11/29/j2ee-log/" class="title has-link-black-ter is-size-6 has-text-weight-normal">LOG日志桥接关系</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/11/28/algorithm-lru/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="lru算法">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-28T08:41:45.000Z">2019-11-28</time></div>
+                    <a href="/2019/11/28/algorithm-lru/" class="title has-link-black-ter is-size-6 has-text-weight-normal">lru算法</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
             <a href="/2019/11/26/redis-learning-3/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="/images/thumbnail.svg" alt="redis学习（三）">
@@ -1249,44 +1611,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/11/25/reactor/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="reactor和preactor模型">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-25T08:29:25.000Z">2019-11-25</time></div>
-                    <a href="/2019/11/25/reactor/" class="title has-link-black-ter is-size-6 has-text-weight-normal">reactor和preactor模型</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2019/11/25/io-learning/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="I/O模型(同步，异步，阻塞，非阻塞)">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-25T06:20:44.000Z">2019-11-25</time></div>
-                    <a href="/2019/11/25/io-learning/" class="title has-link-black-ter is-size-6 has-text-weight-normal">I/O模型(同步，异步，阻塞，非阻塞)</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
     
@@ -1304,7 +1628,7 @@
                     <span class="level-item">November 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">8</span>
+                    <span class="level-item tag">10</span>
                 </span>
             </a>
         </li>
@@ -1330,9 +1654,23 @@
                 </div>
                 
                 <div class="control">
+                    <a class="tags has-addons" href="/tags/J2EE/">
+                        <span class="tag">J2EE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
                     <a class="tags has-addons" href="/tags/LINUX/">
                         <span class="tag">LINUX</span>
                         <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/LOG/">
+                        <span class="tag">LOG</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -1346,6 +1684,20 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/linux/">
                         <span class="tag">linux </span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%AE%97%E6%B3%95/">
+                        <span class="tag">算法</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">
+                        <span class="tag">设计模式</span>
                         <span class="tag is-grey">1</span>
                     </a>
                 </div>

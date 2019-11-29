@@ -148,7 +148,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    7 minutes read (About 1074 words)
+                    10 minutes read (About 1455 words)
                 </span>
                 
                 
@@ -162,14 +162,31 @@
         </h1>
         <div class="content">
             <h4 id="缓存的击穿-穿透-和-雪崩"><a href="#缓存的击穿-穿透-和-雪崩" class="headerlink" title="缓存的击穿 穿透 和 雪崩"></a>缓存的击穿 穿透 和 雪崩</h4><h5 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h5><p>​    <em>缓存雪崩是指在我们设置缓存时采用了相同的过期时间，导致缓存在某一时刻同时失效</em>，请求全部转发到，瞬时压力过重雪崩。或在大部分数据都没缓存的时候被一次性同时访问。</p>
-<p>解决方案：<br>    缓存失效时的雪崩效应对底层系统的冲击非常可怕。我们可以用以下方式来避免：<br>    <strong>1.数据预热：</strong><br>            可以通过缓存reload机制，预先去更新缓存，再即将发生大并发访问前手动触发加载缓存不同的key，设置不同的过期时间，让缓存失效的时间点尽量均匀<br>    <strong>2.做二级缓存，或者双缓存策略：</strong><br>A1为原始缓存，A2为拷贝缓存，A1失效时，可以访问A2，A1缓存失效时间设置为短期，A2设置<br>为长期。<br>    <strong>3.缓存永远不过期：</strong><br>        这里的“永远不过期”包含两层意思：<br>        1)从缓存上看，确实没有设置过期时间，这就保证了，不会出现热点key过期问题，也就是“物理”不过期。<br>        2)从功能上看，如果不过期，那不就成静态的了吗？所以我们把过期时间存在key对应的里，如果发现要过期了，通过一个后台的异步线程进行缓存的构建，也就是“逻辑”过期.</p>
+<p>解决方案：<br>    缓存失效时的雪崩效应对底层系统的冲击非常可怕。我们可以用以下方式来避免：<br>    <strong>1.数据预热：</strong><br>        可以通过缓存reload机制，预先去更新缓存，再即将发生大并发访问前手动触发加载缓存不同的key，设置不同的过期时间，让缓存失效的时间点尽量均匀<br>    <strong>2.做二级缓存，或者双缓存策略：</strong><br>    A1为原始缓存，A2为拷贝缓存，A1失效时，可以访问A2，A1缓存失效时间设置为短期，A2设置<br>为长期。<br>    <strong>3.缓存永远不过期：</strong><br>        这里的“永远不过期”包含两层意思：<br>        1)从缓存上看，确实没有设置过期时间，这就保证了，不会出现热点key过期问题，也就是“物理”不过期。<br>        2)从功能上看，如果不过期，那不就成静态的了吗？所以我们把过期时间存在key对应的里，如果发现要过期了，通过一个后台的异步线程进行缓存的构建，也就是“逻辑”过期.</p>
+<p>​    4.用主从模式和集群模式来尽量保证缓存服务的高可用。</p>
 <h4 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h4><p>​    对于一些设置了过期时间的key，如果这些key可能会在某些时间点被超高并发地访问，是一种非常“热点”的数据，这个时候，需要考虑一个问题：缓存被“击穿”的问题。</p>
 <p>​    这个和缓存雪崩的区别在于这里针对某一key缓存，前者则是很多key。<strong>缓存在某个时间点过期的时候，恰好在这个时间点对这个Key有大量的并发请求过来，这些请求发现缓存过期一般都会从后端DB加载数据并回设到缓存，这个时候大并发的请求可能会瞬间把后端DB压垮。</strong></p>
-<p>解决方案：<br>    <strong>使用互斥锁(mutex key)</strong><br>    业界比较常用的做法，是使用mutex。简单地来说，就是在缓存失效的时候（判断拿出来的值为空），不是立即去load db，而是先使用缓存工具的某些带成功操作返回值的操作（比如mutex key，当操作返回成功时，再进行Redis的SETNX或者Memcache的ADD）去set一个的操作并回设缓存；否则，就重试整个get缓存的方法。</p>
+<p>解决方案：<br>    1.<strong>使用互斥锁(mutex key)</strong><br>    业界比较常用的做法，是使用mutex。简单地来说，就是在缓存失效的时候（判断拿出来的值为空），不是立即去load db，而是先使用缓存工具的某些带成功操作返回值的操作（比如mutex key，当操作返回成功时，再进行Redis的SETNX或者Memcache的ADD）去set一个的操作并回设缓存；否则，就重试整个get缓存的方法。</p>
+<p>​    2.<strong>设置热点数据永远不过期</strong></p>
 <h4 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h4><p>​    缓存穿透是指查询一个一定不存在的数据，由于缓存是不命中时被动写的，并且出于容错考虑，如果从存储层查不到数据则不写入缓存，这将导致这个不存在的数据每次请求都要到存储层去查询，失去了缓存的意义。在流量大时，可能DB就挂掉了，要是有人利用不存在的key频繁攻击我们的应用，这就是漏洞。</p>
 <p>解决方案：<br>    有很多种方法可以有效地解决缓存穿透问题，</p>
 <p>​    1.最常见的则是采用<strong>布隆过滤器</strong>，将所有可能存在的数据哈希到一个足够大的bitmap中，一个一定不存在的数据会被这个bitmap拦截掉，从而避免了对底层存储系统的查询压力。</p>
 <p>​    2.另外也有一个更为简单粗暴的方法，如果一个查询返回的数据为空（不管是数据不存在，还是系统故障），我们仍然把这个空结果进行缓存，但它的过期时间会很短，最长不超过五分钟。</p>
+<p>​    3.<strong>Nginx对单个IP每秒访问次数进行限制</strong></p>
+<p>一般避免以上情况发生我们从三个时间段去分析下：</p>
+<ul>
+<li><p>事前：<strong>Redis</strong> 高可用，主从+哨兵，<strong>Redis cluster</strong>，避免全盘崩溃。</p>
+</li>
+<li><p>事中：本地 <strong>ehcache</strong> 缓存 + <strong>Hystrix</strong> 限流+降级，避免** MySQL** 被打死。</p>
+</li>
+<li><p>事后：<strong>Redis</strong> 持久化 <strong>RDB</strong>+<strong>AOF</strong>，一旦重启，自动从磁盘上加载数据，快速恢复缓存数据。</p>
+</li>
+</ul>
+<p>  限流组件，可以设置每秒的请求，有多少能通过组件，剩余的未通过的请求，怎么办？<strong>走降级</strong>！可以返回一些默认的值，或者友情提示，或者空白的值。</p>
+<p><strong>好处：</strong></p>
+<p>​    数据库绝对不会死，限流组件确保了每秒只有多少个请求能通过。 只要数据库不死，就是说，对用户来说，3/5 的请求都是可以被处理的。 只要有 3/5 的请求可以被处理，就意味着你的系统没死，对用户来说，可能就是点击几次刷不出来页面，但是多点几次，就可以刷出来一次。</p>
+<p>​    <strong>这个在目前主流的互联网大厂里面是最常见的</strong></p>
+<p>参见：<a href="https://www.cnblogs.com/aobing/p/11801118.html" target="_blank" rel="noopener">敖丙的系列</a></p>
 
         </div>
         
@@ -375,7 +392,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    6 minutes read (About 968 words)
+                    12 minutes read (About 1847 words)
                 </span>
                 
                 
@@ -397,13 +414,20 @@
 <li>Redis不仅仅支持简单的key-value类型的数据，同时还提供list，set，zset，hash等数据结构的存储。</li>
 <li>Redis支持数据的备份，即master-slave模式的数据备份。</li>
 </ul>
-<h4 id="redis数据类型"><a href="#redis数据类型" class="headerlink" title="redis数据类型"></a>redis数据类型</h4><ul>
+<h4 id="redis常用数据类型"><a href="#redis常用数据类型" class="headerlink" title="redis常用数据类型"></a>redis常用数据类型</h4><ul>
 <li>String</li>
 <li>Hash</li>
 <li>List</li>
 <li>Set</li>
 <li>Sorted set</li>
 </ul>
+<h4 id="redis其他数据类型"><a href="#redis其他数据类型" class="headerlink" title="redis其他数据类型"></a>redis其他数据类型</h4><p>​    Bitmap:位图是支持按 bit 位来存储信息，可以用来实现 <strong>布隆过滤器（BloomFilter）</strong>；</p>
+<p>​    HyperLogLog:供不精确的去重计数功能，比较适合用来做大规模数据的去重统计，例如统计 UV；</p>
+<p>​    Geospatial:可以用来保存地理位置，并作位置距离计算或者根据半径计算位置等。</p>
+<p>​    …</p>
+<p>​    Pipeline：执行批量指令，一次性返回全部结果，可以减少频繁的请求应答。</p>
+<p>​    Lua：脚本，可以执行一系列的功能。利用他的原子性。</p>
+<p>​    事物：<strong>Redis</strong> 提供的不是严格的事务，只保证串行执行命令，并且能保证全部执行，但是执行命令失败时并不会回滚，而是会继续执行下去。</p>
 <h4 id="redis常用命令"><a href="#redis常用命令" class="headerlink" title="redis常用命令"></a>redis常用命令</h4><ul>
 <li>Key（键）</li>
 <li>String</li>
@@ -442,6 +466,26 @@
 <p>2.AOF 文件是一个只进行追加操作的日志文件（append only log）， 因此对 AOF 文件的写入不需要进行 <code>seek</code> </p>
 <p>3.在 AOF 文件体积变得过大时，自动地在后台对 AOF 进行重写： 重写后的新 AOF 文件包含了恢复当前数据集所需的最小命令集合。 </p>
 <p>4.AOF 文件有序地保存了对数据库执行的所有写入操作， 这些写入操作以 Redis 协议的格式保存， 因此 AOF 文件的内容非常容易被人读懂， 对文件进行分析（parse）也很轻松。 </p>
+<p><strong>setex和setnx命令区别</strong></p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">SETEX key seconds value</span><br><span class="line">将值 value 关联到 key ，并将 key 的生存时间设为 seconds (以秒为单位)。</span><br><span class="line">如果 key 已经存在， SETEX 命令将覆写旧值。</span><br><span class="line">  </span><br><span class="line">这个命令类似于以下两个命令：</span><br><span class="line">  SET key value</span><br><span class="line">  EXPIRE key seconds  # 设置生存时间</span><br><span class="line"></span><br><span class="line">不同之处是， SETEX 是一个原子性(atomic)操作，关联值和设置生存时间两个动作会在同一时间内完成，该命令在 Redis 用作缓存时，非常实用。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SETNX key value</span><br><span class="line">将 key 的值设为 value ，当且仅当 key 不存在。</span><br><span class="line">若给定的 key 已经存在，则 SETNX 不做任何动作。</span><br><span class="line">SETNX 是『SET if Not eXists』(如果不存在，则 SET)的简写。</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="Redis-事物"><a href="#Redis-事物" class="headerlink" title="Redis 事物"></a>Redis 事物</h5><h5 id="redis-数据库一致性"><a href="#redis-数据库一致性" class="headerlink" title="redis 数据库一致性"></a>redis 数据库一致性</h5><h5 id="数据淘汰策略"><a href="#数据淘汰策略" class="headerlink" title="数据淘汰策略"></a>数据淘汰策略</h5><p><strong>redis 提供 6种数据淘汰策略：</strong></p>
+<ol>
+<li><strong>volatile-lru</strong>：从已设置过期时间的数据集（server.db[i].expires）中挑选最近最少使用的数据淘汰</li>
+<li><strong>volatile-ttl</strong>：从已设置过期时间的数据集（server.db[i].expires）中挑选将要过期的数据淘汰</li>
+<li><strong>volatile-random</strong>：从已设置过期时间的数据集（server.db[i].expires）中任意选择数据淘汰</li>
+<li><strong>allkeys-lru</strong>：当内存不足以容纳新写入数据时，在键空间中，移除最近最少使用的key（这个是最常用的）.</li>
+<li><strong>allkeys-random</strong>：从数据集（server.db[i].dict）中任意选择数据淘汰</li>
+<li><strong>no-eviction</strong>：禁止驱逐数据，也就是说当内存不足以容纳新写入数据时，新写入操作会报错。</li>
+</ol>
+<p>TTL设置过期时间，Redis如何对这批key进行删除？</p>
+<p>​    <strong>定期删除+惰性删除</strong></p>
+<p>​    定期删除，指的是redis默认是每隔100ms就随机抽取一些设置了过期时间的key，随机抽取一些key来检查和删除的。（全部检查，那redis基本上就死了，cpu负载会很高的，消耗在你的检查过期key上了。）</p>
+<p>​    问题是，定期删除可能会导致很多过期key到了时间并没有被删除掉，那咋整呢？所以就是惰性删除了。这就是说，在你获取某个key的时候，redis会检查一下 ，这个key如果设置了过期时间那么是否过期了？如果过期了此时就会删除，不会给你返回任何东西。</p>
 
         </div>
         
@@ -502,7 +546,7 @@
                     </p>
                     <a href="/archives">
                         <p class="title has-text-weight-normal">
-                            8
+                            10
                         </p>
                     </a>
                 </div>
@@ -526,7 +570,7 @@
                     </p>
                     <a href="/tags">
                         <p class="title has-text-weight-normal">
-                            4
+                            8
                         </p>
                     </a>
                 </div>
@@ -639,7 +683,7 @@
         <h3 class="menu-label">
             Tag Cloud
         </h3>
-        <a href="/tags/I-O/" style="font-size: 15px;">I/O</a> <a href="/tags/LINUX/" style="font-size: 20px;">LINUX</a> <a href="/tags/REDIS/" style="font-size: 20px;">REDIS</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a>
+        <a href="/tags/I-O/" style="font-size: 15px;">I/O</a> <a href="/tags/J2EE/" style="font-size: 10px;">J2EE</a> <a href="/tags/LINUX/" style="font-size: 20px;">LINUX</a> <a href="/tags/LOG/" style="font-size: 10px;">LOG</a> <a href="/tags/REDIS/" style="font-size: 20px;">REDIS</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10px;">设计模式</a>
     </div>
 </div>
     
@@ -651,6 +695,44 @@
         <h3 class="menu-label">
             Recent
         </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/11/29/j2ee-log/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="LOG日志桥接关系">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-29T05:54:08.000Z">2019-11-29</time></div>
+                    <a href="/2019/11/29/j2ee-log/" class="title has-link-black-ter is-size-6 has-text-weight-normal">LOG日志桥接关系</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/11/28/algorithm-lru/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="lru算法">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-28T08:41:45.000Z">2019-11-28</time></div>
+                    <a href="/2019/11/28/algorithm-lru/" class="title has-link-black-ter is-size-6 has-text-weight-normal">lru算法</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -709,44 +791,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/11/25/reactor/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="reactor和preactor模型">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-25T08:29:25.000Z">2019-11-25</time></div>
-                    <a href="/2019/11/25/reactor/" class="title has-link-black-ter is-size-6 has-text-weight-normal">reactor和preactor模型</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2019/11/25/io-learning/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="I/O模型(同步，异步，阻塞，非阻塞)">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-25T06:20:44.000Z">2019-11-25</time></div>
-                    <a href="/2019/11/25/io-learning/" class="title has-link-black-ter is-size-6 has-text-weight-normal">I/O模型(同步，异步，阻塞，非阻塞)</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
         
@@ -764,7 +808,7 @@
                     <span class="level-item">November 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">8</span>
+                    <span class="level-item tag">10</span>
                 </span>
             </a>
         </li>
@@ -790,9 +834,23 @@
                 </div>
                 
                 <div class="control">
+                    <a class="tags has-addons" href="/tags/J2EE/">
+                        <span class="tag">J2EE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
                     <a class="tags has-addons" href="/tags/LINUX/">
                         <span class="tag">LINUX</span>
                         <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/LOG/">
+                        <span class="tag">LOG</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -806,6 +864,20 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/linux/">
                         <span class="tag">linux </span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%AE%97%E6%B3%95/">
+                        <span class="tag">算法</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">
+                        <span class="tag">设计模式</span>
                         <span class="tag is-grey">1</span>
                     </a>
                 </div>
@@ -834,6 +906,44 @@
         
         <article class="media">
             
+            <a href="/2019/11/29/j2ee-log/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="LOG日志桥接关系">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-29T05:54:08.000Z">2019-11-29</time></div>
+                    <a href="/2019/11/29/j2ee-log/" class="title has-link-black-ter is-size-6 has-text-weight-normal">LOG日志桥接关系</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/11/28/algorithm-lru/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="lru算法">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-28T08:41:45.000Z">2019-11-28</time></div>
+                    <a href="/2019/11/28/algorithm-lru/" class="title has-link-black-ter is-size-6 has-text-weight-normal">lru算法</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
             <a href="/2019/11/26/redis-learning-3/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="/images/thumbnail.svg" alt="redis学习（三）">
@@ -889,44 +999,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/11/25/reactor/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="reactor和preactor模型">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-25T08:29:25.000Z">2019-11-25</time></div>
-                    <a href="/2019/11/25/reactor/" class="title has-link-black-ter is-size-6 has-text-weight-normal">reactor和preactor模型</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2019/11/25/io-learning/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="I/O模型(同步，异步，阻塞，非阻塞)">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-25T06:20:44.000Z">2019-11-25</time></div>
-                    <a href="/2019/11/25/io-learning/" class="title has-link-black-ter is-size-6 has-text-weight-normal">I/O模型(同步，异步，阻塞，非阻塞)</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
     
@@ -944,7 +1016,7 @@
                     <span class="level-item">November 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">8</span>
+                    <span class="level-item tag">10</span>
                 </span>
             </a>
         </li>
@@ -970,9 +1042,23 @@
                 </div>
                 
                 <div class="control">
+                    <a class="tags has-addons" href="/tags/J2EE/">
+                        <span class="tag">J2EE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
                     <a class="tags has-addons" href="/tags/LINUX/">
                         <span class="tag">LINUX</span>
                         <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/LOG/">
+                        <span class="tag">LOG</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -986,6 +1072,20 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/linux/">
                         <span class="tag">linux </span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%AE%97%E6%B3%95/">
+                        <span class="tag">算法</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">
+                        <span class="tag">设计模式</span>
                         <span class="tag is-grey">1</span>
                     </a>
                 </div>

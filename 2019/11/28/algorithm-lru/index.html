@@ -7,19 +7,19 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-<title>reactor和preactor模型 - zixcon·blog</title>
+<title>lru算法 - zixcon·blog</title>
 
 
-    <meta name="description" content="Reactor模型Reactor的核心思想： 将关注的I&#x2F;O事件注册到多路复用器上，一旦有I&#x2F;O事件触发，将事件分发到事件处理器中，执行就绪I&#x2F;O事件对应的处理函数中。模型中有三个重要的组件：  多路复用器：由操作系统提供接口，Linux提供的I&#x2F;O复用接口有select、poll、epoll； 事件分离器：将多路复用器返回的就绪事件分发到事件处理器中； 事件处理器：处理就绪事件处理函数。">
-<meta name="keywords" content="LINUX,I&#x2F;O">
+    <meta name="description" content="简介​    LRU（Least Recently Used）直译为“最近最少使用”。其实很多老外发明的词直译过来对于我们来说并不是特别好理解，甚至有些词并不在国人的思维模式之内，比如快速排序中的Pivot，模拟信号中的Analog 等等。笔者认为最好的理解方式就是看他诞生的原因，看这个概念的出现如何一步一步演变为现在的样子。为了力求方便理解，下面我们先来看看LRU是什么，主要是为了解决什么问题。">
+<meta name="keywords" content="算法">
 <meta property="og:type" content="article">
-<meta property="og:title" content="reactor和preactor模型">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;25&#x2F;reactor&#x2F;index.html">
+<meta property="og:title" content="lru算法">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;28&#x2F;algorithm-lru&#x2F;index.html">
 <meta property="og:site_name" content="zixcon·blog">
-<meta property="og:description" content="Reactor模型Reactor的核心思想： 将关注的I&#x2F;O事件注册到多路复用器上，一旦有I&#x2F;O事件触发，将事件分发到事件处理器中，执行就绪I&#x2F;O事件对应的处理函数中。模型中有三个重要的组件：  多路复用器：由操作系统提供接口，Linux提供的I&#x2F;O复用接口有select、poll、epoll； 事件分离器：将多路复用器返回的就绪事件分发到事件处理器中； 事件处理器：处理就绪事件处理函数。">
+<meta property="og:description" content="简介​    LRU（Least Recently Used）直译为“最近最少使用”。其实很多老外发明的词直译过来对于我们来说并不是特别好理解，甚至有些词并不在国人的思维模式之内，比如快速排序中的Pivot，模拟信号中的Analog 等等。笔者认为最好的理解方式就是看他诞生的原因，看这个概念的出现如何一步一步演变为现在的样子。为了力求方便理解，下面我们先来看看LRU是什么，主要是为了解决什么问题。">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;og_image.png">
-<meta property="og:updated_time" content="2019-11-25T09:11:55.000Z">
+<meta property="og:updated_time" content="2019-11-29T03:26:37.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;og_image.png">
 
@@ -79,7 +79,7 @@
         <div class="navbar-brand is-flex-center">
             <a class="navbar-item navbar-logo" href="/">
             
-                <img src="/images/logo.svg" alt="reactor和preactor模型" height="28">
+                <img src="/images/logo.svg" alt="lru算法" height="28">
             
             </a>
         </div>
@@ -135,13 +135,13 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-11-25T08:29:25.000Z">2019-11-25</time>
+                <time class="level-item has-text-grey" datetime="2019-11-28T08:41:45.000Z">2019-11-28</time>
                 
                 
                 <span class="level-item has-text-grey">
                     
                     
-                    7 minutes read (About 1039 words)
+                    7 minutes read (About 992 words)
                 </span>
                 
                 
@@ -150,67 +150,26 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                reactor和preactor模型
+                lru算法
             
         </h1>
         <div class="content">
-            <h4 id="Reactor模型"><a href="#Reactor模型" class="headerlink" title="Reactor模型"></a>Reactor模型</h4><p><strong>Reactor的核心思想：</strong></p>
-<p>将关注的I/O事件注册到多路复用器上，一旦有I/O事件触发，将事件分发到事件处理器中，执行就绪I/O事件对应的处理函数中。模型中有三个重要的组件：</p>
+            <h4 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h4><p>​    LRU（Least Recently Used）直译为“最近最少使用”。其实很多老外发明的词直译过来对于我们来说并不是特别好理解，甚至有些词并不在国人的思维模式之内，比如快速排序中的Pivot，模拟信号中的Analog 等等。笔者认为最好的理解方式就是看他诞生的原因，看这个概念的出现如何一步一步演变为现在的样子。为了力求方便理解，下面我们先来看看LRU是什么，主要是为了解决什么问题。</p>
+<p>​    我们的内存是有限的。所以当缓存数据在内存越来越多，以至于无法存放即将到来的新缓存数据时，就必须扔掉最不常用的缓存数据。所以对于LRU的抽象总结如下：</p>
 <ul>
-<li><strong>多路复用器：</strong>由操作系统提供接口，Linux提供的I/O复用接口有select、poll、epoll；</li>
-<li><strong>事件分离器：</strong>将多路复用器返回的就绪事件分发到事件处理器中；</li>
-<li><strong>事件处理器：</strong>处理就绪事件处理函数。</li>
+<li>缓存的容量是有限的</li>
+<li>当缓存容量不足以存放需要缓存的新数据时，必须丢掉最不常用的缓存数据</li>
 </ul>
-<p><img src="./reactor/reactor_1.jpg" alt></p>
-<ul>
-<li><p><strong>Handle：</strong>标示文件描述符；</p>
-</li>
-<li><p><strong>Event Demultiplexer：</strong>执行多路事件分解操作，对操作系统内核实现I/O复用接口的封装；用于阻塞等待发生在句柄集合上的一个或多个事件（如select/poll/epoll）；</p>
-</li>
-<li><p><strong>Event Handler：</strong>事件处理接口；</p>
-</li>
-<li><p><strong>Event Handler A(B)：</strong>实现应用程序所提供的特定事件处理逻辑；</p>
-</li>
-<li><p><strong>Reactor：</strong>反应器，定义一个接口，实现以下功能：</p>
-<p>a)供应用程序注册和删除关注的事件句柄；</p>
-<p>b)运行事件处理循环； </p>
-<p>c)等待的就绪事件触发，分发事件到之前注册的回调函数上处理.</p>
-</li>
-</ul>
-<h4 id="经典Reactor模式"><a href="#经典Reactor模式" class="headerlink" title="经典Reactor模式"></a>经典Reactor模式</h4><p><img src="./reactor/reactor_2.png" alt></p>
-<p><strong>在经典Reactor模式中，包含以下角色：</strong></p>
-<ul>
-<li><strong>Reactor ：</strong>将I/O事件发派给对应的Handler</li>
-<li><strong>Acceptor ：</strong>处理客户端连接请求</li>
-<li><strong>Handlers ：</strong>执行非阻塞读/写</li>
-</ul>
-<h4 id="多工作线程Reactor模式"><a href="#多工作线程Reactor模式" class="headerlink" title="多工作线程Reactor模式"></a>多工作线程Reactor模式</h4><p><img src="./reactor/reactor_3.png" alt></p>
-<h4 id="多Reactor的Reactor模式"><a href="#多Reactor的Reactor模式" class="headerlink" title="多Reactor的Reactor模式"></a>多Reactor的Reactor模式</h4><p><img src="./reactor/reactor_4.png" alt></p>
-<h4 id="Proactor模型"><a href="#Proactor模型" class="headerlink" title="Proactor模型"></a>Proactor模型</h4><p>​    与Reactor不同的是，Proactor使用异步I/O系统接口将I/O操作托管给操作系统，Proactor模型中分发处理异步I/O完成事件，并调用相应的事件处理接口来处理业务逻辑。</p>
-<p><img src="./reactor/preactor_1.png" alt></p>
-<p><strong>Proactor类结构中包含有如下角色：</strong></p>
-<ul>
-<li><strong>Handle：</strong>用来标识socket连接或是打开文件；</li>
-<li><strong>Async Operation Processor：</strong>异步操作处理器；负责执行异步操作，一般由操作系统内核实现；</li>
-<li><strong>Async Operation：</strong>异步操作；</li>
-<li><strong>Completion Event Queue：</strong>完成事件队列；异步操作完成的结果放到队列中等待后续使用；</li>
-<li><strong>Proactor：</strong>主动器；为应用程序进程提供事件循环；从完成事件队列中取出异步操作的结果，分发调用相应的后续处理逻辑；</li>
-<li><strong>Completion Handler：</strong>完成事件接口；一般是由回调函数组成的接口；</li>
-<li><strong>Completion Handler A(B)：</strong>完成事件处理逻辑；实现接口定义特定的应用处理逻辑。</li>
-</ul>
-<h4 id="支持情况"><a href="#支持情况" class="headerlink" title="支持情况"></a>支持情况</h4><p>​    windows对异步I/O提供了非常好的支持，常用Proactor的模型实现服务器；而Linux对异步I/O操作(aio接口)的支持并不是特别理想，而且不能直接处理accept，因此Linux平台上还是以Reactor模型为主。</p>
-<p>​    目前实现了纯异步操作的操作系统少，实现优秀的如windows IOCP，但由于其windows系统用于服务器的局限性，目前应用范围较小；而Unix/Linux系统对纯异步的支持有限，应用事件驱动的主流还是通过select/epoll来实现；</p>
-<p><strong>java提供Asynchronous I/O相关接口以支持异步I/O，AIO有两种api进行操作：</strong></p>
-<ul>
-<li><p>Future 方式</p>
-<p>即提交一个 I/O 操作请求，返回一个 Future。然后您可以对 Future 进行检查，确定它是否完成，或者阻塞 IO 操作直到操作正常完成或者超时异常。</p>
-</li>
-<li><p>Callback 方式</p>
-<p>即提交一个 I/O 操作请求，并且指定一个 CompletionHandler。当异步 I/O 操作完成时，便发送一个通知，此时这个 CompletionHandler 对象的 completed 或者 failed 方法将会被调用。</p>
-</li>
-</ul>
-<p>参照：</p>
-<p><a href="https://www.jianshu.com/p/b4de9b85c79d" target="_blank" rel="noopener">https://www.jianshu.com/p/b4de9b85c79d</a></p>
+<h4 id="实现LRU"><a href="#实现LRU" class="headerlink" title="实现LRU"></a>实现LRU</h4><p>​    1.用一个数组来存储数据，给每一个数据项标记一个访问时间戳，每次插入新数据项的时候，先把数组中存在的数据项的时间戳更新。当数组空间已满时，将时间戳最小的数据项淘汰。</p>
+<p>​    2.利用一个链表来实现，每次新插入数据的时候将新数据插到链表的头部；每次缓存命中（即数据被访问），则将数据移到链表头部；那么当链表满的时候，就将链表尾部的数据丢弃。</p>
+<p>​    3.利用链表和hashmap。当需要插入新的数据项的时候，如果新数据项在链表中存在（一般称为命中），则把该节点移到链表头部，如果不存在，则新建一个节点，放到链表头部，若缓存满了，则把链表最后一个节点删除即可。在访问数据的时候，如果数据项在链表中存在，则把该节点移到链表头部，否则返回-1。这样一来在链表尾部的节点就是最近最久未访问的数据项。</p>
+<p><strong>比较</strong></p>
+<p>​    对于第一种方法，需要不停地维护数据项的访问时间戳，另外，在插入数据、删除数据以及访问数据时，时间复杂度都是O(n)。对于第二种方法，链表在定位数据的时候时间复杂度为O(n)。所以在一般使用第三种方式来是实现LRU算法。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LruLinkedHashMap</span>&lt;<span class="hljs-title">K</span>, <span class="hljs-title">V</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-title">LinkedHashMap</span>&lt;<span class="hljs-title">K</span>, <span class="hljs-title">V</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">private</span> Integer cacheSize;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">LruLinkedHashMap</span><span class="hljs-params">(<span class="hljs-keyword">int</span> initialCapacity)</span> </span>&#123;</span><br><span class="line">         </span><br><span class="line">        <span class="hljs-comment">// 由于LinkedHashMap是为自动扩容的，当table数组中元素大于Capacity * loadFactor的时候，就会自动进行两倍扩容。但是为了使缓存大小固定，就需要在初始化的时候传入容量大小和负载因子。为了使得到达设置缓存大小不会进行自动扩容，需要将初始化的大小进行计算再传入</span></span><br><span class="line">        <span class="hljs-keyword">int</span> capacity = (<span class="hljs-keyword">int</span>)Math.ceil(initialCapacity / <span class="hljs-number">0.75f</span>) + <span class="hljs-number">1</span>;</span><br><span class="line">      	<span class="hljs-comment">/*</span></span><br><span class="line"><span class="hljs-comment">         * 第三个参数设置为true，代表linkedlist按访问顺序排序，可作为LRU缓存</span></span><br><span class="line"><span class="hljs-comment">         * 第三个参数设置为false，代表按插入顺序排序，可作为FIFO缓存</span></span><br><span class="line"><span class="hljs-comment">         */</span></span><br><span class="line">        <span class="hljs-keyword">super</span>(capacity, <span class="hljs-number">0.75f</span>, <span class="hljs-keyword">true</span>);</span><br><span class="line">        cacheSize = initialCapacity;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">removeEldestEntry</span><span class="hljs-params">(Map.Entry&lt;K, V&gt; eldest)</span> </span>&#123;</span><br><span class="line">      	<span class="hljs-comment">//当返回true的时候，就会remove其中最久的元素</span></span><br><span class="line">        <span class="hljs-keyword">return</span> size() &gt; cacheSize;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>参见：<a href="[https://github.com/AobingJava/JavaFamily/blob/master/docs/redis/%E9%9B%86%E7%BE%A4%E9%AB%98%E5%8F%AF%E7%94%A8%E3%80%81%E5%93%A8%E5%85%B5%E3%80%81%E6%8C%81%E4%B9%85%E5%8C%96%E3%80%81LRU.md](https://github.com/AobingJava/JavaFamily/blob/master/docs/redis/集群高可用、哨兵、持久化、LRU.md)">LRU</a></p>
 
         </div>
         
@@ -218,7 +177,7 @@
             <div class="level-start">
                 <div class="level-item">
                     <span class="is-size-6 has-text-grey has-mr-7">#</span>
-                    <a class="has-link-grey -link" href="/tags/I-O/" rel="tag">I/O</a>, <a class="has-link-grey -link" href="/tags/LINUX/" rel="tag">LINUX</a>
+                    <a class="has-link-grey -link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a>
                 </div>
             </div>
         </div>
@@ -270,16 +229,16 @@
     <div class="level post-navigation is-flex-wrap is-mobile">
         
         <div class="level-start">
-            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/11/26/redis-learning-1/">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/11/29/j2ee-log/">
                 <i class="level-item fas fa-chevron-left"></i>
-                <span class="level-item">redis学习（一）</span>
+                <span class="level-item">LOG日志桥接关系</span>
             </a>
         </div>
         
         
         <div class="level-end">
-            <a class="level level-item has-link-grey  article-nav-next" href="/2019/11/25/io-learning/">
-                <span class="level-item">I/O模型(同步，异步，阻塞，非阻塞)</span>
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/11/26/redis-learning-3/">
+                <span class="level-item">redis学习（三）</span>
                 <i class="level-item fas fa-chevron-right"></i>
             </a>
         </div>
@@ -894,7 +853,7 @@
             <div class="level-start has-text-centered-mobile">
                 <a class="footer-logo is-block has-mb-6" href="/">
                 
-                    <img src="/images/logo.svg" alt="reactor和preactor模型" height="28">
+                    <img src="/images/logo.svg" alt="lru算法" height="28">
                 
                 </a>
                 <p class="is-size-7">

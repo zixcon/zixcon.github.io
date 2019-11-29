@@ -19,7 +19,7 @@
 <meta property="og:description" content="简介REmote DIctionary Server(Redis) 是一个由SalvatoreSanfilippo写的key-value存储系统。 Redis是一个开源的使用ANSI C语言编写、遵守BSD协议、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。 它通常被称为数据结构服务器，因为值（value）可以是字符串(String), 哈希(Map),">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;og_image.png">
-<meta property="og:updated_time" content="2019-11-26T08:28:58.000Z">
+<meta property="og:updated_time" content="2019-11-29T03:15:17.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;og_image.png">
 
@@ -141,7 +141,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    6 minutes read (About 968 words)
+                    12 minutes read (About 1847 words)
                 </span>
                 
                 
@@ -163,13 +163,20 @@
 <li>Redis不仅仅支持简单的key-value类型的数据，同时还提供list，set，zset，hash等数据结构的存储。</li>
 <li>Redis支持数据的备份，即master-slave模式的数据备份。</li>
 </ul>
-<h4 id="redis数据类型"><a href="#redis数据类型" class="headerlink" title="redis数据类型"></a>redis数据类型</h4><ul>
+<h4 id="redis常用数据类型"><a href="#redis常用数据类型" class="headerlink" title="redis常用数据类型"></a>redis常用数据类型</h4><ul>
 <li>String</li>
 <li>Hash</li>
 <li>List</li>
 <li>Set</li>
 <li>Sorted set</li>
 </ul>
+<h4 id="redis其他数据类型"><a href="#redis其他数据类型" class="headerlink" title="redis其他数据类型"></a>redis其他数据类型</h4><p>​    Bitmap:位图是支持按 bit 位来存储信息，可以用来实现 <strong>布隆过滤器（BloomFilter）</strong>；</p>
+<p>​    HyperLogLog:供不精确的去重计数功能，比较适合用来做大规模数据的去重统计，例如统计 UV；</p>
+<p>​    Geospatial:可以用来保存地理位置，并作位置距离计算或者根据半径计算位置等。</p>
+<p>​    …</p>
+<p>​    Pipeline：执行批量指令，一次性返回全部结果，可以减少频繁的请求应答。</p>
+<p>​    Lua：脚本，可以执行一系列的功能。利用他的原子性。</p>
+<p>​    事物：<strong>Redis</strong> 提供的不是严格的事务，只保证串行执行命令，并且能保证全部执行，但是执行命令失败时并不会回滚，而是会继续执行下去。</p>
 <h4 id="redis常用命令"><a href="#redis常用命令" class="headerlink" title="redis常用命令"></a>redis常用命令</h4><ul>
 <li>Key（键）</li>
 <li>String</li>
@@ -208,6 +215,26 @@
 <p>2.AOF 文件是一个只进行追加操作的日志文件（append only log）， 因此对 AOF 文件的写入不需要进行 <code>seek</code> </p>
 <p>3.在 AOF 文件体积变得过大时，自动地在后台对 AOF 进行重写： 重写后的新 AOF 文件包含了恢复当前数据集所需的最小命令集合。 </p>
 <p>4.AOF 文件有序地保存了对数据库执行的所有写入操作， 这些写入操作以 Redis 协议的格式保存， 因此 AOF 文件的内容非常容易被人读懂， 对文件进行分析（parse）也很轻松。 </p>
+<p><strong>setex和setnx命令区别</strong></p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">SETEX key seconds value</span><br><span class="line">将值 value 关联到 key ，并将 key 的生存时间设为 seconds (以秒为单位)。</span><br><span class="line">如果 key 已经存在， SETEX 命令将覆写旧值。</span><br><span class="line">  </span><br><span class="line">这个命令类似于以下两个命令：</span><br><span class="line">  SET key value</span><br><span class="line">  EXPIRE key seconds  # 设置生存时间</span><br><span class="line"></span><br><span class="line">不同之处是， SETEX 是一个原子性(atomic)操作，关联值和设置生存时间两个动作会在同一时间内完成，该命令在 Redis 用作缓存时，非常实用。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SETNX key value</span><br><span class="line">将 key 的值设为 value ，当且仅当 key 不存在。</span><br><span class="line">若给定的 key 已经存在，则 SETNX 不做任何动作。</span><br><span class="line">SETNX 是『SET if Not eXists』(如果不存在，则 SET)的简写。</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="Redis-事物"><a href="#Redis-事物" class="headerlink" title="Redis 事物"></a>Redis 事物</h5><h5 id="redis-数据库一致性"><a href="#redis-数据库一致性" class="headerlink" title="redis 数据库一致性"></a>redis 数据库一致性</h5><h5 id="数据淘汰策略"><a href="#数据淘汰策略" class="headerlink" title="数据淘汰策略"></a>数据淘汰策略</h5><p><strong>redis 提供 6种数据淘汰策略：</strong></p>
+<ol>
+<li><strong>volatile-lru</strong>：从已设置过期时间的数据集（server.db[i].expires）中挑选最近最少使用的数据淘汰</li>
+<li><strong>volatile-ttl</strong>：从已设置过期时间的数据集（server.db[i].expires）中挑选将要过期的数据淘汰</li>
+<li><strong>volatile-random</strong>：从已设置过期时间的数据集（server.db[i].expires）中任意选择数据淘汰</li>
+<li><strong>allkeys-lru</strong>：当内存不足以容纳新写入数据时，在键空间中，移除最近最少使用的key（这个是最常用的）.</li>
+<li><strong>allkeys-random</strong>：从数据集（server.db[i].dict）中任意选择数据淘汰</li>
+<li><strong>no-eviction</strong>：禁止驱逐数据，也就是说当内存不足以容纳新写入数据时，新写入操作会报错。</li>
+</ol>
+<p>TTL设置过期时间，Redis如何对这批key进行删除？</p>
+<p>​    <strong>定期删除+惰性删除</strong></p>
+<p>​    定期删除，指的是redis默认是每隔100ms就随机抽取一些设置了过期时间的key，随机抽取一些key来检查和删除的。（全部检查，那redis基本上就死了，cpu负载会很高的，消耗在你的检查过期key上了。）</p>
+<p>​    问题是，定期删除可能会导致很多过期key到了时间并没有被删除掉，那咋整呢？所以就是惰性删除了。这就是说，在你获取某个key的时候，redis会检查一下 ，这个key如果设置了过期时间那么是否过期了？如果过期了此时就会删除，不会给你返回任何东西。</p>
 
         </div>
         
@@ -330,7 +357,7 @@
                     </p>
                     <a href="/archives">
                         <p class="title has-text-weight-normal">
-                            8
+                            10
                         </p>
                     </a>
                 </div>
@@ -354,7 +381,7 @@
                     </p>
                     <a href="/tags">
                         <p class="title has-text-weight-normal">
-                            4
+                            8
                         </p>
                     </a>
                 </div>
@@ -467,7 +494,7 @@
         <h3 class="menu-label">
             Tag Cloud
         </h3>
-        <a href="/tags/I-O/" style="font-size: 15px;">I/O</a> <a href="/tags/LINUX/" style="font-size: 20px;">LINUX</a> <a href="/tags/REDIS/" style="font-size: 20px;">REDIS</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a>
+        <a href="/tags/I-O/" style="font-size: 15px;">I/O</a> <a href="/tags/J2EE/" style="font-size: 10px;">J2EE</a> <a href="/tags/LINUX/" style="font-size: 20px;">LINUX</a> <a href="/tags/LOG/" style="font-size: 10px;">LOG</a> <a href="/tags/REDIS/" style="font-size: 20px;">REDIS</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10px;">设计模式</a>
     </div>
 </div>
     
@@ -479,6 +506,44 @@
         <h3 class="menu-label">
             Recent
         </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/11/29/j2ee-log/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="LOG日志桥接关系">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-29T05:54:08.000Z">2019-11-29</time></div>
+                    <a href="/2019/11/29/j2ee-log/" class="title has-link-black-ter is-size-6 has-text-weight-normal">LOG日志桥接关系</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/11/28/algorithm-lru/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="lru算法">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-28T08:41:45.000Z">2019-11-28</time></div>
+                    <a href="/2019/11/28/algorithm-lru/" class="title has-link-black-ter is-size-6 has-text-weight-normal">lru算法</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -537,44 +602,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/11/25/reactor/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="reactor和preactor模型">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-25T08:29:25.000Z">2019-11-25</time></div>
-                    <a href="/2019/11/25/reactor/" class="title has-link-black-ter is-size-6 has-text-weight-normal">reactor和preactor模型</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2019/11/25/io-learning/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="I/O模型(同步，异步，阻塞，非阻塞)">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-25T06:20:44.000Z">2019-11-25</time></div>
-                    <a href="/2019/11/25/io-learning/" class="title has-link-black-ter is-size-6 has-text-weight-normal">I/O模型(同步，异步，阻塞，非阻塞)</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
         
@@ -592,7 +619,7 @@
                     <span class="level-item">November 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">8</span>
+                    <span class="level-item tag">10</span>
                 </span>
             </a>
         </li>
@@ -618,9 +645,23 @@
                 </div>
                 
                 <div class="control">
+                    <a class="tags has-addons" href="/tags/J2EE/">
+                        <span class="tag">J2EE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
                     <a class="tags has-addons" href="/tags/LINUX/">
                         <span class="tag">LINUX</span>
                         <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/LOG/">
+                        <span class="tag">LOG</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -634,6 +675,20 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/linux/">
                         <span class="tag">linux </span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%AE%97%E6%B3%95/">
+                        <span class="tag">算法</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">
+                        <span class="tag">设计模式</span>
                         <span class="tag is-grey">1</span>
                     </a>
                 </div>
@@ -662,6 +717,44 @@
         
         <article class="media">
             
+            <a href="/2019/11/29/j2ee-log/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="LOG日志桥接关系">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-29T05:54:08.000Z">2019-11-29</time></div>
+                    <a href="/2019/11/29/j2ee-log/" class="title has-link-black-ter is-size-6 has-text-weight-normal">LOG日志桥接关系</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/11/28/algorithm-lru/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="lru算法">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-28T08:41:45.000Z">2019-11-28</time></div>
+                    <a href="/2019/11/28/algorithm-lru/" class="title has-link-black-ter is-size-6 has-text-weight-normal">lru算法</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
             <a href="/2019/11/26/redis-learning-3/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="/images/thumbnail.svg" alt="redis学习（三）">
@@ -717,44 +810,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/11/25/reactor/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="reactor和preactor模型">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-25T08:29:25.000Z">2019-11-25</time></div>
-                    <a href="/2019/11/25/reactor/" class="title has-link-black-ter is-size-6 has-text-weight-normal">reactor和preactor模型</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2019/11/25/io-learning/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="I/O模型(同步，异步，阻塞，非阻塞)">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-25T06:20:44.000Z">2019-11-25</time></div>
-                    <a href="/2019/11/25/io-learning/" class="title has-link-black-ter is-size-6 has-text-weight-normal">I/O模型(同步，异步，阻塞，非阻塞)</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
     
@@ -772,7 +827,7 @@
                     <span class="level-item">November 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">8</span>
+                    <span class="level-item tag">10</span>
                 </span>
             </a>
         </li>
@@ -798,9 +853,23 @@
                 </div>
                 
                 <div class="control">
+                    <a class="tags has-addons" href="/tags/J2EE/">
+                        <span class="tag">J2EE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
                     <a class="tags has-addons" href="/tags/LINUX/">
                         <span class="tag">LINUX</span>
                         <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/LOG/">
+                        <span class="tag">LOG</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -814,6 +883,20 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/linux/">
                         <span class="tag">linux </span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%AE%97%E6%B3%95/">
+                        <span class="tag">算法</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">
+                        <span class="tag">设计模式</span>
                         <span class="tag is-grey">1</span>
                     </a>
                 </div>
