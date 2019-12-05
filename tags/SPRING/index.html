@@ -7,19 +7,15 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-<title>lru算法 - zixcon·blog</title>
+<title>Tag: SPRING - zixcon·blog</title>
 
 
-    <meta name="description" content="简介​    LRU（Least Recently Used）直译为“最近最少使用”。其实很多老外发明的词直译过来对于我们来说并不是特别好理解，甚至有些词并不在国人的思维模式之内，比如快速排序中的Pivot，模拟信号中的Analog 等等。笔者认为最好的理解方式就是看他诞生的原因，看这个概念的出现如何一步一步演变为现在的样子。为了力求方便理解，下面我们先来看看LRU是什么，主要是为了解决什么问题。">
-<meta name="keywords" content="算法">
-<meta property="og:type" content="article">
-<meta property="og:title" content="lru算法">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;28&#x2F;algorithm-lru&#x2F;index.html">
+    <meta property="og:type" content="website">
+<meta property="og:title" content="zixcon·blog">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;tags&#x2F;SPRING&#x2F;index.html">
 <meta property="og:site_name" content="zixcon·blog">
-<meta property="og:description" content="简介​    LRU（Least Recently Used）直译为“最近最少使用”。其实很多老外发明的词直译过来对于我们来说并不是特别好理解，甚至有些词并不在国人的思维模式之内，比如快速排序中的Pivot，模拟信号中的Analog 等等。笔者认为最好的理解方式就是看他诞生的原因，看这个概念的出现如何一步一步演变为现在的样子。为了力求方便理解，下面我们先来看看LRU是什么，主要是为了解决什么问题。">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;og_image.png">
-<meta property="og:updated_time" content="2019-11-29T03:26:37.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;og_image.png">
 
@@ -79,7 +75,7 @@
         <div class="navbar-brand is-flex-center">
             <a class="navbar-item navbar-logo" href="/">
             
-                <img src="/images/logo.svg" alt="lru算法" height="28">
+                <img src="/images/logo.svg" alt="zixcon·blog" height="28">
             
             </a>
         </div>
@@ -128,20 +124,31 @@
     <section class="section">
         <div class="container">
             <div class="columns">
-                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
+    <div class="card-content">
+        <nav class="breadcrumb" aria-label="breadcrumbs">
+        <ul>
+            <li><a href="/tags">Tags</a></li>
+            <li class="is-active"><a href="#" aria-current="page">SPRING</a></li>
+        </ul>
+        </nav>
+    </div>
+</div>
+
+    
 <div class="card">
     
     <div class="card-content article ">
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-11-28T08:41:45.000Z">2019-11-28</time>
+                <time class="level-item has-text-grey" datetime="2019-12-04T02:30:01.000Z">2019-12-04</time>
                 
                 
                 <span class="level-item has-text-grey">
                     
                     
-                    7 minutes read (About 992 words)
+                    3 minutes read (About 494 words)
                 </span>
                 
                 
@@ -150,36 +157,88 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                lru算法
+                <a class="has-link-black-ter" href="/2019/12/04/spring-pre/">spring学习前瞻</a>
             
         </h1>
         <div class="content">
-            <h4 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h4><p>​    LRU（Least Recently Used）直译为“最近最少使用”。其实很多老外发明的词直译过来对于我们来说并不是特别好理解，甚至有些词并不在国人的思维模式之内，比如快速排序中的Pivot，模拟信号中的Analog 等等。笔者认为最好的理解方式就是看他诞生的原因，看这个概念的出现如何一步一步演变为现在的样子。为了力求方便理解，下面我们先来看看LRU是什么，主要是为了解决什么问题。</p>
-<p>​    我们的内存是有限的。所以当缓存数据在内存越来越多，以至于无法存放即将到来的新缓存数据时，就必须扔掉最不常用的缓存数据。所以对于LRU的抽象总结如下：</p>
-<ul>
-<li>缓存的容量是有限的</li>
-<li>当缓存容量不足以存放需要缓存的新数据时，必须丢掉最不常用的缓存数据</li>
-</ul>
-<h4 id="实现LRU"><a href="#实现LRU" class="headerlink" title="实现LRU"></a>实现LRU</h4><p>​    1.用一个数组来存储数据，给每一个数据项标记一个访问时间戳，每次插入新数据项的时候，先把数组中存在的数据项的时间戳更新。当数组空间已满时，将时间戳最小的数据项淘汰。</p>
-<p>​    2.利用一个链表来实现，每次新插入数据的时候将新数据插到链表的头部；每次缓存命中（即数据被访问），则将数据移到链表头部；那么当链表满的时候，就将链表尾部的数据丢弃。</p>
-<p>​    3.利用链表和hashmap。当需要插入新的数据项的时候，如果新数据项在链表中存在（一般称为命中），则把该节点移到链表头部，如果不存在，则新建一个节点，放到链表头部，若缓存满了，则把链表最后一个节点删除即可。在访问数据的时候，如果数据项在链表中存在，则把该节点移到链表头部，否则返回-1。这样一来在链表尾部的节点就是最近最久未访问的数据项。</p>
-<p><strong>比较</strong></p>
-<p>​    对于第一种方法，需要不停地维护数据项的访问时间戳，另外，在插入数据、删除数据以及访问数据时，时间复杂度都是O(n)。对于第二种方法，链表在定位数据的时候时间复杂度为O(n)。所以在一般使用第三种方式来是实现LRU算法。</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LruLinkedHashMap</span>&lt;<span class="hljs-title">K</span>, <span class="hljs-title">V</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-title">LinkedHashMap</span>&lt;<span class="hljs-title">K</span>, <span class="hljs-title">V</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">private</span> Integer cacheSize;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">LruLinkedHashMap</span><span class="hljs-params">(<span class="hljs-keyword">int</span> initialCapacity)</span> </span>&#123;</span><br><span class="line">         </span><br><span class="line">        <span class="hljs-comment">// 由于LinkedHashMap是为自动扩容的，当table数组中元素大于Capacity * loadFactor的时候，就会自动进行两倍扩容。但是为了使缓存大小固定，就需要在初始化的时候传入容量大小和负载因子。为了使得到达设置缓存大小不会进行自动扩容，需要将初始化的大小进行计算再传入</span></span><br><span class="line">        <span class="hljs-keyword">int</span> capacity = (<span class="hljs-keyword">int</span>)Math.ceil(initialCapacity / <span class="hljs-number">0.75f</span>) + <span class="hljs-number">1</span>;</span><br><span class="line">      	<span class="hljs-comment">/*</span></span><br><span class="line"><span class="hljs-comment">         * 第三个参数设置为true，代表linkedlist按访问顺序排序，可作为LRU缓存</span></span><br><span class="line"><span class="hljs-comment">         * 第三个参数设置为false，代表按插入顺序排序，可作为FIFO缓存</span></span><br><span class="line"><span class="hljs-comment">         */</span></span><br><span class="line">        <span class="hljs-keyword">super</span>(capacity, <span class="hljs-number">0.75f</span>, <span class="hljs-keyword">true</span>);</span><br><span class="line">        cacheSize = initialCapacity;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">removeEldestEntry</span><span class="hljs-params">(Map.Entry&lt;K, V&gt; eldest)</span> </span>&#123;</span><br><span class="line">      	<span class="hljs-comment">//当返回true的时候，就会remove其中最久的元素</span></span><br><span class="line">        <span class="hljs-keyword">return</span> size() &gt; cacheSize;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+            <h2 id="Spring-源码分析文章列表"><a href="#Spring-源码分析文章列表" class="headerlink" title="Spring 源码分析文章列表"></a>Spring 源码分析文章列表</h2><h3 id="Ⅰ-IOC"><a href="#Ⅰ-IOC" class="headerlink" title="Ⅰ. IOC"></a>Ⅰ. IOC</h3><table>
+<thead>
+<tr>
+<th>更新时间</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2018-05-30</td>
+<td><a href="http://www.coolblog.xyz/2018/05/30/Spring-IOC-容器源码分析系列文章导读/" target="_blank" rel="noopener">Spring IOC 容器源码分析系列文章导读</a></td>
+</tr>
+<tr>
+<td>2018-06-01</td>
+<td><a href="http://www.coolblog.xyz/2018/06/01/Spring-IOC-容器源码分析-获取单例-bean/" target="_blank" rel="noopener">Spring IOC 容器源码分析 - 获取单例 bean</a></td>
+</tr>
+<tr>
+<td>2018-06-04</td>
+<td><a href="http://www.coolblog.xyz/2018/06/04/Spring-IOC-容器源码分析-创建单例-bean/" target="_blank" rel="noopener">Spring IOC 容器源码分析 - 创建单例 bean 的过程</a></td>
+</tr>
+<tr>
+<td>2018-06-06</td>
+<td><a href="http://www.coolblog.xyz/2018/06/06/Spring-IOC-容器源码分析-创建原始-bean-对象/" target="_blank" rel="noopener">Spring IOC 容器源码分析 - 创建原始 bean 对象</a></td>
+</tr>
+<tr>
+<td>2018-06-08</td>
+<td><a href="http://www.coolblog.xyz/2018/06/08/Spring-IOC-容器源码分析-循环依赖的解决办法/" target="_blank" rel="noopener">Spring IOC 容器源码分析 - 循环依赖的解决办法</a></td>
+</tr>
+<tr>
+<td>2018-06-11</td>
+<td><a href="http://www.coolblog.xyz/2018/06/11/Spring-IOC-容器源码分析-填充属性到-bean-原始对象/" target="_blank" rel="noopener">Spring IOC 容器源码分析 - 填充属性到 bean 原始对象</a></td>
+</tr>
+<tr>
+<td>2018-06-11</td>
+<td><a href="http://www.coolblog.xyz/2018/06/11/Spring-IOC-容器源码分析-余下的初始化工作/" target="_blank" rel="noopener">Spring IOC 容器源码分析 - 余下的初始化工作</a></td>
+</tr>
+</tbody></table>
+<h3 id="Ⅱ-AOP"><a href="#Ⅱ-AOP" class="headerlink" title="Ⅱ. AOP"></a>Ⅱ. AOP</h3><table>
+<thead>
+<tr>
+<th>更新时间</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2018-06-17</td>
+<td><a href="http://www.coolblog.xyz/2018/06/17/Spring-AOP-源码分析系列文章导读/" target="_blank" rel="noopener">Spring AOP 源码分析系列文章导读</a></td>
+</tr>
+<tr>
+<td>2018-06-20</td>
+<td><a href="http://www.coolblog.xyz/2018/06/20/Spring-AOP-源码分析-筛选合适的通知器/" target="_blank" rel="noopener">Spring AOP 源码分析 - 筛选合适的通知器</a></td>
+</tr>
+<tr>
+<td>2018-06-20</td>
+<td><a href="http://www.coolblog.xyz/2018/06/20/Spring-AOP-源码分析-筛选合适的通知器/" target="_blank" rel="noopener">Spring AOP 源码分析 - 创建代理对象</a></td>
+</tr>
+<tr>
+<td>2018-06-22</td>
+<td><a href="http://www.coolblog.xyz/2018/06/22/Spring-AOP-源码分析-拦截器链的执行过程/" target="_blank" rel="noopener">Spring AOP 源码分析 - 拦截器链的执行过程</a></td>
+</tr>
+</tbody></table>
+<h3 id="Ⅲ-MVC"><a href="#Ⅲ-MVC" class="headerlink" title="Ⅲ. MVC"></a>Ⅲ. MVC</h3><table>
+<thead>
+<tr>
+<th>更新时间</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2018-06-29</td>
+<td><a href="http://www.coolblog.xyz/2018/06/29/Spring-MVC-原理探秘-一个请求的旅行过程/" target="_blank" rel="noopener">Spring MVC 原理探秘 - 一个请求的旅行过程</a></td>
+</tr>
+<tr>
+<td>2018-06-30</td>
+<td><a href="http://www.coolblog.xyz/2018/06/30/Spring-MVC-原理探秘-容器的创建过程/" target="_blank" rel="noopener">Spring MVC 原理探秘 - 容器的创建过程</a></td>
+</tr>
+</tbody></table>
+<p>参见：<a href="https://segmentfault.com/a/1190000015221968" target="_blank" rel="noopener">coolblog.xyz</a><br>作者：coolblog.xyz<br>转自：博客：<a href="http://www.coolblog.xyz/?r=sf" target="_blank" rel="noopener">http://www.coolblog.xyz</a></p>
 
-
-
-<p>参见：<a href="[https://github.com/AobingJava/JavaFamily/blob/master/docs/redis/%E9%9B%86%E7%BE%A4%E9%AB%98%E5%8F%AF%E7%94%A8%E3%80%81%E5%93%A8%E5%85%B5%E3%80%81%E6%8C%81%E4%B9%85%E5%8C%96%E3%80%81LRU.md](https://github.com/AobingJava/JavaFamily/blob/master/docs/redis/集群高可用、哨兵、持久化、LRU.md)">LRU</a></p>
-
-        </div>
-        
-        <div class="level is-size-7 is-uppercase">
-            <div class="level-start">
-                <div class="level-item">
-                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
-                    <a class="has-link-grey -link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a>
-                </div>
-            </div>
         </div>
         
         
@@ -189,62 +248,9 @@
 
 
 
-<div class="card">
-    <div class="card-content">
-        <h3 class="menu-label has-text-centered">Like this article? Support the author with</h3>
-        <div class="buttons is-centered">
-            
-                
-<div class="notification is-danger">
-    You forgot to set the <code>qrcode</code> for Alipay. Please set it in <code>_config.yml</code>.
-</div>
-
-                
-                
-<div class="notification is-danger">
-    You forgot to set the <code>qrcode</code> for Wechat. Please set it in <code>_config.yml</code>.
-</div>
-
-                
-                <!-- Visit https://www.paypal.com/donate/buttons/ to get your donate button -->
-
-<div class="notification is-danger">
-    You forgot to set the <code>business</code> and <code>currency_code</code> for Paypal. Please set it in <code>_config.yml</code>.
-</div>
-
-                
-                
-<div class="notification is-danger">
-    You forgot to set the <code>url</code> Patreon. Please set it in <code>_config.yml</code>.
-</div>
-
-                
-        </div>
-    </div>
-</div>
 
 
 
-<div class="card card-transparent">
-    <div class="level post-navigation is-flex-wrap is-mobile">
-        
-        <div class="level-start">
-            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/11/29/j2ee-log/">
-                <i class="level-item fas fa-chevron-left"></i>
-                <span class="level-item">LOG日志桥接关系</span>
-            </a>
-        </div>
-        
-        
-        <div class="level-end">
-            <a class="level level-item has-link-grey  article-nav-next" href="/2019/11/26/redis-learning-3/">
-                <span class="level-item">redis学习（三）</span>
-                <i class="level-item fas fa-chevron-right"></i>
-            </a>
-        </div>
-        
-    </div>
-</div>
 
 
 </div>
@@ -917,7 +923,7 @@
             <div class="level-start has-text-centered-mobile">
                 <a class="footer-logo is-block has-mb-6" href="/">
                 
-                    <img src="/images/logo.svg" alt="lru算法" height="28">
+                    <img src="/images/logo.svg" alt="zixcon·blog" height="28">
                 
                 </a>
                 <p class="is-size-7">

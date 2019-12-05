@@ -132,6 +132,161 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-11-25T06:20:44.000Z">2019-11-25</time>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    11 minutes read (About 1625 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/11/25/io-learning/">I/O模型(同步，异步，阻塞，非阻塞)</a>
+            
+        </h1>
+        <div class="content">
+            <h4 id="思考："><a href="#思考：" class="headerlink" title="思考："></a>思考：</h4><p>​    同步（synchronous） IO和异步（asynchronous） IO，阻塞（blocking） IO和非阻塞（non-blocking）IO分别是什么，到底有什么区别？</p>
+<p>​    用户进程，系统进程注意区分</p>
+<h4 id="IO发生时涉及的对象和步骤"><a href="#IO发生时涉及的对象和步骤" class="headerlink" title="IO发生时涉及的对象和步骤"></a>IO发生时涉及的对象和步骤</h4><p>​    对于一个network IO (这里我们以read举例)，它会涉及到两个系统对象，一个是调用这个IO的process (or thread)，另一个就是系统内核(kernel)。当一个read操作发生时，它会经历两个阶段：</p>
+<ol>
+<li><p>等待数据准备 (Waiting for the data to be ready)</p>
+</li>
+<li><p>将数据从内核拷贝到进程中 (Copying the data from the kernel to the proces)</p>
+<p>记住这两点很重要，因为这些IO Model的区别就是在两个阶段上各有不同的情况。</p>
+</li>
+</ol>
+<h4 id="Stevens在文章中一共比较了五种IO-Model"><a href="#Stevens在文章中一共比较了五种IO-Model" class="headerlink" title="Stevens在文章中一共比较了五种IO Model"></a>Stevens在文章中一共比较了五种IO Model</h4><p>  blocking IO(阻塞)<br>  nonblocking IO(非阻塞)<br>  IO multiplexing（多路复用）<br>  signal driven IO（信号驱动）<br>  asynchronous IO（异步）</p>
+<h5 id="blocking-IO"><a href="#blocking-IO" class="headerlink" title="blocking IO"></a><strong>blocking IO</strong></h5><p><img src="./io-learning/io_bloking.jpg" alt="阻塞IO"></p>
+<p>​    当用户进程调用了recvfrom这个系统调用，kernel就开始了IO的第一个阶段：准备数据。对于network io来说，很多时候数据在一开始还没有到达（比如，还没有收到一个完整的UDP包），这个时候kernel就要等待足够的数据到来。而在用户进程这边，整个进程会被阻塞。当kernel一直等到数据准备好了，它就会将数据从kernel中拷贝到用户内存，然后kernel返回结果，用户进程才解除block的状态，重新运行起来。<br>所以，blocking IO的特点就是在IO执行的两个阶段都被block了。</p>
+<h5 id="non-blocking-IO"><a href="#non-blocking-IO" class="headerlink" title="non-blocking IO"></a><strong>non-blocking IO</strong></h5><p><img src="./io-learning/io_nonbloking.jpg" alt></p>
+<p>​    当用户进程发出read操作时，如果kernel中的数据还没有准备好，那么它并不会block用户进程，而是立刻返回一个error。从用户进程角度讲 ，它发起一个read操作后，并不需要等待，而是马上就得到了一个结果。用户进程判断结果是一个error时，它就知道数据还没有准备好，于是它可以再次发送read操作。一旦kernel中的数据准备好了，并且又再次收到了用户进程的system call，那么它马上就将数据拷贝到了用户内存，然后返回。<br>所以，用户进程其实是需要不断的主动询问kernel数据好了没有。</p>
+<h5 id="IO-multiplexing"><a href="#IO-multiplexing" class="headerlink" title="IO multiplexing"></a><strong>IO multiplexing</strong></h5><p>​    IO multiplexing这个词可能有点陌生，但是如果我说select，epoll，大概就都能明白了。有些地方也称这种IO方式为event driven IO。我们都知道，select/epoll的好处就在于单个process就可以同时处理多个网络连接的IO。它的基本原理就是select/epoll这个function会不断的轮询所负责的所有socket，当某个socket有数据到达了，就通知用户进程。它的流程如图：</p>
+<p><img src="./io-learning/io_multiplexing.jpg" alt></p>
+<p>​    当用户进程调用了select，那么整个进程会被block，而同时，kernel会“监视”所有select负责的socket，当任何一个socket中的数据准备好了，select就会返回。这个时候用户进程再调用read操作，将数据从kernel拷贝到用户进程。</p>
+<pre><code>这个图和阻塞IO的图其实并没有太大的不同，事实上，还更差一些。因为这里需要使用两个system call (select 和 recvfrom)，而blocking IO只调用了一个system call (recvfrom)。但是，用select的优势在于它可以同时处理多个connection。（所以，如果处理的连接数不是很高的话，使用select/epoll的web server不一定比使用multi-threading + blocking IO的web server性能更好，可能延迟还更大。select/epoll的优势并不是对于单个连接能处理得更快，而是在于能处理更多的连接。）</code></pre><p>​    在IO multiplexing Model中，实际中，对于每一个socket，一般都设置成为non-blocking，但是，如上图所示，整个用户的进程其实是一直被block的。只不过进程是被select这个函数block，而不是被socket IO给block。<br>​    </p>
+<h5 id="signal-driven-IO"><a href="#signal-driven-IO" class="headerlink" title="signal driven IO"></a>signal driven IO</h5><p><img src="./io-learning/io_signal.jpg" alt></p>
+<h5 id="Asynchronous-I-O"><a href="#Asynchronous-I-O" class="headerlink" title="Asynchronous I/O"></a>Asynchronous I/O</h5><p>​    这类函数的工作机制是告知内核启动某个操作，并让内核在整个操作（包括将数据从内核拷贝到用户空间）完成后通知我们。</p>
+<p><img src="./io-learning/io_asynchronous.jpg" alt></p>
+<p>​    用户进程发起read操作之后，立刻就可以开始去做其它的事。而另一方面，从kernel的角度，当它受到一个asynchronous read之后，首先它会立刻返回，所以不会对用户进程产生任何block。然后，kernel会等待数据准备完成，然后将数据拷贝到用户内存，当这一切都完成之后，kernel会给用户进程发送一个signal，告诉它read操作完成了。</p>
+<h4 id="QA"><a href="#QA" class="headerlink" title="QA"></a>QA</h4><h5 id="blocking和non-blocking的区别"><a href="#blocking和non-blocking的区别" class="headerlink" title="blocking和non-blocking的区别"></a>blocking和non-blocking的区别</h5><p>​    调用blocking IO会一直block住对应的进程直到操作完成，而non-blocking IO在kernel还准备数据的情况下会立刻返回。</p>
+<h5 id="synchronous-IO和asynchronous-IO的区别"><a href="#synchronous-IO和asynchronous-IO的区别" class="headerlink" title="synchronous IO和asynchronous IO的区别"></a>synchronous IO和asynchronous IO的区别</h5><p>​    Stevens给出的定义（其实是POSIX的定义）是这样子的：<br>​    A synchronous I/O operation causes the requesting process to be blocked until that I/O operation completes;<br>​    An asynchronous I/O operation does not cause the requesting process to be blocked;</p>
+<p>​    两者的区别就在于synchronous IO做”IO operation”的时候会将process阻塞。按照这个定义，之前所述的blocking IO，non-blocking IO，IO multiplexing都属于synchronous IO。</p>
+<p>​    <strong><em>定义中所指的”IO operation”是指真实的IO操作，就是例子中的recvfrom这个system call。</em></strong></p>
+<h5 id="non-blocking-IO和asynchronous-IO的区别"><a href="#non-blocking-IO和asynchronous-IO的区别" class="headerlink" title="non-blocking IO和asynchronous IO的区别"></a>non-blocking IO和asynchronous IO的区别</h5><p>​    区别在于非阻塞在第一个阶段check第二阶段block，异步全程交给kenel处理</p>
+<p><img src="./io-learning/io_compare.jpg" alt></p>
+<h4 id="参照"><a href="#参照" class="headerlink" title="参照"></a>参照</h4><p><a href="https://blog.csdn.net/historyasamirror/article/details/5778378" target="_blank" rel="noopener">https://blog.csdn.net/historyasamirror/article/details/5778378</a></p>
+<p>Richard Stevens的“<strong>UNIX® Network Programming Volume 1, Third Edition: The Sockets Networking</strong> ”，6.2节“<strong>I/O Models</strong> ”</p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-11-25T02:54:20.000Z">2019-11-25</time>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    8 minutes read (About 1176 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/11/25/epoll/">epoll理论解读</a>
+            
+        </h1>
+        <div class="content">
+            <h4 id="I-O的操作"><a href="#I-O的操作" class="headerlink" title="I/O的操作"></a>I/O的操作</h4><p>  首先我们来定义流的概念，一个流可以是文件，socket，pipe等等可以进行I/O操作的内核对象。</p>
+<p>  不管是文件，还是套接字，还是管道，我们都可以把他们看作流。</p>
+<p>  之后我们来讨论I/O的操作，通过read，我们可以从流中读入数据；通过write，我们可以往流写入数据。现在假定一个情形，我们需要从流中读数据，但是流中还没有数据，（典型的例子为，客户端要从socket读如数据，但是服务器还没有把数据传回来），这时候该怎么办？</p>
+<h4 id="阻塞非阻塞"><a href="#阻塞非阻塞" class="headerlink" title="阻塞非阻塞"></a>阻塞非阻塞</h4><h5 id="阻塞I-O模式"><a href="#阻塞I-O模式" class="headerlink" title="阻塞I/O模式"></a>阻塞I/O模式</h5><p>阻塞I/O模式下，一个线程只能处理一个流的I/O事件。如果想要同时处理多个流，要么多进程(fork)，要么多线程(pthread_create)，很不幸这两种方法效率都不高。</p>
+<h5 id="非阻塞忙轮询的I-O"><a href="#非阻塞忙轮询的I-O" class="headerlink" title="非阻塞忙轮询的I/O"></a>非阻塞忙轮询的I/O</h5><p>  于是再来考虑非阻塞忙轮询的I/O方式，我们发现我们可以同时处理多个流了（把一个流从阻塞模式切换到非阻塞模式再此不予讨论）：</p>
+<p>while true {</p>
+<p>for i in stream[]; {</p>
+<p>if i has data</p>
+<p>read until unavailable</p>
+<p>}</p>
+<p>}</p>
+<p>  我们只要不停的把所有流从头到尾问一遍，又从头开始。这样就可以处理多个流了，但这样的做法显然不好，因为如果所有的流都没有数据，那么只会白白浪费CPU。这里要补充一点，阻塞模式下，内核对于I/O事件的处理是阻塞或者唤醒，而非阻塞模式下则把I/O事件交给其他对象（后文介绍的select以及epoll）处理甚至直接忽略。</p>
+<h5 id="select"><a href="#select" class="headerlink" title="select"></a>select</h5><p> 为了避免CPU空转，可以引进了一个代理（一开始有一位叫做select的代理，后来又有一位叫做poll的代理，不过两者的本质是一样的）。这个代理比较厉害，可以同时观察许多流的I/O事件，在空闲的时候，会把当前线程阻塞掉，当有一个或多个流有I/O事件时，就从阻塞态中醒来，于是我们的程序就会轮询一遍所有的流（于是我们可以把“忙”字去掉了）。代码长这样:</p>
+<p>while true {</p>
+<p>select(streams[])</p>
+<p>for i in streams[] {</p>
+<p>if i has data</p>
+<p>read until unavailable</p>
+<p>}</p>
+<p>}</p>
+<p>  于是，如果没有I/O事件产生，我们的程序就会阻塞在select处。但是依然有个问题，我们从select那里仅仅知道了，有I/O事件发生了，但却并不知道是那几个流（可能有一个，多个，甚至全部），我们只能无差别轮询所有流，找出能读出数据，或者写入数据的流，对他们进行操作。</p>
+<p>  但是使用select，我们有O(n)的无差别轮询复杂度，同时处理的流越多，没一次无差别轮询时间就越长。再次</p>
+<p>说了这么多，终于能好好解释epoll了</p>
+<h5 id="epoll"><a href="#epoll" class="headerlink" title="epoll"></a>epoll</h5><p>  epoll可以理解为event poll，不同于忙轮询和无差别轮询，epoll之会把哪个流发生了怎样的I/O事件通知我们。此时我们对这些流的操作都是有意义的。（复杂度降低到了O(1)）</p>
+<p>  在讨论epoll的实现细节之前，先把epoll的相关操作列出：</p>
+<p>epoll_create 创建一个epoll对象，一般epollfd = epoll_create()</p>
+<p>epoll_ctl （epoll_add/epoll_del的合体），往epoll对象中增加/删除某一个流的某一个事件</p>
+<p>比如</p>
+<p>epoll_ctl(epollfd, EPOLL_CTL_ADD, socket, EPOLLIN);//注册缓冲区非空事件，即有数据流入</p>
+<p>epoll_ctl(epollfd, EPOLL_CTL_DEL, socket, EPOLLOUT);//注册缓冲区非满事件，即流可以被写入</p>
+<p>epoll_wait(epollfd,…)等待直到注册的事件发生</p>
+<p>（注：当对一个非阻塞流的读写发生缓冲区满或缓冲区空，write/read会返回-1，并设置errno=EAGAIN。而epoll只关心缓冲区非满和缓冲区非空事件）。</p>
+<p>一个epoll模式的代码大概的样子是：</p>
+<p>while true {</p>
+<p>active_stream[] = epoll_wait(epollfd)</p>
+<p>for i in active_stream[] {</p>
+<p>read or write till</p>
+<p>}</p>
+<p>}</p>
+<p>参照：</p>
+<p>通俗解读：<a href="https://blog.csdn.net/u011671986/article/details/79449853" target="_blank" rel="noopener">https://blog.csdn.net/u011671986/article/details/79449853</a></p>
+<p>详细解读：<a href="https://bbs.gameres.com/thread_842984_1_1.html" target="_blank" rel="noopener">https://bbs.gameres.com/thread_842984_1_1.html</a></p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2019-11-14T09:38:51.000Z">2019-11-14</time>
                 
                 
@@ -306,7 +461,7 @@
                     </p>
                     <a href="/archives">
                         <p class="title has-text-weight-normal">
-                            12
+                            14
                         </p>
                     </a>
                 </div>
@@ -330,7 +485,7 @@
                     </p>
                     <a href="/tags">
                         <p class="title has-text-weight-normal">
-                            9
+                            11
                         </p>
                     </a>
                 </div>
@@ -443,7 +598,7 @@
         <h3 class="menu-label">
             Tag Cloud
         </h3>
-        <a href="/tags/I-O/" style="font-size: 15px;">I/O</a> <a href="/tags/J2EE/" style="font-size: 20px;">J2EE</a> <a href="/tags/LINUX/" style="font-size: 20px;">LINUX</a> <a href="/tags/LOG/" style="font-size: 10px;">LOG</a> <a href="/tags/REDIS/" style="font-size: 20px;">REDIS</a> <a href="/tags/ZK/" style="font-size: 15px;">ZK</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10px;">设计模式</a>
+        <a href="/tags/I-O/" style="font-size: 15px;">I/O</a> <a href="/tags/J2EE/" style="font-size: 20px;">J2EE</a> <a href="/tags/LINUX/" style="font-size: 20px;">LINUX</a> <a href="/tags/LOG/" style="font-size: 10px;">LOG</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/REDIS/" style="font-size: 20px;">REDIS</a> <a href="/tags/SPRING/" style="font-size: 10px;">SPRING</a> <a href="/tags/ZK/" style="font-size: 15px;">ZK</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10px;">设计模式</a>
     </div>
 </div>
     
@@ -455,6 +610,44 @@
         <h3 class="menu-label">
             Recent
         </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/12/04/spring-pre/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="spring学习前瞻">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-04T02:30:01.000Z">2019-12-04</time></div>
+                    <a href="/2019/12/04/spring-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">spring学习前瞻</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/12/02/mq-pre/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="MQ学习（一）">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-02T06:17:15.000Z">2019-12-02</time></div>
+                    <a href="/2019/12/02/mq-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">MQ学习（一）</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -513,44 +706,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/11/28/algorithm-lru/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="lru算法">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-28T08:41:45.000Z">2019-11-28</time></div>
-                    <a href="/2019/11/28/algorithm-lru/" class="title has-link-black-ter is-size-6 has-text-weight-normal">lru算法</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2019/11/26/redis-learning-3/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="redis学习（三）">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-26T08:56:38.000Z">2019-11-26</time></div>
-                    <a href="/2019/11/26/redis-learning-3/" class="title has-link-black-ter is-size-6 has-text-weight-normal">redis学习（三）</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
         
@@ -561,6 +716,17 @@
             Archives
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">December 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/11/">
@@ -615,9 +781,23 @@
                 </div>
                 
                 <div class="control">
+                    <a class="tags has-addons" href="/tags/MQ/">
+                        <span class="tag">MQ</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
                     <a class="tags has-addons" href="/tags/REDIS/">
                         <span class="tag">REDIS</span>
                         <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/SPRING/">
+                        <span class="tag">SPRING</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -673,6 +853,44 @@
         
         <article class="media">
             
+            <a href="/2019/12/04/spring-pre/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="spring学习前瞻">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-04T02:30:01.000Z">2019-12-04</time></div>
+                    <a href="/2019/12/04/spring-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">spring学习前瞻</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/12/02/mq-pre/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="MQ学习（一）">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-02T06:17:15.000Z">2019-12-02</time></div>
+                    <a href="/2019/12/02/mq-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">MQ学习（一）</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
             <a href="/2019/11/29/zk-paxos/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="/images/thumbnail.svg" alt="zookeeper学习之Paxos协议">
@@ -728,44 +946,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/11/28/algorithm-lru/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="lru算法">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-28T08:41:45.000Z">2019-11-28</time></div>
-                    <a href="/2019/11/28/algorithm-lru/" class="title has-link-black-ter is-size-6 has-text-weight-normal">lru算法</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2019/11/26/redis-learning-3/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="redis学习（三）">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-26T08:56:38.000Z">2019-11-26</time></div>
-                    <a href="/2019/11/26/redis-learning-3/" class="title has-link-black-ter is-size-6 has-text-weight-normal">redis学习（三）</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
     
@@ -776,6 +956,17 @@
             Archives
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">December 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/11/">
@@ -830,9 +1021,23 @@
                 </div>
                 
                 <div class="control">
+                    <a class="tags has-addons" href="/tags/MQ/">
+                        <span class="tag">MQ</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
                     <a class="tags has-addons" href="/tags/REDIS/">
                         <span class="tag">REDIS</span>
                         <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/SPRING/">
+                        <span class="tag">SPRING</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
