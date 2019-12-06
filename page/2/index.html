@@ -132,6 +132,104 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-11-25T08:29:25.000Z">2019-11-25</time>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    7 minutes read (About 1039 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/11/25/reactor/">reactor和preactor模型</a>
+            
+        </h1>
+        <div class="content">
+            <h4 id="Reactor模型"><a href="#Reactor模型" class="headerlink" title="Reactor模型"></a>Reactor模型</h4><p><strong>Reactor的核心思想：</strong></p>
+<p>将关注的I/O事件注册到多路复用器上，一旦有I/O事件触发，将事件分发到事件处理器中，执行就绪I/O事件对应的处理函数中。模型中有三个重要的组件：</p>
+<ul>
+<li><strong>多路复用器：</strong>由操作系统提供接口，Linux提供的I/O复用接口有select、poll、epoll；</li>
+<li><strong>事件分离器：</strong>将多路复用器返回的就绪事件分发到事件处理器中；</li>
+<li><strong>事件处理器：</strong>处理就绪事件处理函数。</li>
+</ul>
+<p><img src="./reactor/reactor_1.jpg" alt></p>
+<ul>
+<li><p><strong>Handle：</strong>标示文件描述符；</p>
+</li>
+<li><p><strong>Event Demultiplexer：</strong>执行多路事件分解操作，对操作系统内核实现I/O复用接口的封装；用于阻塞等待发生在句柄集合上的一个或多个事件（如select/poll/epoll）；</p>
+</li>
+<li><p><strong>Event Handler：</strong>事件处理接口；</p>
+</li>
+<li><p><strong>Event Handler A(B)：</strong>实现应用程序所提供的特定事件处理逻辑；</p>
+</li>
+<li><p><strong>Reactor：</strong>反应器，定义一个接口，实现以下功能：</p>
+<p>a)供应用程序注册和删除关注的事件句柄；</p>
+<p>b)运行事件处理循环； </p>
+<p>c)等待的就绪事件触发，分发事件到之前注册的回调函数上处理.</p>
+</li>
+</ul>
+<h4 id="经典Reactor模式"><a href="#经典Reactor模式" class="headerlink" title="经典Reactor模式"></a>经典Reactor模式</h4><p><img src="./reactor/reactor_2.png" alt></p>
+<p><strong>在经典Reactor模式中，包含以下角色：</strong></p>
+<ul>
+<li><strong>Reactor ：</strong>将I/O事件发派给对应的Handler</li>
+<li><strong>Acceptor ：</strong>处理客户端连接请求</li>
+<li><strong>Handlers ：</strong>执行非阻塞读/写</li>
+</ul>
+<h4 id="多工作线程Reactor模式"><a href="#多工作线程Reactor模式" class="headerlink" title="多工作线程Reactor模式"></a>多工作线程Reactor模式</h4><p><img src="./reactor/reactor_3.png" alt></p>
+<h4 id="多Reactor的Reactor模式"><a href="#多Reactor的Reactor模式" class="headerlink" title="多Reactor的Reactor模式"></a>多Reactor的Reactor模式</h4><p><img src="./reactor/reactor_4.png" alt></p>
+<h4 id="Proactor模型"><a href="#Proactor模型" class="headerlink" title="Proactor模型"></a>Proactor模型</h4><p>​    与Reactor不同的是，Proactor使用异步I/O系统接口将I/O操作托管给操作系统，Proactor模型中分发处理异步I/O完成事件，并调用相应的事件处理接口来处理业务逻辑。</p>
+<p><img src="./reactor/preactor_1.png" alt></p>
+<p><strong>Proactor类结构中包含有如下角色：</strong></p>
+<ul>
+<li><strong>Handle：</strong>用来标识socket连接或是打开文件；</li>
+<li><strong>Async Operation Processor：</strong>异步操作处理器；负责执行异步操作，一般由操作系统内核实现；</li>
+<li><strong>Async Operation：</strong>异步操作；</li>
+<li><strong>Completion Event Queue：</strong>完成事件队列；异步操作完成的结果放到队列中等待后续使用；</li>
+<li><strong>Proactor：</strong>主动器；为应用程序进程提供事件循环；从完成事件队列中取出异步操作的结果，分发调用相应的后续处理逻辑；</li>
+<li><strong>Completion Handler：</strong>完成事件接口；一般是由回调函数组成的接口；</li>
+<li><strong>Completion Handler A(B)：</strong>完成事件处理逻辑；实现接口定义特定的应用处理逻辑。</li>
+</ul>
+<h4 id="支持情况"><a href="#支持情况" class="headerlink" title="支持情况"></a>支持情况</h4><p>​    windows对异步I/O提供了非常好的支持，常用Proactor的模型实现服务器；而Linux对异步I/O操作(aio接口)的支持并不是特别理想，而且不能直接处理accept，因此Linux平台上还是以Reactor模型为主。</p>
+<p>​    目前实现了纯异步操作的操作系统少，实现优秀的如windows IOCP，但由于其windows系统用于服务器的局限性，目前应用范围较小；而Unix/Linux系统对纯异步的支持有限，应用事件驱动的主流还是通过select/epoll来实现；</p>
+<p><strong>java提供Asynchronous I/O相关接口以支持异步I/O，AIO有两种api进行操作：</strong></p>
+<ul>
+<li><p>Future 方式</p>
+<p>即提交一个 I/O 操作请求，返回一个 Future。然后您可以对 Future 进行检查，确定它是否完成，或者阻塞 IO 操作直到操作正常完成或者超时异常。</p>
+</li>
+<li><p>Callback 方式</p>
+<p>即提交一个 I/O 操作请求，并且指定一个 CompletionHandler。当异步 I/O 操作完成时，便发送一个通知，此时这个 CompletionHandler 对象的 completed 或者 failed 方法将会被调用。</p>
+</li>
+</ul>
+<p>参照：</p>
+<p><a href="https://www.jianshu.com/p/b4de9b85c79d" target="_blank" rel="noopener">https://www.jianshu.com/p/b4de9b85c79d</a></p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2019-11-25T06:20:44.000Z">2019-11-25</time>
                 
                 
@@ -461,7 +559,7 @@
                     </p>
                     <a href="/archives">
                         <p class="title has-text-weight-normal">
-                            14
+                            15
                         </p>
                     </a>
                 </div>
@@ -485,7 +583,7 @@
                     </p>
                     <a href="/tags">
                         <p class="title has-text-weight-normal">
-                            11
+                            13
                         </p>
                     </a>
                 </div>
@@ -598,7 +696,7 @@
         <h3 class="menu-label">
             Tag Cloud
         </h3>
-        <a href="/tags/I-O/" style="font-size: 15px;">I/O</a> <a href="/tags/J2EE/" style="font-size: 20px;">J2EE</a> <a href="/tags/LINUX/" style="font-size: 20px;">LINUX</a> <a href="/tags/LOG/" style="font-size: 10px;">LOG</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/REDIS/" style="font-size: 20px;">REDIS</a> <a href="/tags/SPRING/" style="font-size: 10px;">SPRING</a> <a href="/tags/ZK/" style="font-size: 15px;">ZK</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10px;">设计模式</a>
+        <a href="/tags/DUBBO/" style="font-size: 10px;">DUBBO</a> <a href="/tags/I-O/" style="font-size: 15px;">I/O</a> <a href="/tags/J2EE/" style="font-size: 20px;">J2EE</a> <a href="/tags/LINUX/" style="font-size: 20px;">LINUX</a> <a href="/tags/LOG/" style="font-size: 10px;">LOG</a> <a href="/tags/MOCK/" style="font-size: 10px;">MOCK</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/REDIS/" style="font-size: 20px;">REDIS</a> <a href="/tags/SPRING/" style="font-size: 10px;">SPRING</a> <a href="/tags/ZK/" style="font-size: 15px;">ZK</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10px;">设计模式</a>
     </div>
 </div>
     
@@ -610,6 +708,25 @@
         <h3 class="menu-label">
             Recent
         </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/12/05/dubbo-pre/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="dubbo学习">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-05T07:59:27.000Z">2019-12-05</time></div>
+                    <a href="/2019/12/05/dubbo-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">dubbo学习</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -687,25 +804,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/11/29/j2ee-log/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="LOG日志桥接关系">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-29T05:54:08.000Z">2019-11-29</time></div>
-                    <a href="/2019/11/29/j2ee-log/" class="title has-link-black-ter is-size-6 has-text-weight-normal">LOG日志桥接关系</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
         
@@ -723,7 +821,7 @@
                     <span class="level-item">December 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">2</span>
+                    <span class="level-item tag">3</span>
                 </span>
             </a>
         </li>
@@ -753,6 +851,13 @@
             <div class="field is-grouped is-grouped-multiline">
                 
                 <div class="control">
+                    <a class="tags has-addons" href="/tags/DUBBO/">
+                        <span class="tag">DUBBO</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
                     <a class="tags has-addons" href="/tags/I-O/">
                         <span class="tag">I/O</span>
                         <span class="tag is-grey">2</span>
@@ -776,6 +881,13 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/LOG/">
                         <span class="tag">LOG</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MOCK/">
+                        <span class="tag">MOCK</span>
                         <span class="tag is-grey">1</span>
                     </a>
                 </div>
@@ -853,6 +965,25 @@
         
         <article class="media">
             
+            <a href="/2019/12/05/dubbo-pre/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="dubbo学习">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-05T07:59:27.000Z">2019-12-05</time></div>
+                    <a href="/2019/12/05/dubbo-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">dubbo学习</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
             <a href="/2019/12/04/spring-pre/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="/images/thumbnail.svg" alt="spring学习前瞻">
@@ -927,25 +1058,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/11/29/j2ee-log/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="LOG日志桥接关系">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-29T05:54:08.000Z">2019-11-29</time></div>
-                    <a href="/2019/11/29/j2ee-log/" class="title has-link-black-ter is-size-6 has-text-weight-normal">LOG日志桥接关系</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
     
@@ -963,7 +1075,7 @@
                     <span class="level-item">December 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">2</span>
+                    <span class="level-item tag">3</span>
                 </span>
             </a>
         </li>
@@ -993,6 +1105,13 @@
             <div class="field is-grouped is-grouped-multiline">
                 
                 <div class="control">
+                    <a class="tags has-addons" href="/tags/DUBBO/">
+                        <span class="tag">DUBBO</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
                     <a class="tags has-addons" href="/tags/I-O/">
                         <span class="tag">I/O</span>
                         <span class="tag is-grey">2</span>
@@ -1016,6 +1135,13 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/LOG/">
                         <span class="tag">LOG</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MOCK/">
+                        <span class="tag">MOCK</span>
                         <span class="tag is-grey">1</span>
                     </a>
                 </div>
