@@ -7,15 +7,19 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-<title>Tag: MQ - zixcon·blog</title>
+<title>mysql索引 - zixcon·blog</title>
 
 
-    <meta property="og:type" content="website">
-<meta property="og:title" content="zixcon·blog">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;tags&#x2F;MQ&#x2F;index.html">
+    <meta name="description" content="聚簇索引与非聚簇索引定义​    聚簇索引是对磁盘上实际数据重新组织以按指定的一个或多个列的值排序的算法。特点是存储数据的顺序和索引顺序一致。​    一般情况下主键会默认创建聚簇索引，且一张表只允许存在一个聚簇索引。 ​    在《数据库原理》一书中是这么解释聚簇索引和非聚簇索引的区别的：​    聚簇索引的叶子节点就是数据节点，而非聚簇索引的叶子节点仍然是索引节点，只不过有指向对应数据块的指针">
+<meta name="keywords" content="MYSQL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql索引">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;13&#x2F;mysql-index&#x2F;index.html">
 <meta property="og:site_name" content="zixcon·blog">
+<meta property="og:description" content="聚簇索引与非聚簇索引定义​    聚簇索引是对磁盘上实际数据重新组织以按指定的一个或多个列的值排序的算法。特点是存储数据的顺序和索引顺序一致。​    一般情况下主键会默认创建聚簇索引，且一张表只允许存在一个聚簇索引。 ​    在《数据库原理》一书中是这么解释聚簇索引和非聚簇索引的区别的：​    聚簇索引的叶子节点就是数据节点，而非聚簇索引的叶子节点仍然是索引节点，只不过有指向对应数据块的指针">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;og_image.png">
+<meta property="og:updated_time" content="2019-12-13T08:45:38.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;og_image.png">
 
@@ -75,7 +79,7 @@
         <div class="navbar-brand is-flex-center">
             <a class="navbar-item navbar-logo" href="/">
             
-                <img src="/images/logo.svg" alt="zixcon·blog" height="28">
+                <img src="/images/logo.svg" alt="mysql索引" height="28">
             
             </a>
         </div>
@@ -124,31 +128,20 @@
     <section class="section">
         <div class="container">
             <div class="columns">
-                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
-    <div class="card-content">
-        <nav class="breadcrumb" aria-label="breadcrumbs">
-        <ul>
-            <li><a href="/tags">Tags</a></li>
-            <li class="is-active"><a href="#" aria-current="page">MQ</a></li>
-        </ul>
-        </nav>
-    </div>
-</div>
-
-    
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main">
 <div class="card">
     
     <div class="card-content article ">
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-12-02T06:17:15.000Z">2019-12-02</time>
+                <time class="level-item has-text-grey" datetime="2019-12-13T07:39:12.000Z">2019-12-13</time>
                 
                 
                 <span class="level-item has-text-grey">
                     
                     
-                    2 minutes read (About 255 words)
+                    7 minutes read (About 1121 words)
                 </span>
                 
                 
@@ -157,17 +150,37 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                <a class="has-link-black-ter" href="/2019/12/02/mq-pre/">MQ学习（一）</a>
+                mysql索引
             
         </h1>
         <div class="content">
-            <h4 id="MQ的作用"><a href="#MQ的作用" class="headerlink" title="MQ的作用"></a>MQ的作用</h4><p>​    消息队列中间件主要解决<strong>应用解耦</strong>，<strong>异步消息</strong>，<strong>流量削锋</strong>等问题</p>
-<h4 id="MQ带来的新问题"><a href="#MQ带来的新问题" class="headerlink" title="MQ带来的新问题"></a>MQ带来的新问题</h4><p>​    一般而言，引入的外部依赖越多，系统越脆弱。需要考虑消息的重复消费、消息丢失、保证消费顺序、数据一致性问题等</p>
-<h5 id="幂等及去重"><a href="#幂等及去重" class="headerlink" title="幂等及去重"></a>幂等及去重</h5><p>​    <strong>幂等性</strong>：就是用户对于同一操作发起的一次请求或者多次请求的结果是一致的</p>
-<p>​    <strong>去重策略</strong>：保证每条消息都有唯一编号(<strong>比如唯一流水号)</strong> </p>
-<p>​        方法1: 建立一个消息表，拿到这个消息做数据库的insert操作。给这个消息做一个唯一主键（primary key）或者唯一约束(uniq key)，那么就算出现重复消费的情况，就会导致主键冲突，那么就不再处理这条消息。</p>
-<p><a href="https://juejin.im/post/5de3c8026fb9a07194761641" target="_blank" rel="noopener">参见</a></p>
+            <h1 id="聚簇索引与非聚簇索引"><a href="#聚簇索引与非聚簇索引" class="headerlink" title="聚簇索引与非聚簇索引"></a>聚簇索引与非聚簇索引</h1><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>​    <strong>聚簇索引是对磁盘上实际数据重新组织以按指定的一个或多个列的值排序的算法。</strong>特点是存储数据的顺序和索引顺序一致。<br>​    <strong>一般情况下主键会默认创建聚簇索引，且一张表只允许存在一个聚簇索引。</strong></p>
+<p>​    在《数据库原理》一书中是这么解<strong>释聚簇索引和非聚簇索引的区别</strong>的：<br>​    <strong>聚簇索引的叶子节点就是数据节点，而非聚簇索引的叶子节点仍然是索引节点，只不过有指向对应数据块的指针。</strong></p>
+<p>综上，可以得出聚簇索引和非聚簇索引概念：</p>
+<p><strong>聚簇索引：即存储索引值，又存储行数据，数据文件和索引文件是同一个文件</strong></p>
+<p><strong>非聚簇索引：索引文件和数据文件是独立分开的</strong></p>
+<p>​    那么如果数据表中没有主键呢？MySQL的解决办法是隐式地将一个唯一的非空的列定义为聚簇。那如果这也没有呢？MySQL就自己创建一个聚簇索引。</p>
+<p>​    <strong>在Innodb中，二级索引除了存储本身的列值外，其叶子节点存储的不是‘行指针’，而是主键值</strong>，为什么是这样呢？原来这种方式在表结构发生变化的时候会有很大的优势。如果二级索引的存储顺序是以列值为基础的，那么在发生数据行的移动或者增加删除时候，必定会引起索引结构的巨大变化。</p>
+<h3 id="MyISAM与InnoDB"><a href="#MyISAM与InnoDB" class="headerlink" title="MyISAM与InnoDB"></a>MyISAM与InnoDB</h3><p>​    mysql存储引擎MyISAM与InnoDB的底层数据结构的区别主要有，在磁盘上存储的文件以及存储索引以及组织存储索引的方式不同；</p>
+<ol>
+<li><p>MyISAM索引文件和数据文件是分离的(非聚集)，索引的叶节点存放的是对应索引在文件系统中的数据地址编码</p>
+</li>
+<li><p>innodb中，数据文件和索引文件是同一个文件，是聚簇索引。（注意区别普通索引）</p>
+</li>
+</ol>
+<p><strong>（1）InnoDB的主键采用聚簇索引存储，使用的是B+Tree作为索引结构，但是叶子节点存储的是索引值和数据本身（注意和MyISAM的不同）。</strong><br><strong>（2）InnoDB的二级索引不使用聚蔟索引，叶子节点存储的是KEY字段加主键值。因此，通过二级索引查询首先查到是主键值，然后InnoDB再根据查到的主键值通过主键索引找到相应的数据块。</strong><br><strong>（3）MyISAM的主键索引和二级索引叶子节点存放的都是列值与行号的组合，叶子节点中保存的是数据的物理地址</strong><br><strong>（4）MyISAM引擎使用B+Tree作为索引结构，叶节点的data域存放的是数据记录的地址</strong><br><strong>（5）为什么用B+Tree 不是BTree：</strong><br>    B-Tree：如果一次检索需要访问4个节点，数据库系统设计者利用磁盘预读原理，把节点的大小设计为一个页，那读取一个节点只需要一次I/O操作，完成这次检索操作，最多需要3次I/O(根节点常驻内存)。数据记录越小，每个节点存放的数据就越多，树的高度也就越小，I/O操作就少了，检索效率也就上去了。<br>    B+Tree：非叶子节点只存key，大大滴减少了非叶子节点的大小，那么每个节点就可以存放更多的记录，树更矮了，I/O操作更少了。所以B+Tree拥有更好的性能。</p>
+<p>​    由于节子节点(数据页)只能按照一颗B+树排序，故<strong>一张表只能有一个聚簇索引</strong>。辅助索引的存在不影响聚簇索引中数据的组织，所以一张表可以有多个辅助索引</p>
+<p>参照：<a href="https://www.cnblogs.com/xibuhaohao/p/10736112.html" target="_blank" rel="noopener">mysql InnoDB index 主键采用聚簇索引，二级索引不采用聚簇索引</a></p>
 
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/MYSQL/" rel="tag">MYSQL</a>
+                </div>
+            </div>
         </div>
         
         
@@ -177,9 +190,62 @@
 
 
 
+<div class="card">
+    <div class="card-content">
+        <h3 class="menu-label has-text-centered">Like this article? Support the author with</h3>
+        <div class="buttons is-centered">
+            
+                
+<div class="notification is-danger">
+    You forgot to set the <code>qrcode</code> for Alipay. Please set it in <code>_config.yml</code>.
+</div>
+
+                
+                
+<div class="notification is-danger">
+    You forgot to set the <code>qrcode</code> for Wechat. Please set it in <code>_config.yml</code>.
+</div>
+
+                
+                <!-- Visit https://www.paypal.com/donate/buttons/ to get your donate button -->
+
+<div class="notification is-danger">
+    You forgot to set the <code>business</code> and <code>currency_code</code> for Paypal. Please set it in <code>_config.yml</code>.
+</div>
+
+                
+                
+<div class="notification is-danger">
+    You forgot to set the <code>url</code> Patreon. Please set it in <code>_config.yml</code>.
+</div>
+
+                
+        </div>
+    </div>
+</div>
 
 
 
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/12/13/jvm-pre/">
+                <i class="level-item fas fa-chevron-left"></i>
+                <span class="level-item">jvm</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/12/13/http-pre/">
+                <span class="level-item">http1.x、http 2和https</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
 
 
 </div>
@@ -922,7 +988,7 @@
             <div class="level-start has-text-centered-mobile">
                 <a class="footer-logo is-block has-mb-6" href="/">
                 
-                    <img src="/images/logo.svg" alt="zixcon·blog" height="28">
+                    <img src="/images/logo.svg" alt="mysql索引" height="28">
                 
                 </a>
                 <p class="is-size-7">
