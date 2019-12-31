@@ -19,7 +19,7 @@
 <meta property="og:description" content="聚簇索引与非聚簇索引定义​    聚簇索引是对磁盘上实际数据重新组织以按指定的一个或多个列的值排序的算法。特点是存储数据的顺序和索引顺序一致。​    一般情况下主键会默认创建聚簇索引，且一张表只允许存在一个聚簇索引。 ​    在《数据库原理》一书中是这么解释聚簇索引和非聚簇索引的区别的：​    聚簇索引的叶子节点就是数据节点，而非聚簇索引的叶子节点仍然是索引节点，只不过有指向对应数据块的指针">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;og_image.png">
-<meta property="og:updated_time" content="2019-12-13T08:45:38.000Z">
+<meta property="og:updated_time" content="2019-12-25T03:14:21.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;og_image.png">
 
@@ -141,7 +141,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    7 minutes read (About 1121 words)
+                    9 minutes read (About 1382 words)
                 </span>
                 
                 
@@ -171,6 +171,10 @@
 <p><strong>（1）InnoDB的主键采用聚簇索引存储，使用的是B+Tree作为索引结构，但是叶子节点存储的是索引值和数据本身（注意和MyISAM的不同）。</strong><br><strong>（2）InnoDB的二级索引不使用聚蔟索引，叶子节点存储的是KEY字段加主键值。因此，通过二级索引查询首先查到是主键值，然后InnoDB再根据查到的主键值通过主键索引找到相应的数据块。</strong><br><strong>（3）MyISAM的主键索引和二级索引叶子节点存放的都是列值与行号的组合，叶子节点中保存的是数据的物理地址</strong><br><strong>（4）MyISAM引擎使用B+Tree作为索引结构，叶节点的data域存放的是数据记录的地址</strong><br><strong>（5）为什么用B+Tree 不是BTree：</strong><br>    B-Tree：如果一次检索需要访问4个节点，数据库系统设计者利用磁盘预读原理，把节点的大小设计为一个页，那读取一个节点只需要一次I/O操作，完成这次检索操作，最多需要3次I/O(根节点常驻内存)。数据记录越小，每个节点存放的数据就越多，树的高度也就越小，I/O操作就少了，检索效率也就上去了。<br>    B+Tree：非叶子节点只存key，大大滴减少了非叶子节点的大小，那么每个节点就可以存放更多的记录，树更矮了，I/O操作更少了。所以B+Tree拥有更好的性能。</p>
 <p>​    由于节子节点(数据页)只能按照一颗B+树排序，故<strong>一张表只能有一个聚簇索引</strong>。辅助索引的存在不影响聚簇索引中数据的组织，所以一张表可以有多个辅助索引</p>
 <p>参照：<a href="https://www.cnblogs.com/xibuhaohao/p/10736112.html" target="_blank" rel="noopener">mysql InnoDB index 主键采用聚簇索引，二级索引不采用聚簇索引</a></p>
+<h2 id="复合索引"><a href="#复合索引" class="headerlink" title="复合索引"></a>复合索引</h2><p>​    复合索引也叫组合索引；用户可以在多个列上建立索引,这种索引叫做复合索引(组合索引)。</p>
+<p>​    建了一个(a,b,c)的复合索引，那么实际等于建了(a),(a,b),(a,b,c)三个索引，因为每多一个索引，都会增加写操作的开销和磁盘空间的开销。查询是否使用该索引基于<strong>最左原则</strong></p>
+<p>​    同样的有复合索引（a,b,c），如果有如下的sql: select a,b,c from table where a=1 and b = 1。那么MySQL可以直接通过遍历索引取得数据，而无需回表，这减少了很多的随机io操作。减少io操作，特别的随机io其实是dba主要的优化策略。所以，在真正的实际应用中，覆盖索引是主要的提升性能的优化手段之一</p>
+<p><a href="https://my.oschina.net/u/1399755/blog/1787166" target="_blank" rel="noopener">复合索引测试sql用例</a></p>
 
         </div>
         
@@ -293,7 +297,7 @@
                     </p>
                     <a href="/archives">
                         <p class="title has-text-weight-normal">
-                            18
+                            25
                         </p>
                     </a>
                 </div>
@@ -317,7 +321,7 @@
                     </p>
                     <a href="/tags">
                         <p class="title has-text-weight-normal">
-                            16
+                            18
                         </p>
                     </a>
                 </div>
@@ -430,7 +434,7 @@
         <h3 class="menu-label">
             Tag Cloud
         </h3>
-        <a href="/tags/DUBBO/" style="font-size: 10px;">DUBBO</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/I-O/" style="font-size: 15px;">I/O</a> <a href="/tags/J2EE/" style="font-size: 20px;">J2EE</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/LINUX/" style="font-size: 20px;">LINUX</a> <a href="/tags/LOG/" style="font-size: 10px;">LOG</a> <a href="/tags/MOCK/" style="font-size: 10px;">MOCK</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/MYSQL/" style="font-size: 10px;">MYSQL</a> <a href="/tags/REDIS/" style="font-size: 20px;">REDIS</a> <a href="/tags/SPRING/" style="font-size: 10px;">SPRING</a> <a href="/tags/ZK/" style="font-size: 15px;">ZK</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10px;">设计模式</a>
+        <a href="/tags/DUBBO/" style="font-size: 10px;">DUBBO</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/I-O/" style="font-size: 12.5px;">I/O</a> <a href="/tags/J2EE/" style="font-size: 20px;">J2EE</a> <a href="/tags/JAVA/" style="font-size: 10px;">JAVA</a> <a href="/tags/JVM/" style="font-size: 12.5px;">JVM</a> <a href="/tags/LINUX/" style="font-size: 15px;">LINUX</a> <a href="/tags/LOG/" style="font-size: 10px;">LOG</a> <a href="/tags/MOCK/" style="font-size: 10px;">MOCK</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/MYSQL/" style="font-size: 10px;">MYSQL</a> <a href="/tags/REDIS/" style="font-size: 17.5px;">REDIS</a> <a href="/tags/SPRING/" style="font-size: 10px;">SPRING</a> <a href="/tags/ZK/" style="font-size: 15px;">ZK</a> <a href="/tags/eureka/" style="font-size: 10px;">eureka</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 12.5px;">设计模式</a>
     </div>
 </div>
     
@@ -445,16 +449,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/13/jvm-pre/" class="media-left">
+            <a href="/2019/12/31/j2ee-model-singleton/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="jvm">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="singleton单例模式">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-13T09:33:20.000Z">2019-12-13</time></div>
-                    <a href="/2019/12/13/jvm-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">jvm</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-31T03:36:10.000Z">2019-12-31</time></div>
+                    <a href="/2019/12/31/j2ee-model-singleton/" class="title has-link-black-ter is-size-6 has-text-weight-normal">singleton单例模式</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -464,16 +468,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/13/mysql-index/" class="media-left">
+            <a href="/2019/12/31/j2ee-%E5%B9%82%E7%AD%89/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="mysql索引">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="接口幂等">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-13T07:39:12.000Z">2019-12-13</time></div>
-                    <a href="/2019/12/13/mysql-index/" class="title has-link-black-ter is-size-6 has-text-weight-normal">mysql索引</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-31T01:41:22.000Z">2019-12-31</time></div>
+                    <a href="/2019/12/31/j2ee-%E5%B9%82%E7%AD%89/" class="title has-link-black-ter is-size-6 has-text-weight-normal">接口幂等</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -483,16 +487,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/13/http-pre/" class="media-left">
+            <a href="/2019/12/25/j2ee-aop/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="http1.x、http 2和https">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="AOP原理及实现机制">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-13T06:23:41.000Z">2019-12-13</time></div>
-                    <a href="/2019/12/13/http-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">http1.x、http 2和https</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-25T01:52:38.000Z">2019-12-25</time></div>
+                    <a href="/2019/12/25/j2ee-aop/" class="title has-link-black-ter is-size-6 has-text-weight-normal">AOP原理及实现机制</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -502,16 +506,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/05/dubbo-pre/" class="media-left">
+            <a href="/2019/12/24/zk-eureka/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="dubbo学习">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="zk和eureka比较">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-05T07:59:27.000Z">2019-12-05</time></div>
-                    <a href="/2019/12/05/dubbo-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">dubbo学习</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-24T10:17:17.000Z">2019-12-24</time></div>
+                    <a href="/2019/12/24/zk-eureka/" class="title has-link-black-ter is-size-6 has-text-weight-normal">zk和eureka比较</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -521,16 +525,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/04/spring-pre/" class="media-left">
+            <a href="/2019/12/24/redis-learning-lock/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="spring学习前瞻">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="redis分布式锁">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-04T02:30:01.000Z">2019-12-04</time></div>
-                    <a href="/2019/12/04/spring-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">spring学习前瞻</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-24T07:46:52.000Z">2019-12-24</time></div>
+                    <a href="/2019/12/24/redis-learning-lock/" class="title has-link-black-ter is-size-6 has-text-weight-normal">redis分布式锁</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -555,7 +559,7 @@
                     <span class="level-item">December 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">6</span>
+                    <span class="level-item tag">13</span>
                 </span>
             </a>
         </li>
@@ -608,14 +612,21 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/J2EE/">
                         <span class="tag">J2EE</span>
-                        <span class="tag is-grey">3</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JAVA/">
+                        <span class="tag">JAVA</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
                 <div class="control">
                     <a class="tags has-addons" href="/tags/JVM/">
                         <span class="tag">JVM</span>
-                        <span class="tag is-grey">1</span>
+                        <span class="tag is-grey">2</span>
                     </a>
                 </div>
                 
@@ -657,7 +668,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/REDIS/">
                         <span class="tag">REDIS</span>
-                        <span class="tag is-grey">3</span>
+                        <span class="tag is-grey">4</span>
                     </a>
                 </div>
                 
@@ -671,7 +682,14 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/ZK/">
                         <span class="tag">ZK</span>
-                        <span class="tag is-grey">2</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/eureka/">
+                        <span class="tag">eureka</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -692,7 +710,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">
                         <span class="tag">设计模式</span>
-                        <span class="tag is-grey">1</span>
+                        <span class="tag is-grey">2</span>
                     </a>
                 </div>
                 
@@ -720,16 +738,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/13/jvm-pre/" class="media-left">
+            <a href="/2019/12/31/j2ee-model-singleton/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="jvm">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="singleton单例模式">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-13T09:33:20.000Z">2019-12-13</time></div>
-                    <a href="/2019/12/13/jvm-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">jvm</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-31T03:36:10.000Z">2019-12-31</time></div>
+                    <a href="/2019/12/31/j2ee-model-singleton/" class="title has-link-black-ter is-size-6 has-text-weight-normal">singleton单例模式</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -739,16 +757,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/13/mysql-index/" class="media-left">
+            <a href="/2019/12/31/j2ee-%E5%B9%82%E7%AD%89/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="mysql索引">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="接口幂等">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-13T07:39:12.000Z">2019-12-13</time></div>
-                    <a href="/2019/12/13/mysql-index/" class="title has-link-black-ter is-size-6 has-text-weight-normal">mysql索引</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-31T01:41:22.000Z">2019-12-31</time></div>
+                    <a href="/2019/12/31/j2ee-%E5%B9%82%E7%AD%89/" class="title has-link-black-ter is-size-6 has-text-weight-normal">接口幂等</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -758,16 +776,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/13/http-pre/" class="media-left">
+            <a href="/2019/12/25/j2ee-aop/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="http1.x、http 2和https">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="AOP原理及实现机制">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-13T06:23:41.000Z">2019-12-13</time></div>
-                    <a href="/2019/12/13/http-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">http1.x、http 2和https</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-25T01:52:38.000Z">2019-12-25</time></div>
+                    <a href="/2019/12/25/j2ee-aop/" class="title has-link-black-ter is-size-6 has-text-weight-normal">AOP原理及实现机制</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -777,16 +795,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/05/dubbo-pre/" class="media-left">
+            <a href="/2019/12/24/zk-eureka/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="dubbo学习">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="zk和eureka比较">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-05T07:59:27.000Z">2019-12-05</time></div>
-                    <a href="/2019/12/05/dubbo-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">dubbo学习</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-24T10:17:17.000Z">2019-12-24</time></div>
+                    <a href="/2019/12/24/zk-eureka/" class="title has-link-black-ter is-size-6 has-text-weight-normal">zk和eureka比较</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -796,16 +814,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/04/spring-pre/" class="media-left">
+            <a href="/2019/12/24/redis-learning-lock/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="spring学习前瞻">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="redis分布式锁">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-04T02:30:01.000Z">2019-12-04</time></div>
-                    <a href="/2019/12/04/spring-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">spring学习前瞻</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-24T07:46:52.000Z">2019-12-24</time></div>
+                    <a href="/2019/12/24/redis-learning-lock/" class="title has-link-black-ter is-size-6 has-text-weight-normal">redis分布式锁</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -830,7 +848,7 @@
                     <span class="level-item">December 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">6</span>
+                    <span class="level-item tag">13</span>
                 </span>
             </a>
         </li>
@@ -883,14 +901,21 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/J2EE/">
                         <span class="tag">J2EE</span>
-                        <span class="tag is-grey">3</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JAVA/">
+                        <span class="tag">JAVA</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
                 <div class="control">
                     <a class="tags has-addons" href="/tags/JVM/">
                         <span class="tag">JVM</span>
-                        <span class="tag is-grey">1</span>
+                        <span class="tag is-grey">2</span>
                     </a>
                 </div>
                 
@@ -932,7 +957,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/REDIS/">
                         <span class="tag">REDIS</span>
-                        <span class="tag is-grey">3</span>
+                        <span class="tag is-grey">4</span>
                     </a>
                 </div>
                 
@@ -946,7 +971,14 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/ZK/">
                         <span class="tag">ZK</span>
-                        <span class="tag is-grey">2</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/eureka/">
+                        <span class="tag">eureka</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -967,7 +999,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">
                         <span class="tag">设计模式</span>
-                        <span class="tag is-grey">1</span>
+                        <span class="tag is-grey">2</span>
                     </a>
                 </div>
                 

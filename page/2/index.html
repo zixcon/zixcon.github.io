@@ -132,13 +132,795 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-12-05T07:59:27.000Z">2019-12-05</time>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    4 minutes read (About 538 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/12/05/dubbo-pre/">dubbo学习</a>
+            
+        </h1>
+        <div class="content">
+            <p>#学习资料</p>
+<p>​    学习的最好资料来源是<strong>官方文档</strong>和<strong>源码</strong></p>
+<p>​    这里官方已经很全面了，包括了SPI，服务的引入导出，路由，集群，均衡策略，服务调用过程都做了详细的源码分析。</p>
+<p>详细参见：<a href="http://dubbo.apache.org/zh-cn/docs/source_code_guide/service-invoking-process.html" target="_blank" rel="noopener">官方Dubbo 服务调用过程</a></p>
+<p>#MOCK测试平台思路：</p>
+<p>​    参考dubbo的mock方式，实际项目中测试需要一些数据及结果流程比较长而且复杂，可以抽象一种类似的MOCK方式来简化此过程，参见<a href="https://testerhome.com/topics/7908" target="_blank" rel="noopener">基于 Dubbo 分布式服务框架的一种 MOCK 方式</a></p>
+<p><a href="https://www.jb51.net/article/152211.htm" target="_blank" rel="noopener">使用mockito框架mock掉整个RedisTemplate的示例</a></p>
+<h1 id="回声测试"><a href="#回声测试" class="headerlink" title="回声测试"></a>回声测试</h1><ul>
+<li>回声测试用于检测服务是否可用，回声测试按照正常请求流程执行，能够测试整个调用是否畅通，可用于监控。</li>
+<li>所有服务自动实现<code>EchoService</code>接口，只需要将任意服务引用强制转换为<code>EchoService</code>，即可使用。</li>
+</ul>
+<p><a href="https://blog.csdn.net/u012516166/article/details/78261065" target="_blank" rel="noopener">Dubbo中的回声测试是如何实现的？为什么能将任意的服务引用都强制转为EchoService？</a></p>
+<p>流程：</p>
+<ol>
+<li><p>java中关于强制转换的一个限制：必须有继承关系，就是说两个类之间要能够进行类型转换，必须有继承关系才可以。 可是很明显，我们写的Dubbo服务接口是与EchoService接口没有任何集成关系的，这是如何实现的呢？</p>
+<p>服务创建动态代理的时候，是在传入的接口中人为的增加了“EchoService.class”接口</p>
+</li>
+<li><p>EchoService接口中的方法是怎么实现的呢?</p>
+<p>因为Dubbo提供了很多Filter，针对这个EchoService提供了一个EchoFilter实现</p>
+</li>
+</ol>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">EchoService echoService = (EchoService) demoService;</span><br><span class="line">System.out.println(echoService.$echo(<span class="hljs-string">"hello"</span>));</span><br></pre></td></tr></table></figure>
+
+<h1 id="隐式参数-amp-上下文"><a href="#隐式参数-amp-上下文" class="headerlink" title="隐式参数&amp;上下文"></a>隐式参数&amp;上下文</h1><p><a href="https://www.jianshu.com/p/ab2afef2b279" target="_blank" rel="noopener">dubbo一些你不一定知道但是很好用的功能</a></p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-12-04T02:30:01.000Z">2019-12-04</time>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    3 minutes read (About 494 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/12/04/spring-pre/">spring学习前瞻</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="Spring-源码分析文章列表"><a href="#Spring-源码分析文章列表" class="headerlink" title="Spring 源码分析文章列表"></a>Spring 源码分析文章列表</h2><h3 id="Ⅰ-IOC"><a href="#Ⅰ-IOC" class="headerlink" title="Ⅰ. IOC"></a>Ⅰ. IOC</h3><table>
+<thead>
+<tr>
+<th>更新时间</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2018-05-30</td>
+<td><a href="http://www.coolblog.xyz/2018/05/30/Spring-IOC-容器源码分析系列文章导读/" target="_blank" rel="noopener">Spring IOC 容器源码分析系列文章导读</a></td>
+</tr>
+<tr>
+<td>2018-06-01</td>
+<td><a href="http://www.coolblog.xyz/2018/06/01/Spring-IOC-容器源码分析-获取单例-bean/" target="_blank" rel="noopener">Spring IOC 容器源码分析 - 获取单例 bean</a></td>
+</tr>
+<tr>
+<td>2018-06-04</td>
+<td><a href="http://www.coolblog.xyz/2018/06/04/Spring-IOC-容器源码分析-创建单例-bean/" target="_blank" rel="noopener">Spring IOC 容器源码分析 - 创建单例 bean 的过程</a></td>
+</tr>
+<tr>
+<td>2018-06-06</td>
+<td><a href="http://www.coolblog.xyz/2018/06/06/Spring-IOC-容器源码分析-创建原始-bean-对象/" target="_blank" rel="noopener">Spring IOC 容器源码分析 - 创建原始 bean 对象</a></td>
+</tr>
+<tr>
+<td>2018-06-08</td>
+<td><a href="http://www.coolblog.xyz/2018/06/08/Spring-IOC-容器源码分析-循环依赖的解决办法/" target="_blank" rel="noopener">Spring IOC 容器源码分析 - 循环依赖的解决办法</a></td>
+</tr>
+<tr>
+<td>2018-06-11</td>
+<td><a href="http://www.coolblog.xyz/2018/06/11/Spring-IOC-容器源码分析-填充属性到-bean-原始对象/" target="_blank" rel="noopener">Spring IOC 容器源码分析 - 填充属性到 bean 原始对象</a></td>
+</tr>
+<tr>
+<td>2018-06-11</td>
+<td><a href="http://www.coolblog.xyz/2018/06/11/Spring-IOC-容器源码分析-余下的初始化工作/" target="_blank" rel="noopener">Spring IOC 容器源码分析 - 余下的初始化工作</a></td>
+</tr>
+</tbody></table>
+<h3 id="Ⅱ-AOP"><a href="#Ⅱ-AOP" class="headerlink" title="Ⅱ. AOP"></a>Ⅱ. AOP</h3><table>
+<thead>
+<tr>
+<th>更新时间</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2018-06-17</td>
+<td><a href="http://www.coolblog.xyz/2018/06/17/Spring-AOP-源码分析系列文章导读/" target="_blank" rel="noopener">Spring AOP 源码分析系列文章导读</a></td>
+</tr>
+<tr>
+<td>2018-06-20</td>
+<td><a href="http://www.coolblog.xyz/2018/06/20/Spring-AOP-源码分析-筛选合适的通知器/" target="_blank" rel="noopener">Spring AOP 源码分析 - 筛选合适的通知器</a></td>
+</tr>
+<tr>
+<td>2018-06-20</td>
+<td><a href="http://www.coolblog.xyz/2018/06/20/Spring-AOP-源码分析-筛选合适的通知器/" target="_blank" rel="noopener">Spring AOP 源码分析 - 创建代理对象</a></td>
+</tr>
+<tr>
+<td>2018-06-22</td>
+<td><a href="http://www.coolblog.xyz/2018/06/22/Spring-AOP-源码分析-拦截器链的执行过程/" target="_blank" rel="noopener">Spring AOP 源码分析 - 拦截器链的执行过程</a></td>
+</tr>
+</tbody></table>
+<h3 id="Ⅲ-MVC"><a href="#Ⅲ-MVC" class="headerlink" title="Ⅲ. MVC"></a>Ⅲ. MVC</h3><table>
+<thead>
+<tr>
+<th>更新时间</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2018-06-29</td>
+<td><a href="http://www.coolblog.xyz/2018/06/29/Spring-MVC-原理探秘-一个请求的旅行过程/" target="_blank" rel="noopener">Spring MVC 原理探秘 - 一个请求的旅行过程</a></td>
+</tr>
+<tr>
+<td>2018-06-30</td>
+<td><a href="http://www.coolblog.xyz/2018/06/30/Spring-MVC-原理探秘-容器的创建过程/" target="_blank" rel="noopener">Spring MVC 原理探秘 - 容器的创建过程</a></td>
+</tr>
+</tbody></table>
+<p>参见：<a href="https://segmentfault.com/a/1190000015221968" target="_blank" rel="noopener">coolblog.xyz</a><br>作者：coolblog.xyz<br>转自：博客：<a href="http://www.coolblog.xyz/?r=sf" target="_blank" rel="noopener">http://www.coolblog.xyz</a></p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-12-02T06:17:15.000Z">2019-12-02</time>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    2 minutes read (About 255 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/12/02/mq-pre/">MQ学习（一）</a>
+            
+        </h1>
+        <div class="content">
+            <h4 id="MQ的作用"><a href="#MQ的作用" class="headerlink" title="MQ的作用"></a>MQ的作用</h4><p>​    消息队列中间件主要解决<strong>应用解耦</strong>，<strong>异步消息</strong>，<strong>流量削锋</strong>等问题</p>
+<h4 id="MQ带来的新问题"><a href="#MQ带来的新问题" class="headerlink" title="MQ带来的新问题"></a>MQ带来的新问题</h4><p>​    一般而言，引入的外部依赖越多，系统越脆弱。需要考虑消息的重复消费、消息丢失、保证消费顺序、数据一致性问题等</p>
+<h5 id="幂等及去重"><a href="#幂等及去重" class="headerlink" title="幂等及去重"></a>幂等及去重</h5><p>​    <strong>幂等性</strong>：就是用户对于同一操作发起的一次请求或者多次请求的结果是一致的</p>
+<p>​    <strong>去重策略</strong>：保证每条消息都有唯一编号(<strong>比如唯一流水号)</strong> </p>
+<p>​        方法1: 建立一个消息表，拿到这个消息做数据库的insert操作。给这个消息做一个唯一主键（primary key）或者唯一约束(uniq key)，那么就算出现重复消费的情况，就会导致主键冲突，那么就不再处理这条消息。</p>
+<p><a href="https://juejin.im/post/5de3c8026fb9a07194761641" target="_blank" rel="noopener">参见</a></p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-11-29T08:50:21.000Z">2019-11-29</time>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    21 minutes read (About 3156 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/11/29/zk-paxos/">zookeeper学习之Paxos协议</a>
+            
+        </h1>
+        <div class="content">
+            <h4 id="拜占庭将军问题"><a href="#拜占庭将军问题" class="headerlink" title="拜占庭将军问题"></a>拜占庭将军问题</h4><blockquote>
+<p>拜占庭位于如今的土耳其的伊斯坦布尔，是东罗马帝国的首都。由于当时拜占庭罗马帝国国土辽阔，为了防御目的，因此每个军队都分隔很远，将军与将军之间只能靠信差传消息。在战争的时候，拜占庭军队内所有将军必需达成 <strong>一致的共识</strong>，决定是否有赢的机会才去攻打敌人的阵营。但是，在军队内有可能存有叛徒和敌军的间谍，左右将军们的决定又扰乱整体军队的秩序，在进行共识时，结果并不代表大多数人的意见。这时候，在已知有成员不可靠的情况下，其余忠诚的将军在不受叛徒或间谍的影响下如何达成一致的协议，拜占庭问题就此形成。 </p>
+</blockquote>
+<p>​    拜占庭假设是对现实世界的模型化，由于硬件错误、网络拥塞或断开以及遭到恶意攻击，计算机和网络可能出现不可预料的行为。</p>
+<p>​    在常见的分布式系统中，总会发生诸如<strong>机器宕机</strong>或<strong>网络异常</strong>（包括消息的延迟、丢失、重复、乱序，还有网络分区）等情况。</p>
+<p>​    Paxos算法需要解决的问题就是如何在一个可能发生上述异常的分布式系统中，快速且正确地在集群内部对<strong>某个数据的值</strong>达成<strong>一致</strong>，并且保证不论发生以上任何异常，都不会破坏整个系统的一致性。</p>
+<p><img src="./zk-paxos/zk_paxos_1.png" alt></p>
+<p>历史／趣事：</p>
+<blockquote>
+<p>“Leslie Lamport也是用了长达9年的时间来完善这个算法的理论”–</p>
+<p>•Lamport大牛在他Paxos的第一个版本早在1990年就提交给ACM TOCS Jnl.的评审委员会了,但是当时没有人理解他的算法 ,主编回执他的稿子建议他用数学而不是神话描述他的算法 他们才会考虑接受这篇paper 。</p>
+<p>•Lamport大牛很生气 他有次就在一个会议上说:”为什么搞理论的这群人一点幽默感也没有呢?”, 他拒绝修改 而且withdraw了这篇文章。</p>
+<p>•1996年微软的Butler Lampson在WDAG96上提出了重新审视这篇文章 因为他读懂了</p>
+<p>•1997年MIT的Nancy Lynch在WDAG97上 根据原文重新改写了这篇文章，Lamport用数学形式化的定义并证明了Paxos。</p>
+<p>•于是在1998年的ACM TOCS上 这篇迟到了9年的paper终于被接受了。</p>
+<p>•后来2001年 Lamport大牛也作出了让步 他用简单的语言而不是神话故事 重述了原文 ，但是通篇还是没有数学符号， L大牛甚为固执 ，据他自己说 ，他检查过了自己的语言并没有歧义 ，不需要数学来描述。</p>
+<p>Google Chubby的作者说：“这个世界上只有一种一致性算法，那就是 （Paxos</p>
+</blockquote>
+<p>时间线：</p>
+<blockquote>
+<p>[1]. LESLIE LAMPORT, ROBERT SHOSTAK, MARSHALL PEASE. <a href="http://research.microsoft.com/en-us/um/people/lamport/pubs/byz.pdf" target="_blank" rel="noopener">The Byzantine General Problem</a>. 1982<br> [2]. Leslie Lamport. <a href="http://research.microsoft.com/en-us/um/people/lamport/pubs/lamport-paxos.pdf" target="_blank" rel="noopener">The Part-Time Parliament</a>. 1998<br> [3]. Leslie Lamport. <a href="http://research.microsoft.com/en-us/um/people/lamport/pubs/paxos-simple.pdf" target="_blank" rel="noopener">Paxos Made Simple</a>. 2001<br> [4]. Diego Ongaro and John Ousterhout. <a href="https://ramcloud.stanford.edu/raft.pdf" target="_blank" rel="noopener">Raft Paper</a>. 2013<br> [5]. Raft Website. <a href="https://raft.github.io/" target="_blank" rel="noopener">The Raft Consensus Algorithm</a><br> [6]. Raft Demo. <a href="http://thesecretlivesofdata.com/raft/" target="_blank" rel="noopener">Raft Animate Demo</a></p>
+</blockquote>
+<h4 id="Paxos共识算法"><a href="#Paxos共识算法" class="headerlink" title="Paxos共识算法"></a>Paxos共识算法</h4><p><img src="./zk-paxos/zk_paxos_2.png" alt></p>
+<p>​    Paxos本来是虚构故事中的一个小岛，议会通过表决来达成共识。但是议员可能离开，信使可能走丢，或者重复传递消息。对应到分布式系统的节点故障和网络故障。</p>
+<blockquote>
+<p> •假设议员要提议中午吃什么。如果有一个或者多个人同时提议，但一次只能通过一个提议，这就是Basic Paxos，是Paxos中最基础的协议。</p>
+<p>•显然Basic Paxos是不够高效的，如果将Basic Paxos并行起来，同时提出多个提议，比如中午吃什么、吃完去哪里嗨皮、谁请客等提议，议员也可以同时通过多个提议。这就是Multi-Paxos协议。</p>
+</blockquote>
+<h4 id="Basic-Paxos"><a href="#Basic-Paxos" class="headerlink" title="Basic Paxos"></a>Basic Paxos</h4><p><strong>角色</strong></p>
+<p>Paxos算法存在3种角色：Proposer、Acceptor、Learner，在实现中一个节点可以担任多个角色。</p>
+<blockquote>
+<p>•Proposer负责提出提案</p>
+<p>•Acceptor负责对提案进行投票</p>
+<p>•Learner获取投票结果，并帮忙传播</p>
+<p>Learner不参与投票过程，为了简化描述，我们直接忽略掉这个角色。</p>
+</blockquote>
+<p><strong>算法</strong></p>
+<blockquote>
+<p>运行过程分为两个阶段</p>
+<p>•Prepare阶段</p>
+<p>•Accept阶段</p>
+<p>•Proposer需要发出两次请求，Prepare请求和Accept请求。</p>
+<p>•Acceptor根据其收集的信息，接受或者拒绝提案。</p>
+</blockquote>
+<p><strong>Prepare阶段</strong></p>
+<blockquote>
+<p>•Proposer选择一个提案编号n，发送Prepare(n)请求给超过半数（或更多）的Acceptor。</p>
+<p>•Acceptor收到消息后，如果n比它之前见过的编号大，就回复这个消息，而且以后不会接受小于n的提案。另外，如果之前已经接受了小于n的提案，回复那个提案编号和内容给Proposer。</p>
+</blockquote>
+<p><strong>Accept阶段</strong></p>
+<blockquote>
+<p>•当Proposer收到超过半数的回复时，就可以发送Accept(n, value)请求了。 n就是自己的提案编号，value是Acceptor回复的最大提案编号对应的value，如果Acceptor没有回复任何提案，value就是Proposer自己的提案内容。</p>
+<p>•Acceptor收到消息后，如果n大于等于之前见过的最大编号，就记录这个提案编号和内容，回复请求表示接受。</p>
+<p>•当Proposer收到超过半数的回复时，说明自己的提案已经被接受。否则回到第一步重新发起提案。</p>
+</blockquote>
+<p><img src="./zk-paxos/zk_paxos_3.png" alt></p>
+<h4 id="共识过程"><a href="#共识过程" class="headerlink" title="共识过程"></a>共识过程</h4><p><strong>情况</strong>1<strong>：提案已接受</strong></p>
+<p><img src="./zk-paxos/zk_paxos_5.png" alt></p>
+<blockquote>
+<p>•这个过程表示，S1收到客户端的提案X，于是S1作为Proposer，给S1-S3发送Prepare(3.1)请求，由于Acceptor S1-S3没有接受过任何提案，所以接受该提案。然后Proposer S1-S3发送Accept(3.1, X)请求，提案X成功被接受。</p>
+<p>•在提案X被接受后，S5收到客户端的提案Y，S5给S3-S5发送Prepare(4.5)请求。对S3来说，4.5比3.1大，且已经接受了X，它会回复这个提案 (3.1, X)。S5收到S3-S5的回复后，使用X替换自己的Y，于是发送Accept(4.5, X)请求。S3-S5接受提案。最终所有Acceptor达成一致，都拥有相同的值X。</p>
+<p>•这种情况的结果是：<strong>新**</strong>Proposer<strong>**会使用已接受的提案</strong></p>
+</blockquote>
+<p><strong>情况</strong>2<strong>：提案未接受，新</strong>Proposer<strong>可见</strong></p>
+<p><img src="./zk-paxos/zk_paxos_6.png" alt></p>
+<blockquote>
+<p>•S3接受了提案(3.1, X)，但S1-S2还没有收到请求。此时S3-S5收到Prepare(4.5)，S3会回复已经接受的提案(3.1, X)，S5将提案值Y替换成X，发送Accept(4.5, X)给S3-S5，对S3来说，编号4.5大于3.1，所以会接受这个提案。</p>
+<p>•然后S1-S2接受Accept(3.1, X)，最终所有Acceptor达成一致。</p>
+<p>•这种情况的结果是：<strong>新</strong>Proposer会使用已提交的值，两个提案都能成功</p>
+</blockquote>
+<p><strong>情况</strong>3： <strong>提案未接受，新</strong>Proposer<strong>不可见</strong> </p>
+<p><img src="./zk-paxos/zk_paxos_7.png" alt></p>
+<blockquote>
+<p>•S1接受了提案(3.1, X)，S3先收到Prepare(4.5)，后收到Accept(3.1, X)，由于3.1小于4.5，会直接拒绝这个提案。所以提案X无法收到超过半数的回复，这个提案就被阻止了。提案Y可以顺利通过。</p>
+<p>•这种情况的结果是：新<strong>Proposer</strong>使用自己的提案，旧提案被阻止</p>
+</blockquote>
+<p><strong>活锁</strong></p>
+<p><img src="./zk-paxos/zk_paxos_8.png" alt></p>
+<blockquote>
+<p>•活锁发生的几率很小，但是会严重影响性能。就是两个或者多个Proposer在Prepare阶段发生互相抢占的情形。</p>
+<p>•解决方案是Proposer失败之后给一个随机的等待时间，这样就减少同时请求的可能。</p>
+</blockquote>
+<h4 id="Multi-Paxos"><a href="#Multi-Paxos" class="headerlink" title="Multi-Paxos"></a>Multi-Paxos</h4><blockquote>
+<p>•它会从Proposer中选出一个Leader，只由Leader提交Proposal，还可以省去Prepare阶段，减少了性能损失。当然，直接把Basic Paxos的多个Proposer的机制搬过来也是可以的，只是性能不够高。</p>
+<p>•将Basic Paxos并行之后，就可以同时处理多个提案了，因此要能存储不同的提案，也要保证提案的顺序。</p>
+</blockquote>
+<p>上文提到的活锁，也可以使用Multi-Paxos来解决</p>
+<p><strong>Multi-Paxos需要解决的问题</strong></p>
+<p><strong>1. Leader选举</strong></p>
+<blockquote>
+<p>•一个最简单的选举方法，就是Server ID最大的当Leader。</p>
+<p>•每个Server间隔T时间向其他Server发送心跳包，如果一个Server在2T时间内没有收到来自更高ID的心跳，那么它就成为Leader。</p>
+<p>•其他Proposer，必须拒绝客户端的请求，或将请求转发给Leader。</p>
+<p>•当然，还可以使用其他更复杂的选举方法，这里不再详述。</p>
+</blockquote>
+<p><strong>2.省略Prepare阶段</strong></p>
+<blockquote>
+<p>•Prepare的作用是阻止旧的提案，以及检查是否有已接受的提案值。</p>
+<p>•当只有一个Leader发送提案的时候，Prepare是不会产生冲突的，可以省略Prepare阶段，这样就可以减少一半RPC请求。</p>
+<p>•Prepare请求的逻辑修改为：</p>
+<p>–Acceptor记录一个全局的最大提案编号</p>
+<p>–回复最大提案编号，如果当前entry以及之后的所有entry都没有接受任何提案，回复noMoreAccepted</p>
+<p>–当Leader收到超过半数的noMoreAccepted回复，之后就不需要Prepare阶段了，只需要发送Accept请求。直到Accept被拒绝，就重新需要Prepare阶段。</p>
+</blockquote>
+<p><strong>3. 完整信息流</strong></p>
+<blockquote>
+<p>•Basic Paxos只需超过半数的节点达成一致。但是在Multi-Paxos中，这种方式可能会使一些节点无法得到完整的entry信息。我们希望每个节点都拥有全部的信息。</p>
+<p>•只有Proposer知道一个提案是否被接受了（根据收到的回复），而Acceptor无法得知此信息。</p>
+</blockquote>
+<p>第1个问题的解决方案很简单，就是Proposer给全部节点发送Accept请求。</p>
+<p>第2个问题稍微复杂一些。首先，我们可以增加一个Success RPC，让Proposer显式地告诉Acceptor，哪个提案已经被接受了，这个是完全可行的，只不过还可以优化一下，减少请求次数。</p>
+<p><strong>优化策略</strong></p>
+<p><img src="./zk-paxos/zk_paxos_9.png" alt></p>
+<blockquote>
+<p>在Accept请求中，增加一个firstUnchosenIndex参数，表示Proposer的第一个未接受的Index，这个参数隐含的意思是，对该Proposer来说，小于Index的提案都已经被接受了。因此Acceptor可以利用这个信息，把小于Index的提案标记为已接受。</p>
+<p>另外要注意的是，只能标记该Proposer的提案，因为如果发生Leader切换，不同的Proposer拥有的信息可能不同，不区分Proposer直接标记的话可能会不一致。</p>
+</blockquote>
+<blockquote>
+<p>Proposer正在准备提交Index=2的Accept请求，0和1是已接受的提案，因此firstUnchosenIndex=2。当Acceptor收到请求后，比较Index，就可以将Dumplings提案标记为已接受。</p>
+<p>由于之前提到的Leader切换的情况，仍然需要显式请求才能获得完整信息。在Acceptor回复Accept消息时，带上自己的firstUnchosenIndex。如果比Proposer的小，那么就需要发送Success(index, value)，Acceptor将收到的index标记为已接受，再回复新的firstUnchosenIndex，如此往复直到两者的index相等。</p>
+</blockquote>
+<p>这篇文章的分析来源于网络，具体没有记录来源，如有侵权，请联系我删除，谢谢！</p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-11-29T08:29:47.000Z">2019-11-29</time>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    16 minutes read (About 2393 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/11/29/zk-pre/">zookeeper学习前瞻</a>
+            
+        </h1>
+        <div class="content">
+            <h4 id="ZK的由来"><a href="#ZK的由来" class="headerlink" title="ZK的由来"></a>ZK的由来</h4><figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">What is ZooKeeper?</span><br><span class="line">       ZooKeeper is a centralized service for maintaining configuration information, naming, providing distributed synchronization, and providing group services. All of these kinds of services are used in some form or another by distributed applications. Each time they are implemented there is a lot of work that goes into fixing the bugs and race conditions that are inevitable. Because of the difficulty of implementing these kinds of services, applications initially usually skimp on them, which make them brittle in the presence of change and difficult to manage. Even when done correctly, different implementations of these services lead to management complexity when the applications are deployed.</span><br></pre></td></tr></table></figure>
+
+<p>​    Zookeeper 分布式服务框架是Apache Hadoop 的一个子项目，它主要是用来解决分布式应用中经常遇到的一些数据管理问题，如：统一命名服务、状态同步服务、集群管理、分布式应用配置项的管理等。</p>
+<blockquote>
+<p>​    Zookeeper 最早起源于雅虎研究院的一个研究小组。在当时，研究人员发现，在雅虎内部很多大型系统基本都需要依赖一个类似的系统来进行分布式协调，但是这些系统往往都存在分布式单点问题。</p>
+<p>​    所以，雅虎的开发人员就试图开发一个通用的无单点问题的分布式协调框架，以便让开发人员将精力集中在处理业务逻辑上。</p>
+<p>​    关于“ZooKeeper”这个项目的名字，其实也有一段趣闻。在立项初期，考虑到之前内部很多项目都是使用动物的名字来命名的（例如著名的Pig项目)，雅虎的工程师希望给这个项目也取一个动物的名字。</p>
+<p>​    时任研究院的首席科学家 Raghu Ramakrishnan 开玩笑地说：“在这样下去，我们这儿就变成动物园了！”</p>
+<p>​    此话一出，大家纷纷表示就叫动物园管理员吧，因为各个以动物命名的分布式组件放在一起，雅虎的整个分布式系统看上去就像一个大型的动物园了。</p>
+<p>​    而 Zookeeper 正好要用来进行分布式环境的协调，于是，Zookeeper 的名字也就由此诞生了。</p>
+<p> ——《Paxos到  ZooKeeper 》</p>
+</blockquote>
+<h4 id="ZK的目标"><a href="#ZK的目标" class="headerlink" title="ZK的目标"></a>ZK的目标</h4><p>​     将那些复杂且容易出错的分布式一致性服务封装起来，构成一个高效可靠的原语集，并以一系列简单易用的接口提供给用户使用。   </p>
+<blockquote>
+<p>原语： </p>
+<p>  操作系统或计算机网络用语范畴。它是由若干条指令组成的，用于完成一定功能的一个过程。具有不可分割性，即原语的执行必须是连续的，在执行过程中不允许被中断。</p>
+</blockquote>
+<p><strong>文件系统</strong></p>
+<p><img src="./zk-pre/zk_pre_1.png" alt></p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">名称空间由 ZooKeeper 中的数据寄存器组成，称为 Znode，这些类似于文件和目录。</span><br><span class="line"></span><br><span class="line">与为存储设计的典型文件系统不同，ZooKeeper 数据保存在内存中，这意味着 ZooKeeper 可以实现高吞吐量和低延迟。</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>有四种类型的znode：</p>
+<p>1、PERSISTENT-持久化目录节点</p>
+<p>客户端与zookeeper断开连接后，该节点依旧存在</p>
+<p>2、 PERSISTENT_SEQUENTIAL-持久化顺序编号目录节点</p>
+<p>客户端与zookeeper断开连接后，该节点依旧存在，只是Zookeeper给该节点名称进行顺序编号</p>
+<p>3、EPHEMERAL-临时目录节点</p>
+<p>客户端与zookeeper断开连接后，该节点被删除</p>
+<p>4、EPHEMERAL_SEQUENTIAL-临时顺序编号目录节点</p>
+<p>客户端与zookeeper断开连接后，该节点被删除，只是Zookeeper给该节点名称进行顺序编号</p>
+</blockquote>
+<p><strong>通知机制</strong></p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Watcher （事件监听器） ： ZooKeeper 允许用户在指定节点上注册一些 Watcher，并且在一些特定事件触发的时候，ZooKeeper 服务端会将事件通知到感兴趣的客户端上去，该机制是 ZooKeeper 实现分布式协调服务的重要特性。</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="ZK的应用场景"><a href="#ZK的应用场景" class="headerlink" title="ZK的应用场景"></a>ZK的应用场景</h4><p><strong>命名服务</strong></p>
+<blockquote>
+<p>在zookeeper的文件系统里创建一个目录，即有唯一的path。在我们无法确定上游程序的部署机器时即可与下游程序约定好path，通过path即能互相探索发现</p>
+</blockquote>
+<p><strong>配置管理</strong></p>
+<p><img src="./zk-pre/zk_pre_2.png" alt></p>
+<blockquote>
+<p>如果程序分散部署在多台机器上，要逐个改变配置就变得困难。好吧，现在把这些配置全部放到zookeeper上去，保存在 Zookeeper 的某个目录节点中，然后所有相关应用程序对这个目录节点进行监听，一旦配置信息发生变化，每个应用程序就会收到 Zookeeper 的通知，然后从 Zookeeper 获取新的配置信息应用到系统中就好。</p>
+</blockquote>
+<p><strong>集群管理</strong></p>
+<p><img src="./zk-pre/zk_pre_3.png" alt></p>
+<blockquote>
+<p><strong>1.</strong>机器退出和加入</p>
+<p> 所有机器约定在父目录GroupMembers下创建临时目录节点，然后监听父目录节点的子节点变化消息。一旦有机器挂掉，该机器与 zookeeper的连接断开，其所创建的临时目录节点被删除，所有其他机器都收到通知。新机器加入 也是类似，所有机器收到通知</p>
+<p>2.选举master</p>
+<p>举个最简单的例子：所有机器创建临时顺序编号目录节点，每次选取编号最小的机器作为master</p>
+</blockquote>
+<p><strong>分布式锁</strong></p>
+<p><img src="./zk-pre/zk_pre_4.png" alt></p>
+<blockquote>
+<p>锁服务可以分为两类：一个是保持独占，另一个是控制时序。</p>
+<p>独占锁：我们将zookeeper上的一个znode看作是一把锁，通过createznode的方式来实现。所有客户端都去创建 /distribute_lock 节点，最终成功创建的那个客户端也即拥有了这把锁。用完删除掉自己创建的distribute_lock 节点就释放出锁。</p>
+<p>时序锁：预先创建 /distribute_lock 节点，所有客户端在它下面创建临时顺序编号目录节点，和选master一样，编号最小的获得锁，用完删除</p>
+</blockquote>
+<p><strong>队列管理</strong></p>
+<blockquote>
+<p>1.同步队列</p>
+<p>​    当一个队列的成员都聚齐时，这个队列才可用，否则一直等待所有成员到达。</p>
+<p>​    实现方案：在约定目录下创建临时目录节点，监听节点数目是否是我们要求的数目</p>
+<p>2.FIFO 方式进行入队和出队操作</p>
+<p>​    入列有编号，出列按编号</p>
+</blockquote>
+<p>ZK可以实现的功能远远不止这些，这里只列出一些经典使用场景</p>
+<h4 id="ZK集群"><a href="#ZK集群" class="headerlink" title="ZK集群"></a>ZK集群</h4><p>Master/Slave 模式（主备模式）:</p>
+<p>​    在这种模式中，通常 Master 服务器作为主服务器提供写服务，其他的 Slave 服务器从服务器通过异步复制的方式获取 Master 服务器最新的数据提供读服务。</p>
+<p><strong>角色</strong></p>
+<p><img src="./zk-pre/zk_pre_5.png" alt></p>
+<blockquote>
+<p>引入了Leader、Follower 和 Observer 三种角色。 </p>
+<p>1.Leader 既可以为客户端提供写服务又能提供读服务</p>
+<p>2.Follower 和  Observer 都只能提供读服务</p>
+<p>3.Follower 和 Observer 唯一的区别在于 Observer 机器不参与 Leader 的选举过程，也不参与写操作的“过半写成功”策略，因此 Observer 机器可以在不影响写性能的情况下提升集群的读性能</p>
+</blockquote>
+<p><img src="./zk-pre/zk_pre_6.png" alt></p>
+<h4 id="ZK一致性原理"><a href="#ZK一致性原理" class="headerlink" title="ZK一致性原理"></a>ZK一致性原理</h4><blockquote>
+<p>ZK的一致性算法参照paxos算法实现，但不完全实现paxos算法。</p>
+<p>ZAB 协议并不像 Paxos 算法那样，是一种通用的分布式一致性算法，它是一种特别为 ZooKeeper 设计的崩溃可恢复的原子消息广播算法。</p>
+<p>ZAB（ZooKeeper Atomic Broadcast 原子广播）协议是为分布式协调服务 ZooKeeper 专门设计的一种支持崩溃恢复的原子广播协议。</p>
+</blockquote>
+<p>ZAB 协议包括两种基本的模式，分别是<strong>崩溃恢复</strong>和<strong>消息广播</strong>。</p>
+<blockquote>
+<p>当整个服务框架在启动过程中，或是当 Leader 服务器出现网络中断、崩溃退出与重启等异常情况时，ZAB 协议就会进入恢复模式并选举产生新的 Leader 服务器。</p>
+<p>当选举产生了新的 Leader 服务器，同时集群中已经有过半的机器与该 Leader 服务器完成了状态同步之后，ZAB 协议就会退出恢复模式。</p>
+<p>其中，所谓的状态同步是指数据同步，用来保证集群中存在过半的机器能够和 Leader 服务器的数据状态保持一致。</p>
+<p>当集群中已经有过半的 Follower 服务器完成了和 Leader 服务器的状态同步，那么整个服务框架就可以进人消息广播模式了。</p>
+<p>当一台同样遵守 ZAB 协议的服务器启动后加入到集群中时，如果此时集群中已经存在一个 Leader 服务器在负责进行消息广播。</p>
+<p>那么新加入的服务器就会自觉地进人数据恢复模式：找到 Leader 所在的服务器，并与其进行数据同步，然后一起参与到消息广播流程中去。</p>
+</blockquote>
+<p>请看下文paxos解读</p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-11-29T05:54:08.000Z">2019-11-29</time>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    17 minutes read (About 2617 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/11/29/j2ee-log/">LOG日志桥接关系</a>
+            
+        </h1>
+        <div class="content">
+            <p><img src="./j2ee-log/log_1.png" alt></p>
+<p>这里思考几个问题：</p>
+<p>1.日志框架是给Java应用提供的方便进行记录日志的，那为什么又不让在应用中直接使用其API呢？</p>
+<p>2.这里面推崇使用的SLF4J是什么呢？</p>
+<p>3.所谓的门面模式又是什么东西呢？</p>
+<p>4.它是怎么做到统一的呢？</p>
+<h4 id="门面模式"><a href="#门面模式" class="headerlink" title="门面模式"></a>门面模式</h4><p><strong>迪米特法则</strong>：<strong>talk only to your immediate friends</strong></p>
+<pre><code>迪米特法则的[初衷](https://baike.baidu.com/item/初衷)在于降低类之间的[耦合](https://baike.baidu.com/item/耦合/2821124)。由于每个类尽量减少对其他类的依赖，因此，很容易使得系统的功能模块功能独立，相互之间不存在（或很少有）依赖关系。
+
+迪米特法[友元类](https://baike.baidu.com/item/友元类/518734)转达。因此，应用迪米特法则有可能造成的一个后果就是：系统中存在大量的中介类，这些类之所以存在完全是为了传递类之间的相互调用关系这在一定程度上增加了系统的复杂度。</code></pre><p><img src="./j2ee-log/log_2.png" alt></p>
+<p>​    外观模式创造出一个外观对象，将客户端所涉及的属于一个子系统的协作伙伴的数量减到最少，使得客户端与子系统内部的对象的相互作用被外观对象所取代。外观类充当了客户类与子系统类之间的“第三者”，降低了客户类与子系统类之间的耦合度  </p>
+<p>更形象点：</p>
+<p><img src="./j2ee-log/log_3.png" alt></p>
+<p><img src="./j2ee-log/log_4.png" alt></p>
+<p><strong>优点</strong>:</p>
+<p>　　<strong>-</strong> <strong>松耦合</strong></p>
+<p>　　用户与子系统解耦，屏蔽子系统；可以提高子系统的独立性； </p>
+<p>　　<strong>-</strong> <strong>简单易用</strong></p>
+<p>　　简化用户与子系统的依赖关系；<br>    用户只与门面对接，有统一的入口；不需要知道所有子系统及内部构造；</p>
+<p>　　<strong>-</strong> <strong>更好的划分访问层次</strong></p>
+<p>　　有些方法是对系统外的，有些方法是系统内部相互交互的使用的。子系统把那些暴露给外部的功能集中到门面中，这样就可以实现客户端的使用，很好的隐藏了子系统内部的细节。</p>
+<p><strong>缺点</strong>:</p>
+<pre><code>不能很好地限制客户使用子系统类，如果对客户访问子系统类做太多的限制则减少了可变性和灵活性。
+
+在不引入抽象外观类的情况下，增加新的子系统可能需要修改外观类或客户端的源代码，违背了“开闭原则”。</code></pre><p>开闭原则两个主要特征：</p>
+<p>（1）对于扩展是开放的（Open for extension）。</p>
+<p>（2）对于修改是关闭的（Closed for modification）。</p>
+<p><strong>错误使用行为</strong></p>
+<pre><code>不要通过继承一个外观类在子系统中加入新的行为，这种做法是错误的。
+
+外观模式的用意是为子系统提供一个集中化和简化的沟通渠道，而不是向子系统加入新的行为，新的行为的增加应该通过修改原有子系统类或增加新的子系统类来实现，不能通过外观类来实现。</code></pre><h4 id="Log日志框架关系"><a href="#Log日志框架关系" class="headerlink" title="Log日志框架关系"></a>Log日志框架关系</h4><ol>
+<li>1996年早期，欧洲安全电子市场项目组决定编写它自己的程序跟踪API(Tracing API)。经过不断的完善，这个API终于成为一个十分受欢迎的Java日志软件包，即Log4j。后来Log4j成为Apache基金会项目中的一员。</li>
+<li>期间Log4j近乎成了Java社区的日志标准。据说Apache基金会还曾经建议Sun引入Log4j到java的标准库中，但Sun拒绝了。</li>
+<li>2002年Java1.4发布，Sun推出了自己的日志库JUL(Java Util Logging),其实现基本模仿了Log4j的实现。在JUL出来以前，Log4j就已经成为一项成熟的技术，使得Log4j在选择上占据了一定的优势。</li>
+<li>接着，Apache推出了Jakarta Commons Logging，JCL只是定义了一套日志接口(其内部也提供一个Simple Log的简单实现)，支持运行时动态加载日志组件的实现，也就是说，在你应用代码里，只需调用Commons Logging的接口，底层实现可以是Log4j，也可以是Java Util Logging。</li>
+<li>后来(2006年)，Ceki Gülcü离开了Apache。然后先后创建了Slf4j(日志门面接口，类似于Commons Logging)和Logback(Slf4j的实现)两个项目，并回瑞典创建了QOS公司，QOS官网上是这样描述Logback的：The Generic，Reliable Fast&amp;Flexible Logging Framework(一个通用，可靠，快速且灵活的日志框架)。从此以后，Java日志领域被划分为两大阵营：Commons Logging阵营和Slf4j阵营。</li>
+<li>2012年，Apache重写了Log4j 1.x，成立了新的项目Log4j 2</li>
+</ol>
+<p><img src="./j2ee-log/log_5.png" alt></p>
+<p>Commons Logging和Slf4j是日志门面</p>
+<p>Log4j和Logback则是具体的日志实现方案</p>
+<p><img src="./j2ee-log/log_6.png" alt></p>
+<p>这里可以看出分为三个层次：</p>
+<p>抽象层：提供应用直接调用api</p>
+<p>适配层：提供于抽象层和实现层的适配实现</p>
+<p>实现层：api的实现</p>
+<p><strong>通过log4j-slf4j-impl来看是如何桥接</strong></p>
+<p><img src="./j2ee-log/log_7.png" alt></p>
+<table>
+<thead>
+<tr>
+<th>jar包名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>slf4j-log4j12-1.7.13.jar</strong></td>
+<td>Log4j1.2版本的桥接器，你需要将Log4j.jar加入Classpath。</td>
+</tr>
+<tr>
+<td><strong>slf4j-jdk14-1.7.13.jar</strong></td>
+<td>java.util.logging的桥接器，Jdk原生日志框架。</td>
+</tr>
+<tr>
+<td><strong>slf4j-nop-1.7.13.jar</strong></td>
+<td>NOP桥接器，默默丢弃一切日志。</td>
+</tr>
+<tr>
+<td><strong>slf4j-simple-1.7.13.jar</strong></td>
+<td>一个简单实现的桥接器，该实现输出所有事件到System.err.  只有Info以及高于该级别的消息被打印，在小型应用中它也许是有用的。</td>
+</tr>
+<tr>
+<td><strong>slf4j-jcl-1.7.13.jar</strong></td>
+<td>Jakarta Commons Logging 的桥接器.  这个桥接器将Slf4j所有日志委派给Jcl。</td>
+</tr>
+<tr>
+<td><strong>logback-classic-1.0.13.jar(requires  logback-core-1.0.13.jar)</strong></td>
+<td>Slf4j的原生实现，Logback直接实现了Slf4j的接口，因此使用Slf4j与Logback的结合使用也意味更小的内存与计算开销</td>
+</tr>
+</tbody></table>
+<p><strong>如何将日志框架指向SLF4J</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>jar包名</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>log4j-over-slf4j.jar</strong></td>
+<td>将Log4j  1重定向到Slf4j</td>
+</tr>
+<tr>
+<td><strong>jcl-over-slf4j.jar</strong></td>
+<td>将Commons  Logging里的Simple  Logger重定向到slf4j</td>
+</tr>
+<tr>
+<td><strong>jul-to-slf4j.jar</strong></td>
+<td>将Java  Util  Logging重定向到Slf4j</td>
+</tr>
+<tr>
+<td><strong>log4j-to-slf4j</strong></td>
+<td>log4j 2 API到slf4j的适配</td>
+</tr>
+</tbody></table>
+<p><strong>Slf4j/log4j2集成举例</strong></p>
+<p>如果我们在系统中需要使用slf4j和log4j2来进行日志输出的话，我们需要引入下面的jar包：</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">log4j2核心jar包：log4j-api-2.7.jar和log4j-core-2.7.jar</span><br><span class="line">slf4j核心jar包：slf4j-api-1.6.4.jar</span><br><span class="line">slf4j与log4j2的桥接包：log4j-slf4j-impl-2.7.jar，这个包的作用就是使用slf4j的api，但是底层实现是基于log4j2</span><br></pre></td></tr></table></figure>
+
+<p><strong>死循环问题</strong></p>
+<table>
+<thead>
+<tr>
+<th>多个日志jar包形成死循环的条件</th>
+<th>产生原因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>log4j-over-slf4j.jar和slf4j-log4j12.jar</strong></td>
+<td>由于slf4j-log4j12.jar的存在会将所有日志调用委托给log4j。但由于同时由于log4j-over-slf4j.jar的存在，会将所有对log4j  api的调用委托给相应等值的slf4j,所以log4j-over-slf4j.jar和slf4j-log4j12.jar同时存在会形成死循环</td>
+</tr>
+<tr>
+<td><strong>jcl-over-slf4j</strong> <strong>与</strong> <strong>slf4j-jcl</strong></td>
+<td>Jcl-over-slf4j  : commons-logging切换到slf4j  slf4j-jcl  : slf4j切换到commons-logging</td>
+</tr>
+<tr>
+<td><strong>jul-to-slf4j.jar和slf4j-jdk14.jar</strong></td>
+<td>由于slf4j-jdk14.jar的存在会将所有日志调用委托给jdk的log。但由于同时jul-to-slf4j.jar的存在，会将所有对jul api的调用委托给相应等值的slf4j，所以jul-to-slf4j.jar和slf4j-jdk14.jar同时存在会形成死循环</td>
+</tr>
+</tbody></table>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">死循环日志：</span><br><span class="line">SLF4J: Detected both log4j-over-slf4j.jar AND slf4j-log4j12.jar on the class path, preempting StackOverflowError.   </span><br><span class="line">SLF4J: See also http://www.slf4j.org/codes.html#log4jDelegationLoop for more details.</span><br></pre></td></tr></table></figure>
+
+<p>看到这里，是不是很头大，这么多工具类，怎么管理这些包之间的关系，使得日志的使用情况和预期一致，并且规避日志引起的问题呢？</p>
+<h4 id="日志依赖包管理方案"><a href="#日志依赖包管理方案" class="headerlink" title="日志依赖包管理方案"></a><strong>日志依赖包管理方案</strong></h4><p><strong>方案1:采用maven的exclusion方案</strong>  </p>
+<p><img src="./j2ee-log/log_8.png" alt></p>
+<p>优点是exclusion是maven原生提供的</p>
+<p>不足之处是如果有多个组件都依赖了commons-logging，则需要在很多处增加，使用起来不太方便</p>
+<p><strong>方案2: 在maven声明commons-logging的scope为provided</strong>  </p>
+<p>​    这种方案在调试代码时还是有可能导致IDE将commons-logging放置在classpath下，从而导致程序运行时出现异常</p>
+<p><strong>方案3:在maven私服中增加虚拟的版本号</strong> 【建议方案】</p>
+<p><img src="./j2ee-log/log_9.png" alt></p>
+<p>​    好处是声明方式比较简单，用IDE调试代码时也不会出现问题，不足之处是maven中央仓库中是不存在的，需要发布到自己的maven私服中。</p>
+<p>​    但是，这种方式得注意，由于maven的加载关系，必须得把此配置声明放在顶级pom文件中，保证优先加载此空jar包</p>
+<p><strong>虚拟版本号原理</strong></p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Maven 解析 pom.xml 文件时，同一个 jar 包只会保留一个，这样有效的避免因引入两个 jar 包导致的工程运行不稳定性。</span><br><span class="line"></span><br><span class="line">  	举例：假设 A-&gt;B-&gt;C-&gt;D1, E-&gt;F-&gt;D2，D1,D2 分别为 D 的不同版本。那么会引入哪个版本？</span><br></pre></td></tr></table></figure>
+
+<p>  <strong>Maven</strong> <strong>默认处理策略</strong></p>
+<ol>
+<li><p><strong>最短路径优先</strong></p>
+<pre><code>Maven 面对 D1 和 D2 时，会默认选择最短路径的那个 jar 包，即 D2。E-&gt;F-&gt;D2 比 A-&gt;B-&gt;C-&gt;D1 路径短 1。</code></pre></li>
+<li><p><strong>最先声明优先</strong>     </p>
+</li>
+</ol>
+<p>​        如果路径一样的话，举个： A-&gt;B-&gt;C1, E-&gt;F-&gt;C2 ，两个依赖路径长度都是 2，那么就选择最先声明。</p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-11-28T08:41:45.000Z">2019-11-28</time>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    7 minutes read (About 992 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/11/28/algorithm-lru/">lru算法</a>
+            
+        </h1>
+        <div class="content">
+            <h4 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h4><p>​    LRU（Least Recently Used）直译为“最近最少使用”。其实很多老外发明的词直译过来对于我们来说并不是特别好理解，甚至有些词并不在国人的思维模式之内，比如快速排序中的Pivot，模拟信号中的Analog 等等。笔者认为最好的理解方式就是看他诞生的原因，看这个概念的出现如何一步一步演变为现在的样子。为了力求方便理解，下面我们先来看看LRU是什么，主要是为了解决什么问题。</p>
+<p>​    我们的内存是有限的。所以当缓存数据在内存越来越多，以至于无法存放即将到来的新缓存数据时，就必须扔掉最不常用的缓存数据。所以对于LRU的抽象总结如下：</p>
+<ul>
+<li>缓存的容量是有限的</li>
+<li>当缓存容量不足以存放需要缓存的新数据时，必须丢掉最不常用的缓存数据</li>
+</ul>
+<h4 id="实现LRU"><a href="#实现LRU" class="headerlink" title="实现LRU"></a>实现LRU</h4><p>​    1.用一个数组来存储数据，给每一个数据项标记一个访问时间戳，每次插入新数据项的时候，先把数组中存在的数据项的时间戳更新。当数组空间已满时，将时间戳最小的数据项淘汰。</p>
+<p>​    2.利用一个链表来实现，每次新插入数据的时候将新数据插到链表的头部；每次缓存命中（即数据被访问），则将数据移到链表头部；那么当链表满的时候，就将链表尾部的数据丢弃。</p>
+<p>​    3.利用链表和hashmap。当需要插入新的数据项的时候，如果新数据项在链表中存在（一般称为命中），则把该节点移到链表头部，如果不存在，则新建一个节点，放到链表头部，若缓存满了，则把链表最后一个节点删除即可。在访问数据的时候，如果数据项在链表中存在，则把该节点移到链表头部，否则返回-1。这样一来在链表尾部的节点就是最近最久未访问的数据项。</p>
+<p><strong>比较</strong></p>
+<p>​    对于第一种方法，需要不停地维护数据项的访问时间戳，另外，在插入数据、删除数据以及访问数据时，时间复杂度都是O(n)。对于第二种方法，链表在定位数据的时候时间复杂度为O(n)。所以在一般使用第三种方式来是实现LRU算法。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LruLinkedHashMap</span>&lt;<span class="hljs-title">K</span>, <span class="hljs-title">V</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-title">LinkedHashMap</span>&lt;<span class="hljs-title">K</span>, <span class="hljs-title">V</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">private</span> Integer cacheSize;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">LruLinkedHashMap</span><span class="hljs-params">(<span class="hljs-keyword">int</span> initialCapacity)</span> </span>&#123;</span><br><span class="line">         </span><br><span class="line">        <span class="hljs-comment">// 由于LinkedHashMap是为自动扩容的，当table数组中元素大于Capacity * loadFactor的时候，就会自动进行两倍扩容。但是为了使缓存大小固定，就需要在初始化的时候传入容量大小和负载因子。为了使得到达设置缓存大小不会进行自动扩容，需要将初始化的大小进行计算再传入</span></span><br><span class="line">        <span class="hljs-keyword">int</span> capacity = (<span class="hljs-keyword">int</span>)Math.ceil(initialCapacity / <span class="hljs-number">0.75f</span>) + <span class="hljs-number">1</span>;</span><br><span class="line">      	<span class="hljs-comment">/*</span></span><br><span class="line"><span class="hljs-comment">         * 第三个参数设置为true，代表linkedlist按访问顺序排序，可作为LRU缓存</span></span><br><span class="line"><span class="hljs-comment">         * 第三个参数设置为false，代表按插入顺序排序，可作为FIFO缓存</span></span><br><span class="line"><span class="hljs-comment">         */</span></span><br><span class="line">        <span class="hljs-keyword">super</span>(capacity, <span class="hljs-number">0.75f</span>, <span class="hljs-keyword">true</span>);</span><br><span class="line">        cacheSize = initialCapacity;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">removeEldestEntry</span><span class="hljs-params">(Map.Entry&lt;K, V&gt; eldest)</span> </span>&#123;</span><br><span class="line">      	<span class="hljs-comment">//当返回true的时候，就会remove其中最久的元素</span></span><br><span class="line">        <span class="hljs-keyword">return</span> size() &gt; cacheSize;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>参见：<a href="[https://github.com/AobingJava/JavaFamily/blob/master/docs/redis/%E9%9B%86%E7%BE%A4%E9%AB%98%E5%8F%AF%E7%94%A8%E3%80%81%E5%93%A8%E5%85%B5%E3%80%81%E6%8C%81%E4%B9%85%E5%8C%96%E3%80%81LRU.md](https://github.com/AobingJava/JavaFamily/blob/master/docs/redis/集群高可用、哨兵、持久化、LRU.md)">LRU</a></p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2019-11-26T08:56:38.000Z">2019-11-26</time>
                 
                 
                 <span class="level-item has-text-grey">
                     
                     
-                    10 minutes read (About 1455 words)
+                    11 minutes read (About 1623 words)
                 </span>
                 
                 
@@ -151,17 +933,23 @@
             
         </h1>
         <div class="content">
-            <h4 id="缓存的击穿-穿透-和-雪崩"><a href="#缓存的击穿-穿透-和-雪崩" class="headerlink" title="缓存的击穿 穿透 和 雪崩"></a>缓存的击穿 穿透 和 雪崩</h4><h5 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h5><p>​    <em>缓存雪崩是指在我们设置缓存时采用了相同的过期时间，导致缓存在某一时刻同时失效</em>，请求全部转发到，瞬时压力过重雪崩。或在大部分数据都没缓存的时候被一次性同时访问。</p>
-<p>解决方案：<br>    缓存失效时的雪崩效应对底层系统的冲击非常可怕。我们可以用以下方式来避免：<br>    <strong>1.数据预热：</strong><br>        可以通过缓存reload机制，预先去更新缓存，再即将发生大并发访问前手动触发加载缓存不同的key，设置不同的过期时间，让缓存失效的时间点尽量均匀<br>    <strong>2.做二级缓存，或者双缓存策略：</strong><br>    A1为原始缓存，A2为拷贝缓存，A1失效时，可以访问A2，A1缓存失效时间设置为短期，A2设置<br>为长期。<br>    <strong>3.缓存永远不过期：</strong><br>        这里的“永远不过期”包含两层意思：<br>        1)从缓存上看，确实没有设置过期时间，这就保证了，不会出现热点key过期问题，也就是“物理”不过期。<br>        2)从功能上看，如果不过期，那不就成静态的了吗？所以我们把过期时间存在key对应的里，如果发现要过期了，通过一个后台的异步线程进行缓存的构建，也就是“逻辑”过期.</p>
-<p>​    4.用主从模式和集群模式来尽量保证缓存服务的高可用。</p>
+            <p>#缓存的击穿 穿透 和 雪崩 </p>
+<p>####缓存雪崩</p>
+<p>​    <strong>缓存雪崩是指在我们设置缓存时采用了相同的过期时间，导致缓存在某一时刻同时失效，请求全部转发到，瞬时压力过重雪崩。</strong>或在大部分数据都没缓存的时候被一次性同时访问。</p>
+<p>解决方案：<br>    缓存失效时的雪崩效应对底层系统的冲击非常可怕。我们可以用以下方式来避免：<br>    <strong>1.数据预热：</strong><br>        可以通过缓存reload机制，预先去更新缓存，再即将发生大并发访问前手动触发加载缓存不同的key，<strong>设置不同的过期时间</strong>，让缓存失效的时间点尽量均匀<br>    <strong>2.做二级缓存，或者双缓存策略：</strong><br>    A1为原始缓存，A2为拷贝缓存，A1失效时，可以访问A2，A1缓存失效时间设置为短期，A2设置<br>为长期。</p>
 <h4 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h4><p>​    对于一些设置了过期时间的key，如果这些key可能会在某些时间点被超高并发地访问，是一种非常“热点”的数据，这个时候，需要考虑一个问题：缓存被“击穿”的问题。</p>
 <p>​    这个和缓存雪崩的区别在于这里针对某一key缓存，前者则是很多key。<strong>缓存在某个时间点过期的时候，恰好在这个时间点对这个Key有大量的并发请求过来，这些请求发现缓存过期一般都会从后端DB加载数据并回设到缓存，这个时候大并发的请求可能会瞬间把后端DB压垮。</strong></p>
 <p>解决方案：<br>    1.<strong>使用互斥锁(mutex key)</strong><br>    业界比较常用的做法，是使用mutex。简单地来说，就是在缓存失效的时候（判断拿出来的值为空），不是立即去load db，而是先使用缓存工具的某些带成功操作返回值的操作（比如mutex key，当操作返回成功时，再进行Redis的SETNX或者Memcache的ADD）去set一个的操作并回设缓存；否则，就重试整个get缓存的方法。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">get</span><span class="hljs-params">(key)</span> </span>&#123;</span><br><span class="line">	String value = redis.get(key);</span><br><span class="line">	<span class="hljs-keyword">if</span> (value == <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">		<span class="hljs-comment">//代表缓存值过期</span></span><br><span class="line">		<span class="hljs-comment">//设置3min的超时，防止del操作失败的时候，下次缓存过期一直不能load db</span></span><br><span class="line">		<span class="hljs-keyword">if</span> (redis.setnx(key_mutex, <span class="hljs-number">1</span>, <span class="hljs-number">3</span> * <span class="hljs-number">60</span>) == <span class="hljs-number">1</span>) &#123;</span><br><span class="line">			<span class="hljs-comment">//代表设置成功</span></span><br><span class="line">			value = db.get(key);</span><br><span class="line">			redis.set(key, value, expire_secs);</span><br><span class="line">			redis.del(key_mutex);</span><br><span class="line">		&#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">			<span class="hljs-comment">//这个时候代表同时候的其他线程已经load db并回设到缓存了，这时候重试获取缓存值即可</span></span><br><span class="line">			sleep(<span class="hljs-number">50</span>);</span><br><span class="line">			get(key);</span><br><span class="line">			<span class="hljs-comment">//重试</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">		<span class="hljs-keyword">return</span> value;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>​    2.<strong>设置热点数据永远不过期</strong></p>
-<h4 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h4><p>​    缓存穿透是指查询一个一定不存在的数据，由于缓存是不命中时被动写的，并且出于容错考虑，如果从存储层查不到数据则不写入缓存，这将导致这个不存在的数据每次请求都要到存储层去查询，失去了缓存的意义。在流量大时，可能DB就挂掉了，要是有人利用不存在的key频繁攻击我们的应用，这就是漏洞。</p>
+<p>​    这里的“永远不过期”包含两层意思：<br>​        1)从缓存上看，确实没有设置过期时间，这就保证了，不会出现热点key过期问题，也就是“物理”不过期。<br>​        2)从功能上看，如果不过期，那不就成静态的了吗？所以我们把过期时间存在key对应的里，如果发现要过期了，通过一个后台的异步线程进行缓存的构建，也就是“逻辑”过期.</p>
+<p>​    4.用主从模式和集群模式来尽量保证缓存服务的高可用。</p>
+<p>​    使用场景：比如首页排名列表</p>
+<h4 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h4><p>​    缓存穿透是指<strong>查询一个一定不存在的数据</strong>，由于缓存是不命中时被动写的，并且出于容错考虑，如果从存储层查不到数据则不写入缓存，这将导致这个不存在的数据每次请求都要到存储层去查询，失去了缓存的意义。在流量大时，可能DB就挂掉了，要是有人利用不存在的key频繁攻击我们的应用，这就是漏洞。</p>
 <p>解决方案：<br>    有很多种方法可以有效地解决缓存穿透问题，</p>
 <p>​    1.最常见的则是采用<strong>布隆过滤器</strong>，将所有可能存在的数据哈希到一个足够大的bitmap中，一个一定不存在的数据会被这个bitmap拦截掉，从而避免了对底层存储系统的查询压力。</p>
-<p>​    2.另外也有一个更为简单粗暴的方法，如果一个查询返回的数据为空（不管是数据不存在，还是系统故障），我们仍然把这个空结果进行缓存，但它的过期时间会很短，最长不超过五分钟。</p>
+<p>​    2.另外也有一个更为简单粗暴的方法，如果一个查询返回的数据为空（不管是数据不存在，还是系统故障），我们仍然<strong>把这个空结果进行缓存</strong>，但它的过期时间会很短，最长不超过五分钟。</p>
 <p>​    3.<strong>Nginx对单个IP每秒访问次数进行限制</strong></p>
 <p>一般避免以上情况发生我们从三个时间段去分析下：</p>
 <ul>
@@ -177,6 +965,7 @@
 <p>​    数据库绝对不会死，限流组件确保了每秒只有多少个请求能通过。 只要数据库不死，就是说，对用户来说，3/5 的请求都是可以被处理的。 只要有 3/5 的请求可以被处理，就意味着你的系统没死，对用户来说，可能就是点击几次刷不出来页面，但是多点几次，就可以刷出来一次。</p>
 <p>​    <strong>这个在目前主流的互联网大厂里面是最常见的</strong></p>
 <p>参见：<a href="https://www.cnblogs.com/aobing/p/11801118.html" target="_blank" rel="noopener">敖丙的系列</a></p>
+<p><a href="https://juejin.im/post/5e01cb70f265da33e0569ac1" target="_blank" rel="noopener">设计缓存系统：缓存穿透，缓存击穿，缓存雪崩解决方案分析</a></p>
 
         </div>
         
@@ -491,376 +1280,6 @@
 
 
 
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-11-25T08:29:25.000Z">2019-11-25</time>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    7 minutes read (About 1039 words)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2019/11/25/reactor/">reactor和preactor模型</a>
-            
-        </h1>
-        <div class="content">
-            <h4 id="Reactor模型"><a href="#Reactor模型" class="headerlink" title="Reactor模型"></a>Reactor模型</h4><p><strong>Reactor的核心思想：</strong></p>
-<p>将关注的I/O事件注册到多路复用器上，一旦有I/O事件触发，将事件分发到事件处理器中，执行就绪I/O事件对应的处理函数中。模型中有三个重要的组件：</p>
-<ul>
-<li><strong>多路复用器：</strong>由操作系统提供接口，Linux提供的I/O复用接口有select、poll、epoll；</li>
-<li><strong>事件分离器：</strong>将多路复用器返回的就绪事件分发到事件处理器中；</li>
-<li><strong>事件处理器：</strong>处理就绪事件处理函数。</li>
-</ul>
-<p><img src="./reactor/reactor_1.jpg" alt></p>
-<ul>
-<li><p><strong>Handle：</strong>标示文件描述符；</p>
-</li>
-<li><p><strong>Event Demultiplexer：</strong>执行多路事件分解操作，对操作系统内核实现I/O复用接口的封装；用于阻塞等待发生在句柄集合上的一个或多个事件（如select/poll/epoll）；</p>
-</li>
-<li><p><strong>Event Handler：</strong>事件处理接口；</p>
-</li>
-<li><p><strong>Event Handler A(B)：</strong>实现应用程序所提供的特定事件处理逻辑；</p>
-</li>
-<li><p><strong>Reactor：</strong>反应器，定义一个接口，实现以下功能：</p>
-<p>a)供应用程序注册和删除关注的事件句柄；</p>
-<p>b)运行事件处理循环； </p>
-<p>c)等待的就绪事件触发，分发事件到之前注册的回调函数上处理.</p>
-</li>
-</ul>
-<h4 id="经典Reactor模式"><a href="#经典Reactor模式" class="headerlink" title="经典Reactor模式"></a>经典Reactor模式</h4><p><img src="./reactor/reactor_2.png" alt></p>
-<p><strong>在经典Reactor模式中，包含以下角色：</strong></p>
-<ul>
-<li><strong>Reactor ：</strong>将I/O事件发派给对应的Handler</li>
-<li><strong>Acceptor ：</strong>处理客户端连接请求</li>
-<li><strong>Handlers ：</strong>执行非阻塞读/写</li>
-</ul>
-<h4 id="多工作线程Reactor模式"><a href="#多工作线程Reactor模式" class="headerlink" title="多工作线程Reactor模式"></a>多工作线程Reactor模式</h4><p><img src="./reactor/reactor_3.png" alt></p>
-<h4 id="多Reactor的Reactor模式"><a href="#多Reactor的Reactor模式" class="headerlink" title="多Reactor的Reactor模式"></a>多Reactor的Reactor模式</h4><p><img src="./reactor/reactor_4.png" alt></p>
-<h4 id="Proactor模型"><a href="#Proactor模型" class="headerlink" title="Proactor模型"></a>Proactor模型</h4><p>​    与Reactor不同的是，Proactor使用异步I/O系统接口将I/O操作托管给操作系统，Proactor模型中分发处理异步I/O完成事件，并调用相应的事件处理接口来处理业务逻辑。</p>
-<p><img src="./reactor/preactor_1.png" alt></p>
-<p><strong>Proactor类结构中包含有如下角色：</strong></p>
-<ul>
-<li><strong>Handle：</strong>用来标识socket连接或是打开文件；</li>
-<li><strong>Async Operation Processor：</strong>异步操作处理器；负责执行异步操作，一般由操作系统内核实现；</li>
-<li><strong>Async Operation：</strong>异步操作；</li>
-<li><strong>Completion Event Queue：</strong>完成事件队列；异步操作完成的结果放到队列中等待后续使用；</li>
-<li><strong>Proactor：</strong>主动器；为应用程序进程提供事件循环；从完成事件队列中取出异步操作的结果，分发调用相应的后续处理逻辑；</li>
-<li><strong>Completion Handler：</strong>完成事件接口；一般是由回调函数组成的接口；</li>
-<li><strong>Completion Handler A(B)：</strong>完成事件处理逻辑；实现接口定义特定的应用处理逻辑。</li>
-</ul>
-<h4 id="支持情况"><a href="#支持情况" class="headerlink" title="支持情况"></a>支持情况</h4><p>​    windows对异步I/O提供了非常好的支持，常用Proactor的模型实现服务器；而Linux对异步I/O操作(aio接口)的支持并不是特别理想，而且不能直接处理accept，因此Linux平台上还是以Reactor模型为主。</p>
-<p>​    目前实现了纯异步操作的操作系统少，实现优秀的如windows IOCP，但由于其windows系统用于服务器的局限性，目前应用范围较小；而Unix/Linux系统对纯异步的支持有限，应用事件驱动的主流还是通过select/epoll来实现；</p>
-<p><strong>java提供Asynchronous I/O相关接口以支持异步I/O，AIO有两种api进行操作：</strong></p>
-<ul>
-<li><p>Future 方式</p>
-<p>即提交一个 I/O 操作请求，返回一个 Future。然后您可以对 Future 进行检查，确定它是否完成，或者阻塞 IO 操作直到操作正常完成或者超时异常。</p>
-</li>
-<li><p>Callback 方式</p>
-<p>即提交一个 I/O 操作请求，并且指定一个 CompletionHandler。当异步 I/O 操作完成时，便发送一个通知，此时这个 CompletionHandler 对象的 completed 或者 failed 方法将会被调用。</p>
-</li>
-</ul>
-<p>参照：</p>
-<p><a href="https://www.jianshu.com/p/b4de9b85c79d" target="_blank" rel="noopener">https://www.jianshu.com/p/b4de9b85c79d</a></p>
-
-        </div>
-        
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-11-25T06:20:44.000Z">2019-11-25</time>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    11 minutes read (About 1625 words)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2019/11/25/io-learning/">I/O模型(同步，异步，阻塞，非阻塞)</a>
-            
-        </h1>
-        <div class="content">
-            <h4 id="思考："><a href="#思考：" class="headerlink" title="思考："></a>思考：</h4><p>​    同步（synchronous） IO和异步（asynchronous） IO，阻塞（blocking） IO和非阻塞（non-blocking）IO分别是什么，到底有什么区别？</p>
-<p>​    用户进程，系统进程注意区分</p>
-<h4 id="IO发生时涉及的对象和步骤"><a href="#IO发生时涉及的对象和步骤" class="headerlink" title="IO发生时涉及的对象和步骤"></a>IO发生时涉及的对象和步骤</h4><p>​    对于一个network IO (这里我们以read举例)，它会涉及到两个系统对象，一个是调用这个IO的process (or thread)，另一个就是系统内核(kernel)。当一个read操作发生时，它会经历两个阶段：</p>
-<ol>
-<li><p>等待数据准备 (Waiting for the data to be ready)</p>
-</li>
-<li><p>将数据从内核拷贝到进程中 (Copying the data from the kernel to the proces)</p>
-<p>记住这两点很重要，因为这些IO Model的区别就是在两个阶段上各有不同的情况。</p>
-</li>
-</ol>
-<h4 id="Stevens在文章中一共比较了五种IO-Model"><a href="#Stevens在文章中一共比较了五种IO-Model" class="headerlink" title="Stevens在文章中一共比较了五种IO Model"></a>Stevens在文章中一共比较了五种IO Model</h4><p>  blocking IO(阻塞)<br>  nonblocking IO(非阻塞)<br>  IO multiplexing（多路复用）<br>  signal driven IO（信号驱动）<br>  asynchronous IO（异步）</p>
-<h5 id="blocking-IO"><a href="#blocking-IO" class="headerlink" title="blocking IO"></a><strong>blocking IO</strong></h5><p><img src="./io-learning/io_bloking.jpg" alt="阻塞IO"></p>
-<p>​    当用户进程调用了recvfrom这个系统调用，kernel就开始了IO的第一个阶段：准备数据。对于network io来说，很多时候数据在一开始还没有到达（比如，还没有收到一个完整的UDP包），这个时候kernel就要等待足够的数据到来。而在用户进程这边，整个进程会被阻塞。当kernel一直等到数据准备好了，它就会将数据从kernel中拷贝到用户内存，然后kernel返回结果，用户进程才解除block的状态，重新运行起来。<br>所以，blocking IO的特点就是在IO执行的两个阶段都被block了。</p>
-<h5 id="non-blocking-IO"><a href="#non-blocking-IO" class="headerlink" title="non-blocking IO"></a><strong>non-blocking IO</strong></h5><p><img src="./io-learning/io_nonbloking.jpg" alt></p>
-<p>​    当用户进程发出read操作时，如果kernel中的数据还没有准备好，那么它并不会block用户进程，而是立刻返回一个error。从用户进程角度讲 ，它发起一个read操作后，并不需要等待，而是马上就得到了一个结果。用户进程判断结果是一个error时，它就知道数据还没有准备好，于是它可以再次发送read操作。一旦kernel中的数据准备好了，并且又再次收到了用户进程的system call，那么它马上就将数据拷贝到了用户内存，然后返回。<br>所以，用户进程其实是需要不断的主动询问kernel数据好了没有。</p>
-<h5 id="IO-multiplexing"><a href="#IO-multiplexing" class="headerlink" title="IO multiplexing"></a><strong>IO multiplexing</strong></h5><p>​    IO multiplexing这个词可能有点陌生，但是如果我说select，epoll，大概就都能明白了。有些地方也称这种IO方式为event driven IO。我们都知道，select/epoll的好处就在于单个process就可以同时处理多个网络连接的IO。它的基本原理就是select/epoll这个function会不断的轮询所负责的所有socket，当某个socket有数据到达了，就通知用户进程。它的流程如图：</p>
-<p><img src="./io-learning/io_multiplexing.jpg" alt></p>
-<p>​    当用户进程调用了select，那么整个进程会被block，而同时，kernel会“监视”所有select负责的socket，当任何一个socket中的数据准备好了，select就会返回。这个时候用户进程再调用read操作，将数据从kernel拷贝到用户进程。</p>
-<pre><code>这个图和阻塞IO的图其实并没有太大的不同，事实上，还更差一些。因为这里需要使用两个system call (select 和 recvfrom)，而blocking IO只调用了一个system call (recvfrom)。但是，用select的优势在于它可以同时处理多个connection。（所以，如果处理的连接数不是很高的话，使用select/epoll的web server不一定比使用multi-threading + blocking IO的web server性能更好，可能延迟还更大。select/epoll的优势并不是对于单个连接能处理得更快，而是在于能处理更多的连接。）</code></pre><p>​    在IO multiplexing Model中，实际中，对于每一个socket，一般都设置成为non-blocking，但是，如上图所示，整个用户的进程其实是一直被block的。只不过进程是被select这个函数block，而不是被socket IO给block。<br>​    </p>
-<h5 id="signal-driven-IO"><a href="#signal-driven-IO" class="headerlink" title="signal driven IO"></a>signal driven IO</h5><p><img src="./io-learning/io_signal.jpg" alt></p>
-<h5 id="Asynchronous-I-O"><a href="#Asynchronous-I-O" class="headerlink" title="Asynchronous I/O"></a>Asynchronous I/O</h5><p>​    这类函数的工作机制是告知内核启动某个操作，并让内核在整个操作（包括将数据从内核拷贝到用户空间）完成后通知我们。</p>
-<p><img src="./io-learning/io_asynchronous.jpg" alt></p>
-<p>​    用户进程发起read操作之后，立刻就可以开始去做其它的事。而另一方面，从kernel的角度，当它受到一个asynchronous read之后，首先它会立刻返回，所以不会对用户进程产生任何block。然后，kernel会等待数据准备完成，然后将数据拷贝到用户内存，当这一切都完成之后，kernel会给用户进程发送一个signal，告诉它read操作完成了。</p>
-<h4 id="QA"><a href="#QA" class="headerlink" title="QA"></a>QA</h4><h5 id="blocking和non-blocking的区别"><a href="#blocking和non-blocking的区别" class="headerlink" title="blocking和non-blocking的区别"></a>blocking和non-blocking的区别</h5><p>​    调用blocking IO会一直block住对应的进程直到操作完成，而non-blocking IO在kernel还准备数据的情况下会立刻返回。</p>
-<h5 id="synchronous-IO和asynchronous-IO的区别"><a href="#synchronous-IO和asynchronous-IO的区别" class="headerlink" title="synchronous IO和asynchronous IO的区别"></a>synchronous IO和asynchronous IO的区别</h5><p>​    Stevens给出的定义（其实是POSIX的定义）是这样子的：<br>​    A synchronous I/O operation causes the requesting process to be blocked until that I/O operation completes;<br>​    An asynchronous I/O operation does not cause the requesting process to be blocked;</p>
-<p>​    两者的区别就在于synchronous IO做”IO operation”的时候会将process阻塞。按照这个定义，之前所述的blocking IO，non-blocking IO，IO multiplexing都属于synchronous IO。</p>
-<p>​    <strong><em>定义中所指的”IO operation”是指真实的IO操作，就是例子中的recvfrom这个system call。</em></strong></p>
-<h5 id="non-blocking-IO和asynchronous-IO的区别"><a href="#non-blocking-IO和asynchronous-IO的区别" class="headerlink" title="non-blocking IO和asynchronous IO的区别"></a>non-blocking IO和asynchronous IO的区别</h5><p>​    区别在于非阻塞在第一个阶段check第二阶段block，异步全程交给kenel处理</p>
-<p><img src="./io-learning/io_compare.jpg" alt></p>
-<h4 id="参照"><a href="#参照" class="headerlink" title="参照"></a>参照</h4><p><a href="https://blog.csdn.net/historyasamirror/article/details/5778378" target="_blank" rel="noopener">https://blog.csdn.net/historyasamirror/article/details/5778378</a></p>
-<p>Richard Stevens的“<strong>UNIX® Network Programming Volume 1, Third Edition: The Sockets Networking</strong> ”，6.2节“<strong>I/O Models</strong> ”</p>
-
-        </div>
-        
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-11-25T02:54:20.000Z">2019-11-25</time>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    8 minutes read (About 1176 words)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2019/11/25/epoll/">epoll理论解读</a>
-            
-        </h1>
-        <div class="content">
-            <h4 id="I-O的操作"><a href="#I-O的操作" class="headerlink" title="I/O的操作"></a>I/O的操作</h4><p>  首先我们来定义流的概念，一个流可以是文件，socket，pipe等等可以进行I/O操作的内核对象。</p>
-<p>  不管是文件，还是套接字，还是管道，我们都可以把他们看作流。</p>
-<p>  之后我们来讨论I/O的操作，通过read，我们可以从流中读入数据；通过write，我们可以往流写入数据。现在假定一个情形，我们需要从流中读数据，但是流中还没有数据，（典型的例子为，客户端要从socket读如数据，但是服务器还没有把数据传回来），这时候该怎么办？</p>
-<h4 id="阻塞非阻塞"><a href="#阻塞非阻塞" class="headerlink" title="阻塞非阻塞"></a>阻塞非阻塞</h4><h5 id="阻塞I-O模式"><a href="#阻塞I-O模式" class="headerlink" title="阻塞I/O模式"></a>阻塞I/O模式</h5><p>阻塞I/O模式下，一个线程只能处理一个流的I/O事件。如果想要同时处理多个流，要么多进程(fork)，要么多线程(pthread_create)，很不幸这两种方法效率都不高。</p>
-<h5 id="非阻塞忙轮询的I-O"><a href="#非阻塞忙轮询的I-O" class="headerlink" title="非阻塞忙轮询的I/O"></a>非阻塞忙轮询的I/O</h5><p>  于是再来考虑非阻塞忙轮询的I/O方式，我们发现我们可以同时处理多个流了（把一个流从阻塞模式切换到非阻塞模式再此不予讨论）：</p>
-<p>while true {</p>
-<p>for i in stream[]; {</p>
-<p>if i has data</p>
-<p>read until unavailable</p>
-<p>}</p>
-<p>}</p>
-<p>  我们只要不停的把所有流从头到尾问一遍，又从头开始。这样就可以处理多个流了，但这样的做法显然不好，因为如果所有的流都没有数据，那么只会白白浪费CPU。这里要补充一点，阻塞模式下，内核对于I/O事件的处理是阻塞或者唤醒，而非阻塞模式下则把I/O事件交给其他对象（后文介绍的select以及epoll）处理甚至直接忽略。</p>
-<h5 id="select"><a href="#select" class="headerlink" title="select"></a>select</h5><p> 为了避免CPU空转，可以引进了一个代理（一开始有一位叫做select的代理，后来又有一位叫做poll的代理，不过两者的本质是一样的）。这个代理比较厉害，可以同时观察许多流的I/O事件，在空闲的时候，会把当前线程阻塞掉，当有一个或多个流有I/O事件时，就从阻塞态中醒来，于是我们的程序就会轮询一遍所有的流（于是我们可以把“忙”字去掉了）。代码长这样:</p>
-<p>while true {</p>
-<p>select(streams[])</p>
-<p>for i in streams[] {</p>
-<p>if i has data</p>
-<p>read until unavailable</p>
-<p>}</p>
-<p>}</p>
-<p>  于是，如果没有I/O事件产生，我们的程序就会阻塞在select处。但是依然有个问题，我们从select那里仅仅知道了，有I/O事件发生了，但却并不知道是那几个流（可能有一个，多个，甚至全部），我们只能无差别轮询所有流，找出能读出数据，或者写入数据的流，对他们进行操作。</p>
-<p>  但是使用select，我们有O(n)的无差别轮询复杂度，同时处理的流越多，没一次无差别轮询时间就越长。再次</p>
-<p>说了这么多，终于能好好解释epoll了</p>
-<h5 id="epoll"><a href="#epoll" class="headerlink" title="epoll"></a>epoll</h5><p>  epoll可以理解为event poll，不同于忙轮询和无差别轮询，epoll之会把哪个流发生了怎样的I/O事件通知我们。此时我们对这些流的操作都是有意义的。（复杂度降低到了O(1)）</p>
-<p>  在讨论epoll的实现细节之前，先把epoll的相关操作列出：</p>
-<p>epoll_create 创建一个epoll对象，一般epollfd = epoll_create()</p>
-<p>epoll_ctl （epoll_add/epoll_del的合体），往epoll对象中增加/删除某一个流的某一个事件</p>
-<p>比如</p>
-<p>epoll_ctl(epollfd, EPOLL_CTL_ADD, socket, EPOLLIN);//注册缓冲区非空事件，即有数据流入</p>
-<p>epoll_ctl(epollfd, EPOLL_CTL_DEL, socket, EPOLLOUT);//注册缓冲区非满事件，即流可以被写入</p>
-<p>epoll_wait(epollfd,…)等待直到注册的事件发生</p>
-<p>（注：当对一个非阻塞流的读写发生缓冲区满或缓冲区空，write/read会返回-1，并设置errno=EAGAIN。而epoll只关心缓冲区非满和缓冲区非空事件）。</p>
-<p>一个epoll模式的代码大概的样子是：</p>
-<p>while true {</p>
-<p>active_stream[] = epoll_wait(epollfd)</p>
-<p>for i in active_stream[] {</p>
-<p>read or write till</p>
-<p>}</p>
-<p>}</p>
-<p>参照：</p>
-<p>通俗解读：<a href="https://blog.csdn.net/u011671986/article/details/79449853" target="_blank" rel="noopener">https://blog.csdn.net/u011671986/article/details/79449853</a></p>
-<p>详细解读：<a href="https://bbs.gameres.com/thread_842984_1_1.html" target="_blank" rel="noopener">https://bbs.gameres.com/thread_842984_1_1.html</a></p>
-
-        </div>
-        
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-11-14T09:38:51.000Z">2019-11-14</time>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    10 minutes read (About 1548 words)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2019/11/14/linux%E5%86%85%E5%AD%98swap/">linux内存swap</a>
-            
-        </h1>
-        <div class="content">
-            <h4 id="什么是linux的内存机制"><a href="#什么是linux的内存机制" class="headerlink" title="什么是linux的内存机制"></a><strong>什么是linux的内存机制</strong></h4><p>​    我们知道，直接从物理内存读写数据要比从硬盘读写数据要快的多，因此，我们希望所有数据的读取和写入都在内存完成，而内存是有限的，这样就引出了物理内存与虚拟内存的概念。</p>
-<p>​    物理内存就是系统硬件提供的内存大小，是真正的内存，相对于物理内存，在linux下还有一个虚拟内存的概念，虚拟内存就是为了满足物理内存的不足而提出的策略，它是利用磁盘空间虚拟出的一块逻辑内存，用作虚拟内存的磁盘空间被称为交换空间（Swap Space）。</p>
-<p>​    作为物理内存的扩展，linux会在物理内存不足时，使用交换分区的虚拟内存，更详细的说，就是内核会将暂时不用的内存块信息写到交换空间，这样以来，物理内存得到了释放，这块内存就可以用于其它目的，当需要用到原始的内容时，这些信息会被重新从交换空间读入物理内存。</p>
-<p>​    Linux的内存管理采取的是分页存取机制，为了保证物理内存能得到充分的利用，内核会在适当的时候将物理内存中不经常使用的数据块自动交换到虚拟内存中，而将经常使用的信息保留到物理内存。</p>
-<p>​    要深入了解linux内存运行机制，需要知道下面提到的几个方面：</p>
-<ol>
-<li><p>Linux系统会不时的进行页面交换操作，以保持尽可能多的空闲物理内存，即使并没有什么事情需要内存，Linux也会交换出暂时不用的内存页面。这可以避免等待交换所需的时间。</p>
-</li>
-<li><p>Linux 进行页面交换是有条件的，不是所有页面在不用时都交换到虚拟内存，linux内核根据”最近最经常使用“算法，仅仅将一些不经常使用的页面文件交换到虚拟 内存，有时我们会看到这么一个现象：linux物理内存还有很多，但是交换空间也使用了很多。其实，这并不奇怪，例如，一个占用很大内存的进程运行时，需 要耗费很多内存资源，此时就会有一些不常用页面文件被交换到虚拟内存中，但后来这个占用很多内存资源的进程结束并释放了很多内存时，刚才被交换出去的页面 文件并不会自动的交换进物理内存，除非有这个必要，那么此刻系统物理内存就会空闲很多，同时交换空间也在被使用，就出现了刚才所说的现象了。关于这点，不 用担心什么，只要知道是怎么一回事就可以了。</p>
-</li>
-<li><p>交换空间的页面在使用时会首先被交换到物理内存，如果此时没有足够的物理内存来容纳这些页 面，它们又会被马上交换出去，如此以来，虚拟内存中可能没有足够空间来存储这些交换页面，最终会导致linux出现假死机、服务异常等问题，linux虽 然可以在一段时间内自行恢复，但是恢复后的系统已经基本不可用了。</p>
-<p>因此，合理规划和设计Linux内存的使用，是非常重要的.</p>
-</li>
-</ol>
-<p>​    在Linux 操作系统中，当应用程序需要读取文件中的数据时，操作系统先分配一些内存，将数据从磁盘读入到这些内存中，然后再将数据分发给应用程序；当需要往文件中写 数据时，操作系统先分配内存接收用户数据，然后再将数据从内存写到磁盘上。然而，如果有大量数据需要从磁盘读取到内存或者由内存写入磁盘时，系统的读写性 能就变得非常低下，因为无论是从磁盘读数据，还是写数据到磁盘，都是一个很消耗时间和资源的过程，在这种情况下，Linux引入了buffers和 cached机制。</p>
-<p>​    buffers与cached都是内存操作，用来保存系统曾经打开过的文件以及文件属性信息，这样当操作系统需要读取某些文件时，会首先在buffers 与cached内存区查找，如果找到，直接读出传送给应用程序，如果没有找到需要数据，才从磁盘读取，这就是操作系统的缓存机制，通过缓存，大大提高了操 作系统的性能。但buffers与cached缓冲的内容却是不同的。</p>
-<p>​    buffers是用来缓冲块设备做的，它只记录文件系统的元数据（metadata）以及 tracking in-flight pages，而cached是用来给文件做缓冲。更通俗一点说：buffers主要用来存放目录里面有什么内容，文件的属性以及权限等等。</p>
-<h4 id="创建SWAP内存"><a href="#创建SWAP内存" class="headerlink" title="创建SWAP内存"></a><strong>创建SWAP内存</strong></h4><figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">创建2G的空间</span><br><span class="line">dd if=/dev/zero of=/root/swapfile1 bs=1M count=2048</span><br><span class="line">创建swap分区</span><br><span class="line">mkswap /root/swapfile1</span><br><span class="line">开启虚拟内存</span><br><span class="line">chmod 0600 /root/swapfile1</span><br><span class="line">swapon /root/swapfile1</span><br><span class="line">设定虚拟内存开机自动挂载</span><br><span class="line">echo &quot;/root/swapfile1 swap swapdefaults 0 0&quot; &gt;&gt; /etc/fstab</span><br><span class="line">查看虚拟内存信息</span><br><span class="line">free -m或者swapon -s以及ll -h 和df -h</span><br></pre></td></tr></table></figure>
-
-<h4 id="取消SWAP内存"><a href="#取消SWAP内存" class="headerlink" title="取消SWAP内存"></a>取消SWAP内存</h4><figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">取消 SWAP文件</span><br><span class="line">swapoff /root/swapfile1</span><br><span class="line">取消开机启动加载</span><br><span class="line">sed -i &quot;/swapfile1/d&quot; /etc/fstab</span><br><span class="line">删除 SWAP文件</span><br><span class="line">rm -rf /root/swapfile1</span><br></pre></td></tr></table></figure>
-
-<p><img src="./linux%E5%86%85%E5%AD%98swap/hDgi28AN.png" alt="df图片"></p>
-
-        </div>
-        
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-11-14T02:29:07.000Z">2019-11-14</time>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    a minute read (About 123 words)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2019/11/14/hello-world/">Hello World</a>
-            
-        </h1>
-        <div class="content">
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="hljs-string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-        </div>
-        
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
 
     
 <div class="card card-transparent">
@@ -868,7 +1287,7 @@
         <div class="pagination-previous">
             <a class="is-flex-grow has-text-black-ter" href="/">Previous</a>
         </div>
-        <div class="pagination-next is-invisible is-hidden-mobile">
+        <div class="pagination-next">
             <a class="is-flex-grow has-text-black-ter" href="/page/3/">Next</a>
         </div>
         <ul class="pagination-list is-hidden-mobile">
@@ -876,6 +1295,8 @@
             <li><a class="pagination-link has-text-black-ter" href="/">1</a></li>
             
             <li><a class="pagination-link is-current" href="/page/2/">2</a></li>
+            
+            <li><a class="pagination-link has-text-black-ter" href="/page/3/">3</a></li>
             
         </ul>
     </nav>
@@ -925,7 +1346,7 @@
                     </p>
                     <a href="/archives">
                         <p class="title has-text-weight-normal">
-                            18
+                            25
                         </p>
                     </a>
                 </div>
@@ -949,7 +1370,7 @@
                     </p>
                     <a href="/tags">
                         <p class="title has-text-weight-normal">
-                            16
+                            18
                         </p>
                     </a>
                 </div>
@@ -1062,7 +1483,7 @@
         <h3 class="menu-label">
             Tag Cloud
         </h3>
-        <a href="/tags/DUBBO/" style="font-size: 10px;">DUBBO</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/I-O/" style="font-size: 15px;">I/O</a> <a href="/tags/J2EE/" style="font-size: 20px;">J2EE</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/LINUX/" style="font-size: 20px;">LINUX</a> <a href="/tags/LOG/" style="font-size: 10px;">LOG</a> <a href="/tags/MOCK/" style="font-size: 10px;">MOCK</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/MYSQL/" style="font-size: 10px;">MYSQL</a> <a href="/tags/REDIS/" style="font-size: 20px;">REDIS</a> <a href="/tags/SPRING/" style="font-size: 10px;">SPRING</a> <a href="/tags/ZK/" style="font-size: 15px;">ZK</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10px;">设计模式</a>
+        <a href="/tags/DUBBO/" style="font-size: 10px;">DUBBO</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/I-O/" style="font-size: 12.5px;">I/O</a> <a href="/tags/J2EE/" style="font-size: 20px;">J2EE</a> <a href="/tags/JAVA/" style="font-size: 10px;">JAVA</a> <a href="/tags/JVM/" style="font-size: 12.5px;">JVM</a> <a href="/tags/LINUX/" style="font-size: 15px;">LINUX</a> <a href="/tags/LOG/" style="font-size: 10px;">LOG</a> <a href="/tags/MOCK/" style="font-size: 10px;">MOCK</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/MYSQL/" style="font-size: 10px;">MYSQL</a> <a href="/tags/REDIS/" style="font-size: 17.5px;">REDIS</a> <a href="/tags/SPRING/" style="font-size: 10px;">SPRING</a> <a href="/tags/ZK/" style="font-size: 15px;">ZK</a> <a href="/tags/eureka/" style="font-size: 10px;">eureka</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 12.5px;">设计模式</a>
     </div>
 </div>
     
@@ -1077,16 +1498,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/13/jvm-pre/" class="media-left">
+            <a href="/2019/12/31/j2ee-model-singleton/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="jvm">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="singleton单例模式">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-13T09:33:20.000Z">2019-12-13</time></div>
-                    <a href="/2019/12/13/jvm-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">jvm</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-31T03:36:10.000Z">2019-12-31</time></div>
+                    <a href="/2019/12/31/j2ee-model-singleton/" class="title has-link-black-ter is-size-6 has-text-weight-normal">singleton单例模式</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -1096,16 +1517,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/13/mysql-index/" class="media-left">
+            <a href="/2019/12/31/j2ee-%E5%B9%82%E7%AD%89/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="mysql索引">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="接口幂等">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-13T07:39:12.000Z">2019-12-13</time></div>
-                    <a href="/2019/12/13/mysql-index/" class="title has-link-black-ter is-size-6 has-text-weight-normal">mysql索引</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-31T01:41:22.000Z">2019-12-31</time></div>
+                    <a href="/2019/12/31/j2ee-%E5%B9%82%E7%AD%89/" class="title has-link-black-ter is-size-6 has-text-weight-normal">接口幂等</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -1115,16 +1536,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/13/http-pre/" class="media-left">
+            <a href="/2019/12/25/j2ee-aop/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="http1.x、http 2和https">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="AOP原理及实现机制">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-13T06:23:41.000Z">2019-12-13</time></div>
-                    <a href="/2019/12/13/http-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">http1.x、http 2和https</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-25T01:52:38.000Z">2019-12-25</time></div>
+                    <a href="/2019/12/25/j2ee-aop/" class="title has-link-black-ter is-size-6 has-text-weight-normal">AOP原理及实现机制</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -1134,16 +1555,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/05/dubbo-pre/" class="media-left">
+            <a href="/2019/12/24/zk-eureka/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="dubbo学习">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="zk和eureka比较">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-05T07:59:27.000Z">2019-12-05</time></div>
-                    <a href="/2019/12/05/dubbo-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">dubbo学习</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-24T10:17:17.000Z">2019-12-24</time></div>
+                    <a href="/2019/12/24/zk-eureka/" class="title has-link-black-ter is-size-6 has-text-weight-normal">zk和eureka比较</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -1153,16 +1574,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/04/spring-pre/" class="media-left">
+            <a href="/2019/12/24/redis-learning-lock/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="spring学习前瞻">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="redis分布式锁">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-04T02:30:01.000Z">2019-12-04</time></div>
-                    <a href="/2019/12/04/spring-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">spring学习前瞻</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-24T07:46:52.000Z">2019-12-24</time></div>
+                    <a href="/2019/12/24/redis-learning-lock/" class="title has-link-black-ter is-size-6 has-text-weight-normal">redis分布式锁</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -1187,7 +1608,7 @@
                     <span class="level-item">December 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">6</span>
+                    <span class="level-item tag">13</span>
                 </span>
             </a>
         </li>
@@ -1240,14 +1661,21 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/J2EE/">
                         <span class="tag">J2EE</span>
-                        <span class="tag is-grey">3</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JAVA/">
+                        <span class="tag">JAVA</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
                 <div class="control">
                     <a class="tags has-addons" href="/tags/JVM/">
                         <span class="tag">JVM</span>
-                        <span class="tag is-grey">1</span>
+                        <span class="tag is-grey">2</span>
                     </a>
                 </div>
                 
@@ -1289,7 +1717,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/REDIS/">
                         <span class="tag">REDIS</span>
-                        <span class="tag is-grey">3</span>
+                        <span class="tag is-grey">4</span>
                     </a>
                 </div>
                 
@@ -1303,7 +1731,14 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/ZK/">
                         <span class="tag">ZK</span>
-                        <span class="tag is-grey">2</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/eureka/">
+                        <span class="tag">eureka</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -1324,7 +1759,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">
                         <span class="tag">设计模式</span>
-                        <span class="tag is-grey">1</span>
+                        <span class="tag is-grey">2</span>
                     </a>
                 </div>
                 
@@ -1352,16 +1787,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/13/jvm-pre/" class="media-left">
+            <a href="/2019/12/31/j2ee-model-singleton/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="jvm">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="singleton单例模式">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-13T09:33:20.000Z">2019-12-13</time></div>
-                    <a href="/2019/12/13/jvm-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">jvm</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-31T03:36:10.000Z">2019-12-31</time></div>
+                    <a href="/2019/12/31/j2ee-model-singleton/" class="title has-link-black-ter is-size-6 has-text-weight-normal">singleton单例模式</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -1371,16 +1806,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/13/mysql-index/" class="media-left">
+            <a href="/2019/12/31/j2ee-%E5%B9%82%E7%AD%89/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="mysql索引">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="接口幂等">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-13T07:39:12.000Z">2019-12-13</time></div>
-                    <a href="/2019/12/13/mysql-index/" class="title has-link-black-ter is-size-6 has-text-weight-normal">mysql索引</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-31T01:41:22.000Z">2019-12-31</time></div>
+                    <a href="/2019/12/31/j2ee-%E5%B9%82%E7%AD%89/" class="title has-link-black-ter is-size-6 has-text-weight-normal">接口幂等</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -1390,16 +1825,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/13/http-pre/" class="media-left">
+            <a href="/2019/12/25/j2ee-aop/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="http1.x、http 2和https">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="AOP原理及实现机制">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-13T06:23:41.000Z">2019-12-13</time></div>
-                    <a href="/2019/12/13/http-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">http1.x、http 2和https</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-25T01:52:38.000Z">2019-12-25</time></div>
+                    <a href="/2019/12/25/j2ee-aop/" class="title has-link-black-ter is-size-6 has-text-weight-normal">AOP原理及实现机制</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -1409,16 +1844,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/05/dubbo-pre/" class="media-left">
+            <a href="/2019/12/24/zk-eureka/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="dubbo学习">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="zk和eureka比较">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-05T07:59:27.000Z">2019-12-05</time></div>
-                    <a href="/2019/12/05/dubbo-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">dubbo学习</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-24T10:17:17.000Z">2019-12-24</time></div>
+                    <a href="/2019/12/24/zk-eureka/" class="title has-link-black-ter is-size-6 has-text-weight-normal">zk和eureka比较</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -1428,16 +1863,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/04/spring-pre/" class="media-left">
+            <a href="/2019/12/24/redis-learning-lock/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="spring学习前瞻">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="redis分布式锁">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-04T02:30:01.000Z">2019-12-04</time></div>
-                    <a href="/2019/12/04/spring-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">spring学习前瞻</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-24T07:46:52.000Z">2019-12-24</time></div>
+                    <a href="/2019/12/24/redis-learning-lock/" class="title has-link-black-ter is-size-6 has-text-weight-normal">redis分布式锁</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -1462,7 +1897,7 @@
                     <span class="level-item">December 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">6</span>
+                    <span class="level-item tag">13</span>
                 </span>
             </a>
         </li>
@@ -1515,14 +1950,21 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/J2EE/">
                         <span class="tag">J2EE</span>
-                        <span class="tag is-grey">3</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JAVA/">
+                        <span class="tag">JAVA</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
                 <div class="control">
                     <a class="tags has-addons" href="/tags/JVM/">
                         <span class="tag">JVM</span>
-                        <span class="tag is-grey">1</span>
+                        <span class="tag is-grey">2</span>
                     </a>
                 </div>
                 
@@ -1564,7 +2006,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/REDIS/">
                         <span class="tag">REDIS</span>
-                        <span class="tag is-grey">3</span>
+                        <span class="tag is-grey">4</span>
                     </a>
                 </div>
                 
@@ -1578,7 +2020,14 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/ZK/">
                         <span class="tag">ZK</span>
-                        <span class="tag is-grey">2</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/eureka/">
+                        <span class="tag">eureka</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -1599,7 +2048,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">
                         <span class="tag">设计模式</span>
-                        <span class="tag is-grey">1</span>
+                        <span class="tag is-grey">2</span>
                     </a>
                 </div>
                 

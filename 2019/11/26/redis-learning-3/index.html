@@ -10,16 +10,16 @@
 <title>redis学习（三） - zixcon·blog</title>
 
 
-    <meta name="description" content="缓存的击穿 穿透 和 雪崩缓存雪崩​    缓存雪崩是指在我们设置缓存时采用了相同的过期时间，导致缓存在某一时刻同时失效，请求全部转发到，瞬时压力过重雪崩。或在大部分数据都没缓存的时候被一次性同时访问。 解决方案：    缓存失效时的雪崩效应对底层系统的冲击非常可怕。我们可以用以下方式来避免：    1.数据预热：        可以通过缓存reload机制，预先去更新缓存，再即将发生大并发访问前">
+    <meta name="description" content="#缓存的击穿 穿透 和 雪崩  ####缓存雪崩 ​    缓存雪崩是指在我们设置缓存时采用了相同的过期时间，导致缓存在某一时刻同时失效，请求全部转发到，瞬时压力过重雪崩。或在大部分数据都没缓存的时候被一次性同时访问。 解决方案：    缓存失效时的雪崩效应对底层系统的冲击非常可怕。我们可以用以下方式来避免：    1.数据预热：        可以通过缓存reload机制，预先去更新缓存，再即将">
 <meta name="keywords" content="REDIS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="redis学习（三）">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;26&#x2F;redis-learning-3&#x2F;index.html">
 <meta property="og:site_name" content="zixcon·blog">
-<meta property="og:description" content="缓存的击穿 穿透 和 雪崩缓存雪崩​    缓存雪崩是指在我们设置缓存时采用了相同的过期时间，导致缓存在某一时刻同时失效，请求全部转发到，瞬时压力过重雪崩。或在大部分数据都没缓存的时候被一次性同时访问。 解决方案：    缓存失效时的雪崩效应对底层系统的冲击非常可怕。我们可以用以下方式来避免：    1.数据预热：        可以通过缓存reload机制，预先去更新缓存，再即将发生大并发访问前">
+<meta property="og:description" content="#缓存的击穿 穿透 和 雪崩  ####缓存雪崩 ​    缓存雪崩是指在我们设置缓存时采用了相同的过期时间，导致缓存在某一时刻同时失效，请求全部转发到，瞬时压力过重雪崩。或在大部分数据都没缓存的时候被一次性同时访问。 解决方案：    缓存失效时的雪崩效应对底层系统的冲击非常可怕。我们可以用以下方式来避免：    1.数据预热：        可以通过缓存reload机制，预先去更新缓存，再即将">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;og_image.png">
-<meta property="og:updated_time" content="2019-11-29T03:17:05.000Z">
+<meta property="og:updated_time" content="2019-12-24T10:03:18.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;og_image.png">
 
@@ -141,7 +141,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    10 minutes read (About 1455 words)
+                    11 minutes read (About 1623 words)
                 </span>
                 
                 
@@ -154,17 +154,23 @@
             
         </h1>
         <div class="content">
-            <h4 id="缓存的击穿-穿透-和-雪崩"><a href="#缓存的击穿-穿透-和-雪崩" class="headerlink" title="缓存的击穿 穿透 和 雪崩"></a>缓存的击穿 穿透 和 雪崩</h4><h5 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h5><p>​    <em>缓存雪崩是指在我们设置缓存时采用了相同的过期时间，导致缓存在某一时刻同时失效</em>，请求全部转发到，瞬时压力过重雪崩。或在大部分数据都没缓存的时候被一次性同时访问。</p>
-<p>解决方案：<br>    缓存失效时的雪崩效应对底层系统的冲击非常可怕。我们可以用以下方式来避免：<br>    <strong>1.数据预热：</strong><br>        可以通过缓存reload机制，预先去更新缓存，再即将发生大并发访问前手动触发加载缓存不同的key，设置不同的过期时间，让缓存失效的时间点尽量均匀<br>    <strong>2.做二级缓存，或者双缓存策略：</strong><br>    A1为原始缓存，A2为拷贝缓存，A1失效时，可以访问A2，A1缓存失效时间设置为短期，A2设置<br>为长期。<br>    <strong>3.缓存永远不过期：</strong><br>        这里的“永远不过期”包含两层意思：<br>        1)从缓存上看，确实没有设置过期时间，这就保证了，不会出现热点key过期问题，也就是“物理”不过期。<br>        2)从功能上看，如果不过期，那不就成静态的了吗？所以我们把过期时间存在key对应的里，如果发现要过期了，通过一个后台的异步线程进行缓存的构建，也就是“逻辑”过期.</p>
-<p>​    4.用主从模式和集群模式来尽量保证缓存服务的高可用。</p>
+            <p>#缓存的击穿 穿透 和 雪崩 </p>
+<p>####缓存雪崩</p>
+<p>​    <strong>缓存雪崩是指在我们设置缓存时采用了相同的过期时间，导致缓存在某一时刻同时失效，请求全部转发到，瞬时压力过重雪崩。</strong>或在大部分数据都没缓存的时候被一次性同时访问。</p>
+<p>解决方案：<br>    缓存失效时的雪崩效应对底层系统的冲击非常可怕。我们可以用以下方式来避免：<br>    <strong>1.数据预热：</strong><br>        可以通过缓存reload机制，预先去更新缓存，再即将发生大并发访问前手动触发加载缓存不同的key，<strong>设置不同的过期时间</strong>，让缓存失效的时间点尽量均匀<br>    <strong>2.做二级缓存，或者双缓存策略：</strong><br>    A1为原始缓存，A2为拷贝缓存，A1失效时，可以访问A2，A1缓存失效时间设置为短期，A2设置<br>为长期。</p>
 <h4 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h4><p>​    对于一些设置了过期时间的key，如果这些key可能会在某些时间点被超高并发地访问，是一种非常“热点”的数据，这个时候，需要考虑一个问题：缓存被“击穿”的问题。</p>
 <p>​    这个和缓存雪崩的区别在于这里针对某一key缓存，前者则是很多key。<strong>缓存在某个时间点过期的时候，恰好在这个时间点对这个Key有大量的并发请求过来，这些请求发现缓存过期一般都会从后端DB加载数据并回设到缓存，这个时候大并发的请求可能会瞬间把后端DB压垮。</strong></p>
 <p>解决方案：<br>    1.<strong>使用互斥锁(mutex key)</strong><br>    业界比较常用的做法，是使用mutex。简单地来说，就是在缓存失效的时候（判断拿出来的值为空），不是立即去load db，而是先使用缓存工具的某些带成功操作返回值的操作（比如mutex key，当操作返回成功时，再进行Redis的SETNX或者Memcache的ADD）去set一个的操作并回设缓存；否则，就重试整个get缓存的方法。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">get</span><span class="hljs-params">(key)</span> </span>&#123;</span><br><span class="line">	String value = redis.get(key);</span><br><span class="line">	<span class="hljs-keyword">if</span> (value == <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">		<span class="hljs-comment">//代表缓存值过期</span></span><br><span class="line">		<span class="hljs-comment">//设置3min的超时，防止del操作失败的时候，下次缓存过期一直不能load db</span></span><br><span class="line">		<span class="hljs-keyword">if</span> (redis.setnx(key_mutex, <span class="hljs-number">1</span>, <span class="hljs-number">3</span> * <span class="hljs-number">60</span>) == <span class="hljs-number">1</span>) &#123;</span><br><span class="line">			<span class="hljs-comment">//代表设置成功</span></span><br><span class="line">			value = db.get(key);</span><br><span class="line">			redis.set(key, value, expire_secs);</span><br><span class="line">			redis.del(key_mutex);</span><br><span class="line">		&#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">			<span class="hljs-comment">//这个时候代表同时候的其他线程已经load db并回设到缓存了，这时候重试获取缓存值即可</span></span><br><span class="line">			sleep(<span class="hljs-number">50</span>);</span><br><span class="line">			get(key);</span><br><span class="line">			<span class="hljs-comment">//重试</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">		<span class="hljs-keyword">return</span> value;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>​    2.<strong>设置热点数据永远不过期</strong></p>
-<h4 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h4><p>​    缓存穿透是指查询一个一定不存在的数据，由于缓存是不命中时被动写的，并且出于容错考虑，如果从存储层查不到数据则不写入缓存，这将导致这个不存在的数据每次请求都要到存储层去查询，失去了缓存的意义。在流量大时，可能DB就挂掉了，要是有人利用不存在的key频繁攻击我们的应用，这就是漏洞。</p>
+<p>​    这里的“永远不过期”包含两层意思：<br>​        1)从缓存上看，确实没有设置过期时间，这就保证了，不会出现热点key过期问题，也就是“物理”不过期。<br>​        2)从功能上看，如果不过期，那不就成静态的了吗？所以我们把过期时间存在key对应的里，如果发现要过期了，通过一个后台的异步线程进行缓存的构建，也就是“逻辑”过期.</p>
+<p>​    4.用主从模式和集群模式来尽量保证缓存服务的高可用。</p>
+<p>​    使用场景：比如首页排名列表</p>
+<h4 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h4><p>​    缓存穿透是指<strong>查询一个一定不存在的数据</strong>，由于缓存是不命中时被动写的，并且出于容错考虑，如果从存储层查不到数据则不写入缓存，这将导致这个不存在的数据每次请求都要到存储层去查询，失去了缓存的意义。在流量大时，可能DB就挂掉了，要是有人利用不存在的key频繁攻击我们的应用，这就是漏洞。</p>
 <p>解决方案：<br>    有很多种方法可以有效地解决缓存穿透问题，</p>
 <p>​    1.最常见的则是采用<strong>布隆过滤器</strong>，将所有可能存在的数据哈希到一个足够大的bitmap中，一个一定不存在的数据会被这个bitmap拦截掉，从而避免了对底层存储系统的查询压力。</p>
-<p>​    2.另外也有一个更为简单粗暴的方法，如果一个查询返回的数据为空（不管是数据不存在，还是系统故障），我们仍然把这个空结果进行缓存，但它的过期时间会很短，最长不超过五分钟。</p>
+<p>​    2.另外也有一个更为简单粗暴的方法，如果一个查询返回的数据为空（不管是数据不存在，还是系统故障），我们仍然<strong>把这个空结果进行缓存</strong>，但它的过期时间会很短，最长不超过五分钟。</p>
 <p>​    3.<strong>Nginx对单个IP每秒访问次数进行限制</strong></p>
 <p>一般避免以上情况发生我们从三个时间段去分析下：</p>
 <ul>
@@ -180,6 +186,7 @@
 <p>​    数据库绝对不会死，限流组件确保了每秒只有多少个请求能通过。 只要数据库不死，就是说，对用户来说，3/5 的请求都是可以被处理的。 只要有 3/5 的请求可以被处理，就意味着你的系统没死，对用户来说，可能就是点击几次刷不出来页面，但是多点几次，就可以刷出来一次。</p>
 <p>​    <strong>这个在目前主流的互联网大厂里面是最常见的</strong></p>
 <p>参见：<a href="https://www.cnblogs.com/aobing/p/11801118.html" target="_blank" rel="noopener">敖丙的系列</a></p>
+<p><a href="https://juejin.im/post/5e01cb70f265da33e0569ac1" target="_blank" rel="noopener">设计缓存系统：缓存穿透，缓存击穿，缓存雪崩解决方案分析</a></p>
 
         </div>
         
@@ -302,7 +309,7 @@
                     </p>
                     <a href="/archives">
                         <p class="title has-text-weight-normal">
-                            18
+                            25
                         </p>
                     </a>
                 </div>
@@ -326,7 +333,7 @@
                     </p>
                     <a href="/tags">
                         <p class="title has-text-weight-normal">
-                            16
+                            18
                         </p>
                     </a>
                 </div>
@@ -439,7 +446,7 @@
         <h3 class="menu-label">
             Tag Cloud
         </h3>
-        <a href="/tags/DUBBO/" style="font-size: 10px;">DUBBO</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/I-O/" style="font-size: 15px;">I/O</a> <a href="/tags/J2EE/" style="font-size: 20px;">J2EE</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/LINUX/" style="font-size: 20px;">LINUX</a> <a href="/tags/LOG/" style="font-size: 10px;">LOG</a> <a href="/tags/MOCK/" style="font-size: 10px;">MOCK</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/MYSQL/" style="font-size: 10px;">MYSQL</a> <a href="/tags/REDIS/" style="font-size: 20px;">REDIS</a> <a href="/tags/SPRING/" style="font-size: 10px;">SPRING</a> <a href="/tags/ZK/" style="font-size: 15px;">ZK</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10px;">设计模式</a>
+        <a href="/tags/DUBBO/" style="font-size: 10px;">DUBBO</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/I-O/" style="font-size: 12.5px;">I/O</a> <a href="/tags/J2EE/" style="font-size: 20px;">J2EE</a> <a href="/tags/JAVA/" style="font-size: 10px;">JAVA</a> <a href="/tags/JVM/" style="font-size: 12.5px;">JVM</a> <a href="/tags/LINUX/" style="font-size: 15px;">LINUX</a> <a href="/tags/LOG/" style="font-size: 10px;">LOG</a> <a href="/tags/MOCK/" style="font-size: 10px;">MOCK</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/MYSQL/" style="font-size: 10px;">MYSQL</a> <a href="/tags/REDIS/" style="font-size: 17.5px;">REDIS</a> <a href="/tags/SPRING/" style="font-size: 10px;">SPRING</a> <a href="/tags/ZK/" style="font-size: 15px;">ZK</a> <a href="/tags/eureka/" style="font-size: 10px;">eureka</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 12.5px;">设计模式</a>
     </div>
 </div>
     
@@ -454,16 +461,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/13/jvm-pre/" class="media-left">
+            <a href="/2019/12/31/j2ee-model-singleton/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="jvm">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="singleton单例模式">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-13T09:33:20.000Z">2019-12-13</time></div>
-                    <a href="/2019/12/13/jvm-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">jvm</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-31T03:36:10.000Z">2019-12-31</time></div>
+                    <a href="/2019/12/31/j2ee-model-singleton/" class="title has-link-black-ter is-size-6 has-text-weight-normal">singleton单例模式</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -473,16 +480,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/13/mysql-index/" class="media-left">
+            <a href="/2019/12/31/j2ee-%E5%B9%82%E7%AD%89/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="mysql索引">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="接口幂等">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-13T07:39:12.000Z">2019-12-13</time></div>
-                    <a href="/2019/12/13/mysql-index/" class="title has-link-black-ter is-size-6 has-text-weight-normal">mysql索引</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-31T01:41:22.000Z">2019-12-31</time></div>
+                    <a href="/2019/12/31/j2ee-%E5%B9%82%E7%AD%89/" class="title has-link-black-ter is-size-6 has-text-weight-normal">接口幂等</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -492,16 +499,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/13/http-pre/" class="media-left">
+            <a href="/2019/12/25/j2ee-aop/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="http1.x、http 2和https">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="AOP原理及实现机制">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-13T06:23:41.000Z">2019-12-13</time></div>
-                    <a href="/2019/12/13/http-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">http1.x、http 2和https</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-25T01:52:38.000Z">2019-12-25</time></div>
+                    <a href="/2019/12/25/j2ee-aop/" class="title has-link-black-ter is-size-6 has-text-weight-normal">AOP原理及实现机制</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -511,16 +518,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/05/dubbo-pre/" class="media-left">
+            <a href="/2019/12/24/zk-eureka/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="dubbo学习">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="zk和eureka比较">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-05T07:59:27.000Z">2019-12-05</time></div>
-                    <a href="/2019/12/05/dubbo-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">dubbo学习</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-24T10:17:17.000Z">2019-12-24</time></div>
+                    <a href="/2019/12/24/zk-eureka/" class="title has-link-black-ter is-size-6 has-text-weight-normal">zk和eureka比较</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -530,16 +537,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/04/spring-pre/" class="media-left">
+            <a href="/2019/12/24/redis-learning-lock/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="spring学习前瞻">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="redis分布式锁">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-04T02:30:01.000Z">2019-12-04</time></div>
-                    <a href="/2019/12/04/spring-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">spring学习前瞻</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-24T07:46:52.000Z">2019-12-24</time></div>
+                    <a href="/2019/12/24/redis-learning-lock/" class="title has-link-black-ter is-size-6 has-text-weight-normal">redis分布式锁</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -564,7 +571,7 @@
                     <span class="level-item">December 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">6</span>
+                    <span class="level-item tag">13</span>
                 </span>
             </a>
         </li>
@@ -617,14 +624,21 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/J2EE/">
                         <span class="tag">J2EE</span>
-                        <span class="tag is-grey">3</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JAVA/">
+                        <span class="tag">JAVA</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
                 <div class="control">
                     <a class="tags has-addons" href="/tags/JVM/">
                         <span class="tag">JVM</span>
-                        <span class="tag is-grey">1</span>
+                        <span class="tag is-grey">2</span>
                     </a>
                 </div>
                 
@@ -666,7 +680,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/REDIS/">
                         <span class="tag">REDIS</span>
-                        <span class="tag is-grey">3</span>
+                        <span class="tag is-grey">4</span>
                     </a>
                 </div>
                 
@@ -680,7 +694,14 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/ZK/">
                         <span class="tag">ZK</span>
-                        <span class="tag is-grey">2</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/eureka/">
+                        <span class="tag">eureka</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -701,7 +722,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">
                         <span class="tag">设计模式</span>
-                        <span class="tag is-grey">1</span>
+                        <span class="tag is-grey">2</span>
                     </a>
                 </div>
                 
@@ -729,16 +750,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/13/jvm-pre/" class="media-left">
+            <a href="/2019/12/31/j2ee-model-singleton/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="jvm">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="singleton单例模式">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-13T09:33:20.000Z">2019-12-13</time></div>
-                    <a href="/2019/12/13/jvm-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">jvm</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-31T03:36:10.000Z">2019-12-31</time></div>
+                    <a href="/2019/12/31/j2ee-model-singleton/" class="title has-link-black-ter is-size-6 has-text-weight-normal">singleton单例模式</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -748,16 +769,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/13/mysql-index/" class="media-left">
+            <a href="/2019/12/31/j2ee-%E5%B9%82%E7%AD%89/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="mysql索引">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="接口幂等">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-13T07:39:12.000Z">2019-12-13</time></div>
-                    <a href="/2019/12/13/mysql-index/" class="title has-link-black-ter is-size-6 has-text-weight-normal">mysql索引</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-31T01:41:22.000Z">2019-12-31</time></div>
+                    <a href="/2019/12/31/j2ee-%E5%B9%82%E7%AD%89/" class="title has-link-black-ter is-size-6 has-text-weight-normal">接口幂等</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -767,16 +788,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/13/http-pre/" class="media-left">
+            <a href="/2019/12/25/j2ee-aop/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="http1.x、http 2和https">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="AOP原理及实现机制">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-13T06:23:41.000Z">2019-12-13</time></div>
-                    <a href="/2019/12/13/http-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">http1.x、http 2和https</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-25T01:52:38.000Z">2019-12-25</time></div>
+                    <a href="/2019/12/25/j2ee-aop/" class="title has-link-black-ter is-size-6 has-text-weight-normal">AOP原理及实现机制</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -786,16 +807,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/05/dubbo-pre/" class="media-left">
+            <a href="/2019/12/24/zk-eureka/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="dubbo学习">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="zk和eureka比较">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-05T07:59:27.000Z">2019-12-05</time></div>
-                    <a href="/2019/12/05/dubbo-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">dubbo学习</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-24T10:17:17.000Z">2019-12-24</time></div>
+                    <a href="/2019/12/24/zk-eureka/" class="title has-link-black-ter is-size-6 has-text-weight-normal">zk和eureka比较</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -805,16 +826,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/04/spring-pre/" class="media-left">
+            <a href="/2019/12/24/redis-learning-lock/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="spring学习前瞻">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="redis分布式锁">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-04T02:30:01.000Z">2019-12-04</time></div>
-                    <a href="/2019/12/04/spring-pre/" class="title has-link-black-ter is-size-6 has-text-weight-normal">spring学习前瞻</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-24T07:46:52.000Z">2019-12-24</time></div>
+                    <a href="/2019/12/24/redis-learning-lock/" class="title has-link-black-ter is-size-6 has-text-weight-normal">redis分布式锁</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -839,7 +860,7 @@
                     <span class="level-item">December 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">6</span>
+                    <span class="level-item tag">13</span>
                 </span>
             </a>
         </li>
@@ -892,14 +913,21 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/J2EE/">
                         <span class="tag">J2EE</span>
-                        <span class="tag is-grey">3</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JAVA/">
+                        <span class="tag">JAVA</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
                 <div class="control">
                     <a class="tags has-addons" href="/tags/JVM/">
                         <span class="tag">JVM</span>
-                        <span class="tag is-grey">1</span>
+                        <span class="tag is-grey">2</span>
                     </a>
                 </div>
                 
@@ -941,7 +969,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/REDIS/">
                         <span class="tag">REDIS</span>
-                        <span class="tag is-grey">3</span>
+                        <span class="tag is-grey">4</span>
                     </a>
                 </div>
                 
@@ -955,7 +983,14 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/ZK/">
                         <span class="tag">ZK</span>
-                        <span class="tag is-grey">2</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/eureka/">
+                        <span class="tag">eureka</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -976,7 +1011,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">
                         <span class="tag">设计模式</span>
-                        <span class="tag is-grey">1</span>
+                        <span class="tag is-grey">2</span>
                     </a>
                 </div>
                 
