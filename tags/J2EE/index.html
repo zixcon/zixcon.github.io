@@ -142,6 +142,159 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2020-01-10T02:32:50.000Z">2020-01-10</time>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    a minute read (About 212 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2020/01/10/j2ee-stable/">如何保证系统的稳定性和高可用</a>
+            
+        </h1>
+        <div class="content">
+            <h1 id="如何保证系统的稳定性和高可用"><a href="#如何保证系统的稳定性和高可用" class="headerlink" title="如何保证系统的稳定性和高可用"></a>如何保证系统的稳定性和高可用</h1><p>##现象分析</p>
+<p>​    在很长时间里，我们做的只是在原有系统上增加功能，架构上没有大调整。但是随着业务增长，就算我们系统没有任何发版升级，也会突然出现一些事故。</p>
+<p><img src="j2ee-stable/j2ee-stable-1.jpg" alt></p>
+<h2 id="发现问题"><a href="#发现问题" class="headerlink" title="发现问题"></a>发现问题</h2><p>从大方面说就是：外部的问题和自身的问题</p>
+<p><img src="j2ee-stable/j2ee-stable-2.jpg" alt></p>
+<p>​    值得一提的是：如果我们业务量没有上来，这些问题本不是问题。</p>
+<p>##故障演练</p>
+<p><img src="j2ee-stable/j2ee-stable-3.jpg" alt></p>
+<h2 id="checklist"><a href="#checklist" class="headerlink" title="checklist"></a>checklist</h2><p><img src="j2ee-stable/j2ee-stable-4.jpg" alt></p>
+<p>参照：</p>
+<p><a href="http://www.360doc.com/content/18/0308/12/27972427_735360931.shtml" target="_blank" rel="noopener">不可容忍的4个9，业务高速增长下，<strong>如何保证系统的稳定性</strong>和高可用？</a></p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2020-01-08T08:56:20.000Z">2020-01-08</time>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    a few seconds read (About 90 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2020/01/08/j2ee-ioc/">j2ee-ioc</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="IOC"><a href="#IOC" class="headerlink" title="IOC"></a>IOC</h2><p>IOC，所谓控制反转，就是把原先我们代码里面需要实现的对象创建、依赖的代码，反转给容器来帮忙实现。</p>
+<h2 id="实现机制"><a href="#实现机制" class="headerlink" title="实现机制"></a>实现机制</h2><p>IOC(控制反转)的实现建立在工厂模式、Java反射机制</p>
+<p><a href="https://www.jianshu.com/p/3bfd916f2bb2" target="_blank" rel="noopener">设计模式之单例模式</a></p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2020-01-07T07:15:41.000Z">2020-01-07</time>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    7 minutes read (About 1123 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2020/01/07/j2ee-dapper/">分布式链路追踪</a>
+            
+        </h1>
+        <div class="content">
+            <h1 id="分布式链路追踪"><a href="#分布式链路追踪" class="headerlink" title="分布式链路追踪"></a>分布式链路追踪</h1><p><a href="http://lidawn.github.io/2018/12/26/distribute-tracing/" target="_blank" rel="noopener">聊聊分布式链路追踪</a></p>
+<p><a href="https://www.cnblogs.com/davidwang456/articles/9008893.html" target="_blank" rel="noopener">各大厂分布式链路跟踪系统架构对比</a></p>
+<h2 id="什么是链路追踪"><a href="#什么是链路追踪" class="headerlink" title="什么是链路追踪"></a>什么是链路追踪</h2><p>分布式系统变得日趋复杂，越来越多的组件开始走向分布式化，如微服务、分布式数据库、分布式缓存等，使得后台服务构成了一种复杂的分布式网络。在服务能力提升的同时，复杂的网络结构也使问题定位更加困难。在一个请求在经过诸多服务过程中，出现了某一个调用失败的情况，查询具体的异常由哪一个服务引起的就变得十分抓狂，问题定位和处理效率是也会非常低。</p>
+<p>分布式链路追踪就是将一次分布式请求还原成调用链路，将一次分布式请求的调用情况集中展示，比如各个服务节点上的耗时、请求具体到达哪台机器上、每个服务节点的请求状态等等。</p>
+<h2 id="Dapper"><a href="#Dapper" class="headerlink" title="Dapper"></a>Dapper</h2><p>目前业界的链路追踪系统，如Twitter的<strong><a href="https://zipkin.io/" target="_blank" rel="noopener">Zipkin</a></strong>，Uber的<strong><a href="https://www.jaegertracing.io/" target="_blank" rel="noopener">Jaeger</a></strong>，阿里的<strong><a href="https://cn.aliyun.com/aliware/news/monitoringsolution" target="_blank" rel="noopener">鹰眼</a></strong>，美团的<strong><a href="https://tech.meituan.com/mt_mtrace.html" target="_blank" rel="noopener">Mtrace</a></strong>等都基本被启发于google发表的<strong><a href="http://static.googleusercontent.com/media/research.google.com/zh-CN//pubs/archive/36356.pdf" target="_blank" rel="noopener">Dapper</a></strong>。 Dapper阐述了分布式系统，特别是微服务架构中链路追踪的概念、数据表示、埋点、传递、收集、存储与展示等技术细节。</p>
+<h3 id="Trace、Span、Annotations"><a href="#Trace、Span、Annotations" class="headerlink" title="Trace、Span、Annotations"></a>Trace、Span、Annotations</h3><p>为了实现链路追踪，dapper提出了trace，span，annotation的概念。<br>Trace的含义比较直观，就是链路，指一个请求经过后端所有服务的路径，可以用下面树状的图形表示。每一条链路都用一个全局唯一的traceid来标识。</p>
+<h1 id="分布式调用跟踪系统的设计"><a href="#分布式调用跟踪系统的设计" class="headerlink" title="分布式调用跟踪系统的设计"></a>分布式调用跟踪系统的设计</h1><h3 id="（1）分布式调用跟踪系统的设计目标"><a href="#（1）分布式调用跟踪系统的设计目标" class="headerlink" title="（1）分布式调用跟踪系统的设计目标"></a>（1）分布式调用跟踪系统的设计目标</h3><p>低侵入性，应用透明：作为非业务组件，应当尽可能少侵入或者无侵入其他业务系统，对于使用方透明，减少开发人员的负担</p>
+<p>低损耗：服务调用埋点本身会带来性能损耗，这就需要调用跟踪的低损耗，实际中还会通过配置采样率的方式，选择一部分请求去分析请求路径</p>
+<p>大范围部署，扩展性：作为分布式系统的组件之一，一个优秀的调用跟踪系统必须支持分布式部署，具备良好的可扩展性</p>
+<h3 id="（2）埋点和生成日志"><a href="#（2）埋点和生成日志" class="headerlink" title="（2）埋点和生成日志"></a>（2）埋点和生成日志</h3><p>埋点即系统在当前节点的上下文信息，可以分为客户端埋点、服务端埋点，以及客户端和服务端双向型埋点。埋点日志通常要包含以下内容：</p>
+<p>TraceId、RPCId、调用的开始时间，调用类型，协议类型，调用方ip和端口，请求的服务名等信息；</p>
+<p>调用耗时，调用结果，异常信息，消息报文等；</p>
+<p>预留可扩展字段，为下一步扩展做准备；</p>
+<h3 id="（3）抓取和存储日志"><a href="#（3）抓取和存储日志" class="headerlink" title="（3）抓取和存储日志"></a>（3）抓取和存储日志</h3><p>日志的采集和存储有许多开源的工具可以选择，一般来说，会使用离线+实时的方式去存储日志，主要是分布式日志采集的方式。典型的解决方案如Flume结合Kafka等MQ。</p>
+<h3 id="（4）分析和统计调用链数据"><a href="#（4）分析和统计调用链数据" class="headerlink" title="（4）分析和统计调用链数据"></a>（4）分析和统计调用链数据</h3><p>一条调用链的日志散落在调用经过的各个服务器上，首先需要按 TraceId 汇总日志，然后按照RpcId 对调用链进行顺序整理。用链数据不要求百分之百准确，可以允许中间的部分日志丢失。</p>
+<h3 id="（5）计算和展示"><a href="#（5）计算和展示" class="headerlink" title="（5）计算和展示"></a>（5）计算和展示</h3><p>汇总得到各个应用节点的调用链日志后，可以针对性的对各个业务线进行分析。需要对具体日志进行整理，进一步储存在HBase或者关系型数据库中，可以进行可视化的查询。</p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2019-12-31T03:36:10.000Z">2019-12-31</time>
                 
                 
@@ -279,7 +432,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    16 minutes read (About 2380 words)
+                    16 minutes read (About 2411 words)
                 </span>
                 
                 
@@ -381,6 +534,7 @@
 </ol>
 <p>###Spring的AOP</p>
 <p>​    Spring默认采取的动态代理机制实现AOP，当动态代理不可用时（代理类无接口）会使用CGlib机制。</p>
+<p>​    AOP(面向方面编程)的实现是建立在CGLib提供的类代理和jdk提供的接口代理</p>
 <h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><ul>
 <li>性能监控，在方法调用前后记录调用时间，方法执行太长或超时报警。</li>
 <li>缓存代理，缓存某方法的返回值，下次执行该方法时，直接从缓存里获取。</li>
@@ -945,7 +1099,7 @@
                     </p>
                     <a href="/archives">
                         <p class="title has-text-weight-normal">
-                            25
+                            36
                         </p>
                     </a>
                 </div>
@@ -969,7 +1123,7 @@
                     </p>
                     <a href="/tags">
                         <p class="title has-text-weight-normal">
-                            18
+                            21
                         </p>
                     </a>
                 </div>
@@ -1082,7 +1236,7 @@
         <h3 class="menu-label">
             Tag Cloud
         </h3>
-        <a href="/tags/DUBBO/" style="font-size: 10px;">DUBBO</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/I-O/" style="font-size: 12.5px;">I/O</a> <a href="/tags/J2EE/" style="font-size: 20px;">J2EE</a> <a href="/tags/JAVA/" style="font-size: 10px;">JAVA</a> <a href="/tags/JVM/" style="font-size: 12.5px;">JVM</a> <a href="/tags/LINUX/" style="font-size: 15px;">LINUX</a> <a href="/tags/LOG/" style="font-size: 10px;">LOG</a> <a href="/tags/MOCK/" style="font-size: 10px;">MOCK</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/MYSQL/" style="font-size: 10px;">MYSQL</a> <a href="/tags/REDIS/" style="font-size: 17.5px;">REDIS</a> <a href="/tags/SPRING/" style="font-size: 10px;">SPRING</a> <a href="/tags/ZK/" style="font-size: 15px;">ZK</a> <a href="/tags/eureka/" style="font-size: 10px;">eureka</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 12.5px;">设计模式</a>
+        <a href="/tags/DUBBO/" style="font-size: 10px;">DUBBO</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/I-O/" style="font-size: 12.5px;">I/O</a> <a href="/tags/J2EE/" style="font-size: 20px;">J2EE</a> <a href="/tags/JAVA/" style="font-size: 15px;">JAVA</a> <a href="/tags/JDK/" style="font-size: 15px;">JDK</a> <a href="/tags/JVM/" style="font-size: 12.5px;">JVM</a> <a href="/tags/LINUX/" style="font-size: 17.5px;">LINUX</a> <a href="/tags/LOG/" style="font-size: 10px;">LOG</a> <a href="/tags/MOCK/" style="font-size: 10px;">MOCK</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/MYSQL/" style="font-size: 12.5px;">MYSQL</a> <a href="/tags/NETTY/" style="font-size: 10px;">NETTY</a> <a href="/tags/REDIS/" style="font-size: 17.5px;">REDIS</a> <a href="/tags/SPRING/" style="font-size: 10px;">SPRING</a> <a href="/tags/THREAD/" style="font-size: 10px;">THREAD</a> <a href="/tags/ZK/" style="font-size: 15px;">ZK</a> <a href="/tags/eureka/" style="font-size: 10px;">eureka</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 12.5px;">设计模式</a>
     </div>
 </div>
     
@@ -1097,16 +1251,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/31/j2ee-model-singleton/" class="media-left">
+            <a href="/2020/01/15/mysql-in-exists/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="singleton单例模式">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="in exists 区别">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-31T03:36:10.000Z">2019-12-31</time></div>
-                    <a href="/2019/12/31/j2ee-model-singleton/" class="title has-link-black-ter is-size-6 has-text-weight-normal">singleton单例模式</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-15T06:33:11.000Z">2020-01-15</time></div>
+                    <a href="/2020/01/15/mysql-in-exists/" class="title has-link-black-ter is-size-6 has-text-weight-normal">in exists 区别</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -1116,16 +1270,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/31/j2ee-%E5%B9%82%E7%AD%89/" class="media-left">
+            <a href="/2020/01/10/j2ee-stable/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="接口幂等">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="如何保证系统的稳定性和高可用">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-31T01:41:22.000Z">2019-12-31</time></div>
-                    <a href="/2019/12/31/j2ee-%E5%B9%82%E7%AD%89/" class="title has-link-black-ter is-size-6 has-text-weight-normal">接口幂等</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-10T02:32:50.000Z">2020-01-10</time></div>
+                    <a href="/2020/01/10/j2ee-stable/" class="title has-link-black-ter is-size-6 has-text-weight-normal">如何保证系统的稳定性和高可用</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -1135,16 +1289,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/25/j2ee-aop/" class="media-left">
+            <a href="/2020/01/09/jdk-synchronized/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="AOP原理及实现机制">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="synchronized">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-25T01:52:38.000Z">2019-12-25</time></div>
-                    <a href="/2019/12/25/j2ee-aop/" class="title has-link-black-ter is-size-6 has-text-weight-normal">AOP原理及实现机制</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-09T09:08:31.000Z">2020-01-09</time></div>
+                    <a href="/2020/01/09/jdk-synchronized/" class="title has-link-black-ter is-size-6 has-text-weight-normal">synchronized</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -1154,16 +1308,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/24/zk-eureka/" class="media-left">
+            <a href="/2020/01/08/j2ee-ioc/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="zk和eureka比较">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="j2ee-ioc">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-24T10:17:17.000Z">2019-12-24</time></div>
-                    <a href="/2019/12/24/zk-eureka/" class="title has-link-black-ter is-size-6 has-text-weight-normal">zk和eureka比较</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-08T08:56:20.000Z">2020-01-08</time></div>
+                    <a href="/2020/01/08/j2ee-ioc/" class="title has-link-black-ter is-size-6 has-text-weight-normal">j2ee-ioc</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -1173,16 +1327,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/24/redis-learning-lock/" class="media-left">
+            <a href="/2020/01/08/java-threadlocal/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="redis分布式锁">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="java-threadlocal">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-24T07:46:52.000Z">2019-12-24</time></div>
-                    <a href="/2019/12/24/redis-learning-lock/" class="title has-link-black-ter is-size-6 has-text-weight-normal">redis分布式锁</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-08T02:58:20.000Z">2020-01-08</time></div>
+                    <a href="/2020/01/08/java-threadlocal/" class="title has-link-black-ter is-size-6 has-text-weight-normal">java-threadlocal</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -1200,6 +1354,17 @@
             Archives
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/01/">
+                <span class="level-start">
+                    <span class="level-item">January 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">11</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/12/">
@@ -1260,14 +1425,21 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/J2EE/">
                         <span class="tag">J2EE</span>
-                        <span class="tag is-grey">6</span>
+                        <span class="tag is-grey">9</span>
                     </a>
                 </div>
                 
                 <div class="control">
                     <a class="tags has-addons" href="/tags/JAVA/">
                         <span class="tag">JAVA</span>
-                        <span class="tag is-grey">1</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JDK/">
+                        <span class="tag">JDK</span>
+                        <span class="tag is-grey">3</span>
                     </a>
                 </div>
                 
@@ -1281,7 +1453,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/LINUX/">
                         <span class="tag">LINUX</span>
-                        <span class="tag is-grey">3</span>
+                        <span class="tag is-grey">4</span>
                     </a>
                 </div>
                 
@@ -1309,6 +1481,13 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/MYSQL/">
                         <span class="tag">MYSQL</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/NETTY/">
+                        <span class="tag">NETTY</span>
                         <span class="tag is-grey">1</span>
                     </a>
                 </div>
@@ -1323,6 +1502,13 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/SPRING/">
                         <span class="tag">SPRING</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/THREAD/">
+                        <span class="tag">THREAD</span>
                         <span class="tag is-grey">1</span>
                     </a>
                 </div>
@@ -1386,16 +1572,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/31/j2ee-model-singleton/" class="media-left">
+            <a href="/2020/01/15/mysql-in-exists/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="singleton单例模式">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="in exists 区别">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-31T03:36:10.000Z">2019-12-31</time></div>
-                    <a href="/2019/12/31/j2ee-model-singleton/" class="title has-link-black-ter is-size-6 has-text-weight-normal">singleton单例模式</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-15T06:33:11.000Z">2020-01-15</time></div>
+                    <a href="/2020/01/15/mysql-in-exists/" class="title has-link-black-ter is-size-6 has-text-weight-normal">in exists 区别</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -1405,16 +1591,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/31/j2ee-%E5%B9%82%E7%AD%89/" class="media-left">
+            <a href="/2020/01/10/j2ee-stable/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="接口幂等">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="如何保证系统的稳定性和高可用">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-31T01:41:22.000Z">2019-12-31</time></div>
-                    <a href="/2019/12/31/j2ee-%E5%B9%82%E7%AD%89/" class="title has-link-black-ter is-size-6 has-text-weight-normal">接口幂等</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-10T02:32:50.000Z">2020-01-10</time></div>
+                    <a href="/2020/01/10/j2ee-stable/" class="title has-link-black-ter is-size-6 has-text-weight-normal">如何保证系统的稳定性和高可用</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -1424,16 +1610,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/25/j2ee-aop/" class="media-left">
+            <a href="/2020/01/09/jdk-synchronized/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="AOP原理及实现机制">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="synchronized">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-25T01:52:38.000Z">2019-12-25</time></div>
-                    <a href="/2019/12/25/j2ee-aop/" class="title has-link-black-ter is-size-6 has-text-weight-normal">AOP原理及实现机制</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-09T09:08:31.000Z">2020-01-09</time></div>
+                    <a href="/2020/01/09/jdk-synchronized/" class="title has-link-black-ter is-size-6 has-text-weight-normal">synchronized</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -1443,16 +1629,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/24/zk-eureka/" class="media-left">
+            <a href="/2020/01/08/j2ee-ioc/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="zk和eureka比较">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="j2ee-ioc">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-24T10:17:17.000Z">2019-12-24</time></div>
-                    <a href="/2019/12/24/zk-eureka/" class="title has-link-black-ter is-size-6 has-text-weight-normal">zk和eureka比较</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-08T08:56:20.000Z">2020-01-08</time></div>
+                    <a href="/2020/01/08/j2ee-ioc/" class="title has-link-black-ter is-size-6 has-text-weight-normal">j2ee-ioc</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -1462,16 +1648,16 @@
         
         <article class="media">
             
-            <a href="/2019/12/24/redis-learning-lock/" class="media-left">
+            <a href="/2020/01/08/java-threadlocal/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="redis分布式锁">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="java-threadlocal">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-24T07:46:52.000Z">2019-12-24</time></div>
-                    <a href="/2019/12/24/redis-learning-lock/" class="title has-link-black-ter is-size-6 has-text-weight-normal">redis分布式锁</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-08T02:58:20.000Z">2020-01-08</time></div>
+                    <a href="/2020/01/08/java-threadlocal/" class="title has-link-black-ter is-size-6 has-text-weight-normal">java-threadlocal</a>
                     <p class="is-size-7 is-uppercase">
                         
                     </p>
@@ -1489,6 +1675,17 @@
             Archives
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/01/">
+                <span class="level-start">
+                    <span class="level-item">January 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">11</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/12/">
@@ -1549,14 +1746,21 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/J2EE/">
                         <span class="tag">J2EE</span>
-                        <span class="tag is-grey">6</span>
+                        <span class="tag is-grey">9</span>
                     </a>
                 </div>
                 
                 <div class="control">
                     <a class="tags has-addons" href="/tags/JAVA/">
                         <span class="tag">JAVA</span>
-                        <span class="tag is-grey">1</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JDK/">
+                        <span class="tag">JDK</span>
+                        <span class="tag is-grey">3</span>
                     </a>
                 </div>
                 
@@ -1570,7 +1774,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/LINUX/">
                         <span class="tag">LINUX</span>
-                        <span class="tag is-grey">3</span>
+                        <span class="tag is-grey">4</span>
                     </a>
                 </div>
                 
@@ -1598,6 +1802,13 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/MYSQL/">
                         <span class="tag">MYSQL</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/NETTY/">
+                        <span class="tag">NETTY</span>
                         <span class="tag is-grey">1</span>
                     </a>
                 </div>
@@ -1612,6 +1823,13 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/SPRING/">
                         <span class="tag">SPRING</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/THREAD/">
+                        <span class="tag">THREAD</span>
                         <span class="tag is-grey">1</span>
                     </a>
                 </div>
@@ -1672,7 +1890,7 @@
                 
                 </a>
                 <p class="is-size-7">
-                &copy; 2019 John Doe&nbsp;
+                &copy; 2020 John Doe&nbsp;
                 Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a
                         href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
                 
