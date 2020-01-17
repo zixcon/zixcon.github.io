@@ -132,6 +132,58 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2020-01-03T03:04:07.000Z">2020-01-03</time>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    6 minutes read (About 948 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2020/01/03/jdk-container/">java容器</a>
+            
+        </h1>
+        <div class="content">
+            <h1 id="同步容器Vector和HashTable"><a href="#同步容器Vector和HashTable" class="headerlink" title="同步容器Vector和HashTable"></a>同步容器Vector和HashTable</h1><p>​    为了简化代码开发的过程，早期的JDK在java.util包中提供了Vector和HashTable两个同步容器，这两个容器的实现和早期的ArrayList和HashMap代码实现基本一样，不同在于Vector和HashTable在每个方法上都添加了synchronized关键字来保证同一个实例同时只有一个线程能访问。</p>
+<p>​    <strong>通过对每个方法添加synchronized，保证了多次操作的串行</strong>。这种方式虽然使用起来方便了，但并没有解决高并发下的性能问题，与手动锁住ArrayList和HashMap并没有什么区别，不论读还是写都会锁住整个容器。其次这种方式存在另一个问题：当多个线程进行复合操作时，是线程不安全的。</p>
+<h1 id="并发容器CopyOnWrite和Concurrent"><a href="#并发容器CopyOnWrite和Concurrent" class="headerlink" title="并发容器CopyOnWrite和Concurrent"></a>并发容器CopyOnWrite和Concurrent</h1><h2 id="CopyOnWrite"><a href="#CopyOnWrite" class="headerlink" title="CopyOnWrite"></a>CopyOnWrite</h2><p>​    CopyOnWrite–写时复制容器是一种常用的并发容器，它通过多线程下读写分离来达到提高并发性能的目的，和前面我们讲解StampedLock时所用的解决方案类似：任何时候都可以进行读操作，写操作则需要加锁。不同的是，在CopyOnWrite中，对容器的修改操作加锁后，通过copy一个新的容器来进行修改，修改完毕后将容器替换为新的容器即可。</p>
+<p>​    这种方式的好处显而易见：通过copy一个新的容器来进行修改，这样读操作就不需要加锁，可以并发读，因为在读的过程中是采用的旧的容器，即使新容器做了修改对旧容器也没有影响，同时也很好的解决了迭代过程中其他线程修改导致的并发问题。</p>
+<p>JDK中提供的并发容器包括CopyOnWriteArrayList和CopyOnWriteArraySet</p>
+<h2 id="ConcurrentHashMap"><a href="#ConcurrentHashMap" class="headerlink" title="ConcurrentHashMap"></a>ConcurrentHashMap</h2><p>​    ConcurrentHashMap容器相较于CopyOnWrite容器在并发加锁粒度上有了更大一步的优化，它通过修改对单个hash桶元素加锁的达到了更细粒度的并发控制。</p>
+<p>​    通过ConcurrentHashMap添加元素的过程，知道了ConcurrentHashMap容器是通过CAS + synchronized一起来实现并发控制的。这里有个额外的问题：为什么使用synchronized而不使用ReentrantLock？前面我的文章也对synchronized以及ReentrantLock的实现方式和性能做过分析，在这里我的理解是synchronized在后期优化空间上比ReentrantLock更大。</p>
+<h2 id="ConcurrentSkipListMap"><a href="#ConcurrentSkipListMap" class="headerlink" title="ConcurrentSkipListMap"></a>ConcurrentSkipListMap</h2><p>​    java.util中对应的容器在java.util.concurrent包中基本都可以找到对应的并发容器：List和Set有对应的CopyOnWriteArrayList与CopyOnWriteArraySet，HashMap有对应的ConcurrentHashMap，但是有序的TreeMap或并没有对应的ConcurrentTreeMap。</p>
+<p>​    为什么没有ConcurrentTreeMap呢？这是因为TreeMap内部使用了红黑树来实现，红黑树是一种自平衡的二叉树，当树被修改时，需要重新平衡，重新平衡操作可能会影响树的大部分节点，如果并发量非常大的情况下，这就需要在许多树节点上添加互斥锁，那并发就失去了意义。所以提供了另外一种并发下的有序map实现：ConcurrentSkipListMap。</p>
+<p>​    ConcurrentSkipListMap内部使用跳表（SkipList）这种数据结构来实现，他的结构相对红黑树来说非常简单理解，实现起来也相对简单，而且在理论上它的查找、插入、删除时间复杂度都为log(n)。在并发上，ConcurrentSkipListMap采用无锁的CAS+自旋来控制。</p>
+<p>​    </p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2020-01-02T02:18:40.000Z">2020-01-02</time>
                 
                 
@@ -728,68 +780,6 @@
 
 
 
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-12-13T07:39:12.000Z">2019-12-13</time>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    9 minutes read (About 1382 words)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2019/12/13/mysql-index/">mysql索引</a>
-            
-        </h1>
-        <div class="content">
-            <h1 id="聚簇索引与非聚簇索引"><a href="#聚簇索引与非聚簇索引" class="headerlink" title="聚簇索引与非聚簇索引"></a>聚簇索引与非聚簇索引</h1><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>​    <strong>聚簇索引是对磁盘上实际数据重新组织以按指定的一个或多个列的值排序的算法。</strong>特点是存储数据的顺序和索引顺序一致。<br>​    <strong>一般情况下主键会默认创建聚簇索引，且一张表只允许存在一个聚簇索引。</strong></p>
-<p>​    在《数据库原理》一书中是这么解<strong>释聚簇索引和非聚簇索引的区别</strong>的：<br>​    <strong>聚簇索引的叶子节点就是数据节点，而非聚簇索引的叶子节点仍然是索引节点，只不过有指向对应数据块的指针。</strong></p>
-<p>综上，可以得出聚簇索引和非聚簇索引概念：</p>
-<p><strong>聚簇索引：即存储索引值，又存储行数据，数据文件和索引文件是同一个文件</strong></p>
-<p><strong>非聚簇索引：索引文件和数据文件是独立分开的</strong></p>
-<p>​    那么如果数据表中没有主键呢？MySQL的解决办法是隐式地将一个唯一的非空的列定义为聚簇。那如果这也没有呢？MySQL就自己创建一个聚簇索引。</p>
-<p>​    <strong>在Innodb中，二级索引除了存储本身的列值外，其叶子节点存储的不是‘行指针’，而是主键值</strong>，为什么是这样呢？原来这种方式在表结构发生变化的时候会有很大的优势。如果二级索引的存储顺序是以列值为基础的，那么在发生数据行的移动或者增加删除时候，必定会引起索引结构的巨大变化。</p>
-<h3 id="MyISAM与InnoDB"><a href="#MyISAM与InnoDB" class="headerlink" title="MyISAM与InnoDB"></a>MyISAM与InnoDB</h3><p>​    mysql存储引擎MyISAM与InnoDB的底层数据结构的区别主要有，在磁盘上存储的文件以及存储索引以及组织存储索引的方式不同；</p>
-<ol>
-<li><p>MyISAM索引文件和数据文件是分离的(非聚集)，索引的叶节点存放的是对应索引在文件系统中的数据地址编码</p>
-</li>
-<li><p>innodb中，数据文件和索引文件是同一个文件，是聚簇索引。（注意区别普通索引）</p>
-</li>
-</ol>
-<p><strong>（1）InnoDB的主键采用聚簇索引存储，使用的是B+Tree作为索引结构，但是叶子节点存储的是索引值和数据本身（注意和MyISAM的不同）。</strong><br><strong>（2）InnoDB的二级索引不使用聚蔟索引，叶子节点存储的是KEY字段加主键值。因此，通过二级索引查询首先查到是主键值，然后InnoDB再根据查到的主键值通过主键索引找到相应的数据块。</strong><br><strong>（3）MyISAM的主键索引和二级索引叶子节点存放的都是列值与行号的组合，叶子节点中保存的是数据的物理地址</strong><br><strong>（4）MyISAM引擎使用B+Tree作为索引结构，叶节点的data域存放的是数据记录的地址</strong><br><strong>（5）为什么用B+Tree 不是BTree：</strong><br>    B-Tree：如果一次检索需要访问4个节点，数据库系统设计者利用磁盘预读原理，把节点的大小设计为一个页，那读取一个节点只需要一次I/O操作，完成这次检索操作，最多需要3次I/O(根节点常驻内存)。数据记录越小，每个节点存放的数据就越多，树的高度也就越小，I/O操作就少了，检索效率也就上去了。<br>    B+Tree：非叶子节点只存key，大大滴减少了非叶子节点的大小，那么每个节点就可以存放更多的记录，树更矮了，I/O操作更少了。所以B+Tree拥有更好的性能。</p>
-<p>​    由于节子节点(数据页)只能按照一颗B+树排序，故<strong>一张表只能有一个聚簇索引</strong>。辅助索引的存在不影响聚簇索引中数据的组织，所以一张表可以有多个辅助索引</p>
-<p>参照：<a href="https://www.cnblogs.com/xibuhaohao/p/10736112.html" target="_blank" rel="noopener">mysql InnoDB index 主键采用聚簇索引，二级索引不采用聚簇索引</a></p>
-<h2 id="复合索引"><a href="#复合索引" class="headerlink" title="复合索引"></a>复合索引</h2><p>​    复合索引也叫组合索引；用户可以在多个列上建立索引,这种索引叫做复合索引(组合索引)。</p>
-<p>​    建了一个(a,b,c)的复合索引，那么实际等于建了(a),(a,b),(a,b,c)三个索引，因为每多一个索引，都会增加写操作的开销和磁盘空间的开销。查询是否使用该索引基于<strong>最左原则</strong></p>
-<p>​    同样的有复合索引（a,b,c），如果有如下的sql: select a,b,c from table where a=1 and b = 1。那么MySQL可以直接通过遍历索引取得数据，而无需回表，这减少了很多的随机io操作。减少io操作，特别的随机io其实是dba主要的优化策略。所以，在真正的实际应用中，覆盖索引是主要的提升性能的优化手段之一</p>
-<p><a href="https://my.oschina.net/u/1399755/blog/1787166" target="_blank" rel="noopener">复合索引测试sql用例</a></p>
-
-        </div>
-        
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
 
     
 <div class="card card-transparent">
@@ -858,7 +848,7 @@
                     </p>
                     <a href="/archives">
                         <p class="title has-text-weight-normal">
-                            36
+                            37
                         </p>
                     </a>
                 </div>
@@ -995,7 +985,7 @@
         <h3 class="menu-label">
             Tag Cloud
         </h3>
-        <a href="/tags/DUBBO/" style="font-size: 10px;">DUBBO</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/I-O/" style="font-size: 12.5px;">I/O</a> <a href="/tags/J2EE/" style="font-size: 20px;">J2EE</a> <a href="/tags/JAVA/" style="font-size: 15px;">JAVA</a> <a href="/tags/JDK/" style="font-size: 15px;">JDK</a> <a href="/tags/JVM/" style="font-size: 12.5px;">JVM</a> <a href="/tags/LINUX/" style="font-size: 17.5px;">LINUX</a> <a href="/tags/LOG/" style="font-size: 10px;">LOG</a> <a href="/tags/MOCK/" style="font-size: 10px;">MOCK</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/MYSQL/" style="font-size: 12.5px;">MYSQL</a> <a href="/tags/NETTY/" style="font-size: 10px;">NETTY</a> <a href="/tags/REDIS/" style="font-size: 17.5px;">REDIS</a> <a href="/tags/SPRING/" style="font-size: 10px;">SPRING</a> <a href="/tags/THREAD/" style="font-size: 10px;">THREAD</a> <a href="/tags/ZK/" style="font-size: 15px;">ZK</a> <a href="/tags/eureka/" style="font-size: 10px;">eureka</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 12.5px;">设计模式</a>
+        <a href="/tags/DUBBO/" style="font-size: 10px;">DUBBO</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/I-O/" style="font-size: 12.5px;">I/O</a> <a href="/tags/J2EE/" style="font-size: 20px;">J2EE</a> <a href="/tags/JAVA/" style="font-size: 15px;">JAVA</a> <a href="/tags/JDK/" style="font-size: 15px;">JDK</a> <a href="/tags/JVM/" style="font-size: 12.5px;">JVM</a> <a href="/tags/LINUX/" style="font-size: 17.5px;">LINUX</a> <a href="/tags/LOG/" style="font-size: 10px;">LOG</a> <a href="/tags/MOCK/" style="font-size: 10px;">MOCK</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/MYSQL/" style="font-size: 15px;">MYSQL</a> <a href="/tags/NETTY/" style="font-size: 10px;">NETTY</a> <a href="/tags/REDIS/" style="font-size: 17.5px;">REDIS</a> <a href="/tags/SPRING/" style="font-size: 10px;">SPRING</a> <a href="/tags/THREAD/" style="font-size: 10px;">THREAD</a> <a href="/tags/ZK/" style="font-size: 15px;">ZK</a> <a href="/tags/eureka/" style="font-size: 10px;">eureka</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 12.5px;">设计模式</a>
     </div>
 </div>
     
@@ -1007,6 +997,25 @@
         <h3 class="menu-label">
             Recent
         </h3>
+        
+        <article class="media">
+            
+            <a href="/2020/01/17/mysql-join/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="mysql-join">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-17T03:26:04.000Z">2020-01-17</time></div>
+                    <a href="/2020/01/17/mysql-join/" class="title has-link-black-ter is-size-6 has-text-weight-normal">mysql-join</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -1084,25 +1093,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2020/01/08/java-threadlocal/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="java-threadlocal">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-08T02:58:20.000Z">2020-01-08</time></div>
-                    <a href="/2020/01/08/java-threadlocal/" class="title has-link-black-ter is-size-6 has-text-weight-normal">java-threadlocal</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
         
@@ -1120,7 +1110,7 @@
                     <span class="level-item">January 2020</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">11</span>
+                    <span class="level-item tag">12</span>
                 </span>
             </a>
         </li>
@@ -1240,7 +1230,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/MYSQL/">
                         <span class="tag">MYSQL</span>
-                        <span class="tag is-grey">2</span>
+                        <span class="tag is-grey">3</span>
                     </a>
                 </div>
                 
@@ -1331,6 +1321,25 @@
         
         <article class="media">
             
+            <a href="/2020/01/17/mysql-join/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="mysql-join">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-17T03:26:04.000Z">2020-01-17</time></div>
+                    <a href="/2020/01/17/mysql-join/" class="title has-link-black-ter is-size-6 has-text-weight-normal">mysql-join</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
             <a href="/2020/01/15/mysql-in-exists/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="/images/thumbnail.svg" alt="in exists 区别">
@@ -1405,25 +1414,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2020/01/08/java-threadlocal/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="java-threadlocal">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-08T02:58:20.000Z">2020-01-08</time></div>
-                    <a href="/2020/01/08/java-threadlocal/" class="title has-link-black-ter is-size-6 has-text-weight-normal">java-threadlocal</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
     
@@ -1441,7 +1431,7 @@
                     <span class="level-item">January 2020</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">11</span>
+                    <span class="level-item tag">12</span>
                 </span>
             </a>
         </li>
@@ -1561,7 +1551,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/MYSQL/">
                         <span class="tag">MYSQL</span>
-                        <span class="tag is-grey">2</span>
+                        <span class="tag is-grey">3</span>
                     </a>
                 </div>
                 

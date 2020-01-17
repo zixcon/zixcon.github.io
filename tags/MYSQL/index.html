@@ -142,6 +142,57 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2020-01-17T03:26:04.000Z">2020-01-17</time>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    3 minutes read (About 443 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2020/01/17/mysql-join/">mysql-join</a>
+            
+        </h1>
+        <div class="content">
+            <h1 id="表级联方式"><a href="#表级联方式" class="headerlink" title="表级联方式"></a>表级联方式</h1><p>在多表联合查询的时候，如果我们查看它的执行计划，就会发现里面有多表之间的连接方式。多表之间的连接有三种方式：Nested Loops，Hash Join 和 Sort Merge Join.具体适用哪种类型的连接取决于</p>
+<ul>
+<li>当前的优化器模式 （ALL_ROWS 和 RULE）</li>
+<li>取决于表大小</li>
+<li>取决于连接列是否有索引</li>
+<li>取决于连接列是否排序</li>
+</ul>
+<h3 id="HASH-JOIN-散列连接"><a href="#HASH-JOIN-散列连接" class="headerlink" title="HASH JOIN:散列连接"></a>HASH JOIN:散列连接</h3><p>​    Hash join散列连接是CBO 做大数据集连接时的常用方式，优化器使用两个表中较小的表（通常是小一点的那个表或数据源）利用连接键（JOIN KEY）在内存中建立散列表，将列数据存储到hash列表中，然后扫描较大的表，同样对JOIN KEY进行HASH后探测散列表，找出与散列表匹配的行。需要注意的是：如果HASH表太大，无法一次构造在内存中，则分成若干个partition，写入磁盘的temporary segment，则会多一个写的代价，会降低效率。</p>
+<h3 id="SORT-MERGE-JOIN-排序合并连接"><a href="#SORT-MERGE-JOIN-排序合并连接" class="headerlink" title="SORT MERGE JOIN:排序合并连接"></a>SORT MERGE JOIN:排序合并连接</h3><p>​    Merge Join 是先将关联表的关联列各自做排序，然后从各自的排序表中抽取数据，到另一个排序表中做匹配。</p>
+<h3 id="NESTED-LOOP-嵌套循环连接"><a href="#NESTED-LOOP-嵌套循环连接" class="headerlink" title="NESTED LOOP:嵌套循环连接"></a>NESTED LOOP:嵌套循环连接</h3><p>​    Nested loops 工作方式是循环从一张表中读取数据(驱动表outer table)，然后访问另一张表（被查找表 inner table,通常有索引）。驱动表中的每一行与inner表中的相应记录JOIN。类似一个嵌套的循环。</p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2020-01-15T06:33:11.000Z">2020-01-15</time>
                 
                 
@@ -287,7 +338,7 @@
                     </p>
                     <a href="/archives">
                         <p class="title has-text-weight-normal">
-                            36
+                            37
                         </p>
                     </a>
                 </div>
@@ -424,7 +475,7 @@
         <h3 class="menu-label">
             Tag Cloud
         </h3>
-        <a href="/tags/DUBBO/" style="font-size: 10px;">DUBBO</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/I-O/" style="font-size: 12.5px;">I/O</a> <a href="/tags/J2EE/" style="font-size: 20px;">J2EE</a> <a href="/tags/JAVA/" style="font-size: 15px;">JAVA</a> <a href="/tags/JDK/" style="font-size: 15px;">JDK</a> <a href="/tags/JVM/" style="font-size: 12.5px;">JVM</a> <a href="/tags/LINUX/" style="font-size: 17.5px;">LINUX</a> <a href="/tags/LOG/" style="font-size: 10px;">LOG</a> <a href="/tags/MOCK/" style="font-size: 10px;">MOCK</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/MYSQL/" style="font-size: 12.5px;">MYSQL</a> <a href="/tags/NETTY/" style="font-size: 10px;">NETTY</a> <a href="/tags/REDIS/" style="font-size: 17.5px;">REDIS</a> <a href="/tags/SPRING/" style="font-size: 10px;">SPRING</a> <a href="/tags/THREAD/" style="font-size: 10px;">THREAD</a> <a href="/tags/ZK/" style="font-size: 15px;">ZK</a> <a href="/tags/eureka/" style="font-size: 10px;">eureka</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 12.5px;">设计模式</a>
+        <a href="/tags/DUBBO/" style="font-size: 10px;">DUBBO</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/I-O/" style="font-size: 12.5px;">I/O</a> <a href="/tags/J2EE/" style="font-size: 20px;">J2EE</a> <a href="/tags/JAVA/" style="font-size: 15px;">JAVA</a> <a href="/tags/JDK/" style="font-size: 15px;">JDK</a> <a href="/tags/JVM/" style="font-size: 12.5px;">JVM</a> <a href="/tags/LINUX/" style="font-size: 17.5px;">LINUX</a> <a href="/tags/LOG/" style="font-size: 10px;">LOG</a> <a href="/tags/MOCK/" style="font-size: 10px;">MOCK</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/MYSQL/" style="font-size: 15px;">MYSQL</a> <a href="/tags/NETTY/" style="font-size: 10px;">NETTY</a> <a href="/tags/REDIS/" style="font-size: 17.5px;">REDIS</a> <a href="/tags/SPRING/" style="font-size: 10px;">SPRING</a> <a href="/tags/THREAD/" style="font-size: 10px;">THREAD</a> <a href="/tags/ZK/" style="font-size: 15px;">ZK</a> <a href="/tags/eureka/" style="font-size: 10px;">eureka</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 12.5px;">设计模式</a>
     </div>
 </div>
     
@@ -436,6 +487,25 @@
         <h3 class="menu-label">
             Recent
         </h3>
+        
+        <article class="media">
+            
+            <a href="/2020/01/17/mysql-join/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="mysql-join">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-17T03:26:04.000Z">2020-01-17</time></div>
+                    <a href="/2020/01/17/mysql-join/" class="title has-link-black-ter is-size-6 has-text-weight-normal">mysql-join</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -513,25 +583,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2020/01/08/java-threadlocal/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="java-threadlocal">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-08T02:58:20.000Z">2020-01-08</time></div>
-                    <a href="/2020/01/08/java-threadlocal/" class="title has-link-black-ter is-size-6 has-text-weight-normal">java-threadlocal</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
         
@@ -549,7 +600,7 @@
                     <span class="level-item">January 2020</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">11</span>
+                    <span class="level-item tag">12</span>
                 </span>
             </a>
         </li>
@@ -669,7 +720,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/MYSQL/">
                         <span class="tag">MYSQL</span>
-                        <span class="tag is-grey">2</span>
+                        <span class="tag is-grey">3</span>
                     </a>
                 </div>
                 
@@ -760,6 +811,25 @@
         
         <article class="media">
             
+            <a href="/2020/01/17/mysql-join/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="mysql-join">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-17T03:26:04.000Z">2020-01-17</time></div>
+                    <a href="/2020/01/17/mysql-join/" class="title has-link-black-ter is-size-6 has-text-weight-normal">mysql-join</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
             <a href="/2020/01/15/mysql-in-exists/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="/images/thumbnail.svg" alt="in exists 区别">
@@ -834,25 +904,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2020/01/08/java-threadlocal/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="java-threadlocal">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-08T02:58:20.000Z">2020-01-08</time></div>
-                    <a href="/2020/01/08/java-threadlocal/" class="title has-link-black-ter is-size-6 has-text-weight-normal">java-threadlocal</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
     
@@ -870,7 +921,7 @@
                     <span class="level-item">January 2020</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">11</span>
+                    <span class="level-item tag">12</span>
                 </span>
             </a>
         </li>
@@ -990,7 +1041,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/MYSQL/">
                         <span class="tag">MYSQL</span>
-                        <span class="tag is-grey">2</span>
+                        <span class="tag is-grey">3</span>
                     </a>
                 </div>
                 

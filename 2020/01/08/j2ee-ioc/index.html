@@ -10,16 +10,16 @@
 <title>j2ee-ioc - zixcon·blog</title>
 
 
-    <meta name="description" content="IOCIOC，所谓控制反转，就是把原先我们代码里面需要实现的对象创建、依赖的代码，反转给容器来帮忙实现。 实现机制IOC(控制反转)的实现建立在工厂模式、Java反射机制 设计模式之单例模式">
+    <meta name="description" content="IOCIOC，所谓控制反转，就是把原先我们代码里面需要实现的对象创建、依赖的代码，反转给容器来帮忙实现。 实现机制IOC(控制反转)的实现建立在工厂模式、Java反射机制 设计模式之单例模式 如何解决循环依赖123456789public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements Single">
 <meta name="keywords" content="J2EE">
 <meta property="og:type" content="article">
 <meta property="og:title" content="j2ee-ioc">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;01&#x2F;08&#x2F;j2ee-ioc&#x2F;index.html">
 <meta property="og:site_name" content="zixcon·blog">
-<meta property="og:description" content="IOCIOC，所谓控制反转，就是把原先我们代码里面需要实现的对象创建、依赖的代码，反转给容器来帮忙实现。 实现机制IOC(控制反转)的实现建立在工厂模式、Java反射机制 设计模式之单例模式">
+<meta property="og:description" content="IOCIOC，所谓控制反转，就是把原先我们代码里面需要实现的对象创建、依赖的代码，反转给容器来帮忙实现。 实现机制IOC(控制反转)的实现建立在工厂模式、Java反射机制 设计模式之单例模式 如何解决循环依赖123456789public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements Single">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;og_image.png">
-<meta property="og:updated_time" content="2020-01-08T09:31:16.000Z">
+<meta property="og:updated_time" content="2020-01-15T08:49:46.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;og_image.png">
 
@@ -141,7 +141,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    a few seconds read (About 90 words)
+                    3 minutes read (About 418 words)
                 </span>
                 
                 
@@ -157,6 +157,16 @@
             <h2 id="IOC"><a href="#IOC" class="headerlink" title="IOC"></a>IOC</h2><p>IOC，所谓控制反转，就是把原先我们代码里面需要实现的对象创建、依赖的代码，反转给容器来帮忙实现。</p>
 <h2 id="实现机制"><a href="#实现机制" class="headerlink" title="实现机制"></a>实现机制</h2><p>IOC(控制反转)的实现建立在工厂模式、Java反射机制</p>
 <p><a href="https://www.jianshu.com/p/3bfd916f2bb2" target="_blank" rel="noopener">设计模式之单例模式</a></p>
+<h2 id="如何解决循环依赖"><a href="#如何解决循环依赖" class="headerlink" title="如何解决循环依赖"></a>如何解决循环依赖</h2><figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DefaultSingletonBeanRegistry</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">SimpleAliasRegistry</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">SingletonBeanRegistry</span> </span>&#123;</span><br><span class="line">	<span class="hljs-comment">/** Cache of singleton objects: bean name --&gt; bean instance */</span></span><br><span class="line">	<span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Map&lt;String, Object&gt; singletonObjects = <span class="hljs-keyword">new</span> ConcurrentHashMap&lt;String, Object&gt;(<span class="hljs-number">256</span>);</span><br><span class="line"></span><br><span class="line">	<span class="hljs-comment">/** Cache of singleton factories: bean name --&gt; ObjectFactory */</span></span><br><span class="line">	<span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Map&lt;String, ObjectFactory&lt;?&gt;&gt; singletonFactories = <span class="hljs-keyword">new</span> HashMap&lt;String, ObjectFactory&lt;?&gt;&gt;(<span class="hljs-number">16</span>);</span><br><span class="line"></span><br><span class="line">	<span class="hljs-comment">/** Cache of early singleton objects: bean name --&gt; bean instance */</span></span><br><span class="line">	<span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Map&lt;String, Object&gt; earlySingletonObjects = <span class="hljs-keyword">new</span> HashMap&lt;String, Object&gt;(<span class="hljs-number">16</span>);</span><br></pre></td></tr></table></figure>
+
+<p>​    三级缓存，也就是三个Map集合类：</p>
+<blockquote>
+<p>singletonObjects：第一级缓存，里面放置的是已经实例化好的单例对象；</p>
+<p>earlySingletonObjects：第二级缓存，里面存放的是提前曝光的单例对象；</p>
+<p>singletonFactories：第三级缓存，里面存放的是将要被实例化的对象的对象工厂。</p>
+</blockquote>
+<p>​    所以当一个Bean调用构造函数进行实例化后，即使set属性还未填充，就可以通过<strong>三级缓存</strong>向外暴露依赖的引用值进行set（所以循环依赖问题的解决也是基于Java的引用传递），这也说明了另外一点，基于构造函数的注入，如果有循环依赖，Spring是不能够解决的。</p>
+<p>​    还要说明一点，Spring默认的Bean Scope是<strong>单例</strong>的，而三级缓存中都包含singleton，可见是对于单例Bean之间的循环依赖的解决，Spring是通过三级缓存来实现的。</p>
 
         </div>
         
@@ -279,7 +289,7 @@
                     </p>
                     <a href="/archives">
                         <p class="title has-text-weight-normal">
-                            36
+                            37
                         </p>
                     </a>
                 </div>
@@ -416,7 +426,7 @@
         <h3 class="menu-label">
             Tag Cloud
         </h3>
-        <a href="/tags/DUBBO/" style="font-size: 10px;">DUBBO</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/I-O/" style="font-size: 12.5px;">I/O</a> <a href="/tags/J2EE/" style="font-size: 20px;">J2EE</a> <a href="/tags/JAVA/" style="font-size: 15px;">JAVA</a> <a href="/tags/JDK/" style="font-size: 15px;">JDK</a> <a href="/tags/JVM/" style="font-size: 12.5px;">JVM</a> <a href="/tags/LINUX/" style="font-size: 17.5px;">LINUX</a> <a href="/tags/LOG/" style="font-size: 10px;">LOG</a> <a href="/tags/MOCK/" style="font-size: 10px;">MOCK</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/MYSQL/" style="font-size: 12.5px;">MYSQL</a> <a href="/tags/NETTY/" style="font-size: 10px;">NETTY</a> <a href="/tags/REDIS/" style="font-size: 17.5px;">REDIS</a> <a href="/tags/SPRING/" style="font-size: 10px;">SPRING</a> <a href="/tags/THREAD/" style="font-size: 10px;">THREAD</a> <a href="/tags/ZK/" style="font-size: 15px;">ZK</a> <a href="/tags/eureka/" style="font-size: 10px;">eureka</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 12.5px;">设计模式</a>
+        <a href="/tags/DUBBO/" style="font-size: 10px;">DUBBO</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/I-O/" style="font-size: 12.5px;">I/O</a> <a href="/tags/J2EE/" style="font-size: 20px;">J2EE</a> <a href="/tags/JAVA/" style="font-size: 15px;">JAVA</a> <a href="/tags/JDK/" style="font-size: 15px;">JDK</a> <a href="/tags/JVM/" style="font-size: 12.5px;">JVM</a> <a href="/tags/LINUX/" style="font-size: 17.5px;">LINUX</a> <a href="/tags/LOG/" style="font-size: 10px;">LOG</a> <a href="/tags/MOCK/" style="font-size: 10px;">MOCK</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/MYSQL/" style="font-size: 15px;">MYSQL</a> <a href="/tags/NETTY/" style="font-size: 10px;">NETTY</a> <a href="/tags/REDIS/" style="font-size: 17.5px;">REDIS</a> <a href="/tags/SPRING/" style="font-size: 10px;">SPRING</a> <a href="/tags/THREAD/" style="font-size: 10px;">THREAD</a> <a href="/tags/ZK/" style="font-size: 15px;">ZK</a> <a href="/tags/eureka/" style="font-size: 10px;">eureka</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 12.5px;">设计模式</a>
     </div>
 </div>
     
@@ -428,6 +438,25 @@
         <h3 class="menu-label">
             Recent
         </h3>
+        
+        <article class="media">
+            
+            <a href="/2020/01/17/mysql-join/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="mysql-join">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-17T03:26:04.000Z">2020-01-17</time></div>
+                    <a href="/2020/01/17/mysql-join/" class="title has-link-black-ter is-size-6 has-text-weight-normal">mysql-join</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -505,25 +534,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2020/01/08/java-threadlocal/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="java-threadlocal">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-08T02:58:20.000Z">2020-01-08</time></div>
-                    <a href="/2020/01/08/java-threadlocal/" class="title has-link-black-ter is-size-6 has-text-weight-normal">java-threadlocal</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
         
@@ -541,7 +551,7 @@
                     <span class="level-item">January 2020</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">11</span>
+                    <span class="level-item tag">12</span>
                 </span>
             </a>
         </li>
@@ -661,7 +671,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/MYSQL/">
                         <span class="tag">MYSQL</span>
-                        <span class="tag is-grey">2</span>
+                        <span class="tag is-grey">3</span>
                     </a>
                 </div>
                 
@@ -752,6 +762,25 @@
         
         <article class="media">
             
+            <a href="/2020/01/17/mysql-join/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="mysql-join">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-17T03:26:04.000Z">2020-01-17</time></div>
+                    <a href="/2020/01/17/mysql-join/" class="title has-link-black-ter is-size-6 has-text-weight-normal">mysql-join</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
             <a href="/2020/01/15/mysql-in-exists/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="/images/thumbnail.svg" alt="in exists 区别">
@@ -826,25 +855,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2020/01/08/java-threadlocal/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="java-threadlocal">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-08T02:58:20.000Z">2020-01-08</time></div>
-                    <a href="/2020/01/08/java-threadlocal/" class="title has-link-black-ter is-size-6 has-text-weight-normal">java-threadlocal</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
     
@@ -862,7 +872,7 @@
                     <span class="level-item">January 2020</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">11</span>
+                    <span class="level-item tag">12</span>
                 </span>
             </a>
         </li>
@@ -982,7 +992,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/MYSQL/">
                         <span class="tag">MYSQL</span>
-                        <span class="tag is-grey">2</span>
+                        <span class="tag is-grey">3</span>
                     </a>
                 </div>
                 

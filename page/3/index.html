@@ -132,6 +132,68 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-12-13T07:39:12.000Z">2019-12-13</time>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    9 minutes read (About 1382 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/12/13/mysql-index/">mysql索引</a>
+            
+        </h1>
+        <div class="content">
+            <h1 id="聚簇索引与非聚簇索引"><a href="#聚簇索引与非聚簇索引" class="headerlink" title="聚簇索引与非聚簇索引"></a>聚簇索引与非聚簇索引</h1><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>​    <strong>聚簇索引是对磁盘上实际数据重新组织以按指定的一个或多个列的值排序的算法。</strong>特点是存储数据的顺序和索引顺序一致。<br>​    <strong>一般情况下主键会默认创建聚簇索引，且一张表只允许存在一个聚簇索引。</strong></p>
+<p>​    在《数据库原理》一书中是这么解<strong>释聚簇索引和非聚簇索引的区别</strong>的：<br>​    <strong>聚簇索引的叶子节点就是数据节点，而非聚簇索引的叶子节点仍然是索引节点，只不过有指向对应数据块的指针。</strong></p>
+<p>综上，可以得出聚簇索引和非聚簇索引概念：</p>
+<p><strong>聚簇索引：即存储索引值，又存储行数据，数据文件和索引文件是同一个文件</strong></p>
+<p><strong>非聚簇索引：索引文件和数据文件是独立分开的</strong></p>
+<p>​    那么如果数据表中没有主键呢？MySQL的解决办法是隐式地将一个唯一的非空的列定义为聚簇。那如果这也没有呢？MySQL就自己创建一个聚簇索引。</p>
+<p>​    <strong>在Innodb中，二级索引除了存储本身的列值外，其叶子节点存储的不是‘行指针’，而是主键值</strong>，为什么是这样呢？原来这种方式在表结构发生变化的时候会有很大的优势。如果二级索引的存储顺序是以列值为基础的，那么在发生数据行的移动或者增加删除时候，必定会引起索引结构的巨大变化。</p>
+<h3 id="MyISAM与InnoDB"><a href="#MyISAM与InnoDB" class="headerlink" title="MyISAM与InnoDB"></a>MyISAM与InnoDB</h3><p>​    mysql存储引擎MyISAM与InnoDB的底层数据结构的区别主要有，在磁盘上存储的文件以及存储索引以及组织存储索引的方式不同；</p>
+<ol>
+<li><p>MyISAM索引文件和数据文件是分离的(非聚集)，索引的叶节点存放的是对应索引在文件系统中的数据地址编码</p>
+</li>
+<li><p>innodb中，数据文件和索引文件是同一个文件，是聚簇索引。（注意区别普通索引）</p>
+</li>
+</ol>
+<p><strong>（1）InnoDB的主键采用聚簇索引存储，使用的是B+Tree作为索引结构，但是叶子节点存储的是索引值和数据本身（注意和MyISAM的不同）。</strong><br><strong>（2）InnoDB的二级索引不使用聚蔟索引，叶子节点存储的是KEY字段加主键值。因此，通过二级索引查询首先查到是主键值，然后InnoDB再根据查到的主键值通过主键索引找到相应的数据块。</strong><br><strong>（3）MyISAM的主键索引和二级索引叶子节点存放的都是列值与行号的组合，叶子节点中保存的是数据的物理地址</strong><br><strong>（4）MyISAM引擎使用B+Tree作为索引结构，叶节点的data域存放的是数据记录的地址</strong><br><strong>（5）为什么用B+Tree 不是BTree：</strong><br>    B-Tree：如果一次检索需要访问4个节点，数据库系统设计者利用磁盘预读原理，把节点的大小设计为一个页，那读取一个节点只需要一次I/O操作，完成这次检索操作，最多需要3次I/O(根节点常驻内存)。数据记录越小，每个节点存放的数据就越多，树的高度也就越小，I/O操作就少了，检索效率也就上去了。<br>    B+Tree：非叶子节点只存key，大大滴减少了非叶子节点的大小，那么每个节点就可以存放更多的记录，树更矮了，I/O操作更少了。所以B+Tree拥有更好的性能。</p>
+<p>​    由于节子节点(数据页)只能按照一颗B+树排序，故<strong>一张表只能有一个聚簇索引</strong>。辅助索引的存在不影响聚簇索引中数据的组织，所以一张表可以有多个辅助索引</p>
+<p>参照：<a href="https://www.cnblogs.com/xibuhaohao/p/10736112.html" target="_blank" rel="noopener">mysql InnoDB index 主键采用聚簇索引，二级索引不采用聚簇索引</a></p>
+<h2 id="复合索引"><a href="#复合索引" class="headerlink" title="复合索引"></a>复合索引</h2><p>​    复合索引也叫组合索引；用户可以在多个列上建立索引,这种索引叫做复合索引(组合索引)。</p>
+<p>​    建了一个(a,b,c)的复合索引，那么实际等于建了(a),(a,b),(a,b,c)三个索引，因为每多一个索引，都会增加写操作的开销和磁盘空间的开销。查询是否使用该索引基于<strong>最左原则</strong></p>
+<p>​    同样的有复合索引（a,b,c），如果有如下的sql: select a,b,c from table where a=1 and b = 1。那么MySQL可以直接通过遍历索引取得数据，而无需回表，这减少了很多的随机io操作。减少io操作，特别的随机io其实是dba主要的优化策略。所以，在真正的实际应用中，覆盖索引是主要的提升性能的优化手段之一</p>
+<p><a href="https://my.oschina.net/u/1399755/blog/1787166" target="_blank" rel="noopener">复合索引测试sql用例</a></p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2019-12-13T06:23:41.000Z">2019-12-13</time>
                 
                 
@@ -1146,183 +1208,6 @@
 
 
 
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-11-26T08:24:03.000Z">2019-11-26</time>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    13 minutes read (About 1914 words)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2019/11/26/redis-learning-2/">redis学习（二）</a>
-            
-        </h1>
-        <div class="content">
-            <p>参见：<a href="https://segmentfault.com/a/1190000018887256" target="_blank" rel="noopener">文章地址</a></p>
-<h2 id="Redis对象类型简介"><a href="#Redis对象类型简介" class="headerlink" title="Redis对象类型简介"></a>Redis对象类型简介</h2><ul>
-<li>Redis是一种key/value型数据库，其中，每个key和value都是使用对象表示的。<br>比如，我们执行以下代码：</li>
-</ul>
-<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis＞ SET message &quot;hello redis&quot;</span><br></pre></td></tr></table></figure>
-
-<p>其中的key是message，是一个包含了字符串”message”的对象。而value是一个包含了”hello redis”的对象。<br>Redis共有五种对象的类型，分别是：</p>
-<table>
-<thead>
-<tr>
-<th>类型常量</th>
-<th>对象的名称</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>REDIS_STRING</td>
-<td>字符串对象</td>
-</tr>
-<tr>
-<td>REDIS_LIST</td>
-<td>列表对象</td>
-</tr>
-<tr>
-<td>REDIS_HASH</td>
-<td>哈希对象</td>
-</tr>
-<tr>
-<td>REDIS_SET</td>
-<td>集合对象</td>
-</tr>
-<tr>
-<td>REDIS_ZSET</td>
-<td>有序集合对象</td>
-</tr>
-</tbody></table>
-<p>Redis中的一个对象的结构体表示如下：</p>
-<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">typedef struct redisObject &#123;  </span><br><span class="line">  </span><br><span class="line">    // 类型  </span><br><span class="line">    unsigned type:4;          </span><br><span class="line"></span><br><span class="line">    // 编码方式  </span><br><span class="line">    unsigned encoding: 4;  </span><br><span class="line">  </span><br><span class="line">    // 引用计数  </span><br><span class="line">    int refcount;  </span><br><span class="line">  </span><br><span class="line">    // 指向对象的值  </span><br><span class="line">    void *ptr;  </span><br><span class="line">  </span><br><span class="line">&#125; robj;</span><br></pre></td></tr></table></figure>
-
-<p>type表示了该对象的对象类型，即上面五个中的一个。但为了提高存储效率与程序执行效率，每种对象的底层数据结构实现都可能不止一种。encoding就表示了对象底层所使用的编码。</p>
-<ul>
-<li>Redis对象底层数据结构</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>编码常量</th>
-<th>编码所对应的底层数据结构</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>REDIS_ENCODING_INT</td>
-<td>long 类型的整数</td>
-</tr>
-<tr>
-<td>REDIS_ENCODING_EMBSTR</td>
-<td>embstr 编码的简单动态字符串</td>
-</tr>
-<tr>
-<td>REDIS_ENCODING_RAW</td>
-<td>简单动态字符串</td>
-</tr>
-<tr>
-<td>REDIS_ENCODING_HT</td>
-<td>字典</td>
-</tr>
-<tr>
-<td>REDIS_ENCODING_LINKEDLIST</td>
-<td>双端链表</td>
-</tr>
-<tr>
-<td>REDIS_ENCODING_ZIPLIST</td>
-<td>压缩列表</td>
-</tr>
-<tr>
-<td>REDIS_ENCODING_INTSET</td>
-<td>整数集合</td>
-</tr>
-<tr>
-<td>REDIS_ENCODING_SKIPLIST</td>
-<td>跳跃表和字典</td>
-</tr>
-</tbody></table>
-<ul>
-<li>字符串对象</li>
-</ul>
-<p>字符串对象的编码可以是int、raw或者embstr<br>如果一个字符串的内容可以转换为long，那么该字符串就会被转换成为long类型，对象的ptr就会指向该long，并且对象类型也用int类型表示。<br>普通的字符串有两种，embstr和raw。embstr应该是Redis 3.0新增的数据结构,在2.8中是没有的。如果字符串对象的长度小于39字节，就用embstr对象。否则用传统的raw对象。</p>
-<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#define REDIS_ENCODING_EMBSTR_SIZE_LIMIT 44  </span><br><span class="line">robj *createStringObject(char *ptr, size_t len) &#123;  </span><br><span class="line">    if (len &lt;= REDIS_ENCODING_EMBSTR_SIZE_LIMIT)  </span><br><span class="line">        return createEmbeddedStringObject(ptr,len);  </span><br><span class="line">    else  </span><br><span class="line">        return createRawStringObject(ptr,len);  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>embstr的好处有如下几点：</p>
-<ol>
-<li>embstr的创建只需分配一次内存，而raw为两次（一次为<a href="https://github.com/antirez/redis/blob/unstable/src/sds.h" target="_blank" rel="noopener"><code>sds</code></a>分配对象，另一次为objet分配对象，embstr省去了第一次）。</li>
-<li>相对地，释放内存的次数也由两次变为一次。</li>
-<li>embstr的objet和sds放在一起，更好地利用缓存带来的优势。</li>
-</ol>
-<p>raw和embstr的区别可以用下面两幅图所示：</p>
-<p><img src="https://wt-box.worktile.com/public/db936e4c-844f-47f5-8c90-9c1c901b383c" alt="图-1.png"></p>
-<p><img src="https://wt-box.worktile.com/public/493f6e5b-e1ef-4943-a47f-35f574e5fee6" alt="图-2.png"></p>
-<ul>
-<li>列表对象</li>
-</ul>
-<p>列表对象的编码可以是ziplist或者linkedlist</p>
-<ol>
-<li>ziplist是一种压缩链表，它的好处是更能节省内存空间，因为它所存储的内容都是在连续的内存区域当中的。当列表对象元素不大，每个元素也不大的时候，就采用ziplist存储但当数据量过大时就ziplist就不是那么好用了。因为为了保证他存储内容在内存中的连续性，插入的复杂度是O(N)，即每次插入都会重新进行realloc。如下图所示，对象结构中ptr所指向的就是一个ziplist整个ziplist只需要malloc一次，它们在内存中是一块连续的区域。</li>
-</ol>
-<p><img src="https://wt-box.worktile.com/public/fa5419e6-b374-44a1-9af3-9a387c595d82" alt="图-3.png"></p>
-<ol>
-<li>linkedlist是一种双向链表。它的结构比较简单，节点中存放pre和next两个指针，还有节点相关的信息。当每增加一个node的时候，就需要重新malloc一块内存。</li>
-</ol>
-<p><img src="https://wt-box.worktile.com/public/aca6bdb6-6557-466f-b0d6-b7c53fbae051" alt="图-4.png"></p>
-<ul>
-<li>哈希对象</li>
-</ul>
-<p>哈希对象的底层实现可以是ziplist或者hashtable。<br>ziplist中的哈希对象是按照key1,value1,key2,value2这样的顺序存放来存储的。当对象数目不多且内容不大时，这种方式效率是很高的。</p>
-<p>hashtable的是由dict这个结构来实现的, dict是一个字典，其中的指针dicht ht[2] 指向了两个哈希表</p>
-<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">typedef struct dict &#123;  </span><br><span class="line">    dictType *type;  </span><br><span class="line">    void *privdata;  </span><br><span class="line">    dictht ht[2];  </span><br><span class="line">    long rehashidx; /* rehashing not in progress if rehashidx == -1 */  </span><br><span class="line">    int iterators; /* number of iterators currently running */  </span><br><span class="line">&#125; dict;  </span><br><span class="line">typedef struct dictht &#123;  </span><br><span class="line">    dictEntry **table;  </span><br><span class="line">    unsigned long size;  </span><br><span class="line">    unsigned long sizemask;  </span><br><span class="line">    unsigned long used;  </span><br><span class="line">&#125; dictht;</span><br></pre></td></tr></table></figure>
-
-<p>dicht[0] 是用于真正存放数据，dicht[1]一般在哈希表元素过多进行rehash的时候用于中转数据。<br>dictht中的table用语真正存放元素了，每个key/value对用一个dictEntry表示，放在dictEntry数组中。</p>
-<p><img src="https://wt-box.worktile.com/public/76fb0cf2-b867-4c8c-8d16-484248842abb" alt="图-5.png"></p>
-<ul>
-<li>集合对象</li>
-</ul>
-<p>集合对象的编码可以是intset或者hashtable<br>intset是一个整数集合，里面存的为某种同一类型的整数，支持如下三种长度的整数：</p>
-<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#define INTSET_ENC_INT16 (sizeof(int16_t))  </span><br><span class="line">#define INTSET_ENC_INT32 (sizeof(int32_t))  </span><br><span class="line">#define INTSET_ENC_INT64 (sizeof(int64_t))</span><br></pre></td></tr></table></figure>
-
-<p>intset是一个有序集合，查找元素的复杂度为O(logN)，但插入时不一定为O(logN)，因为有可能涉及到升级操作。比如当集合里全是int16_t型的整数，这时要插入一个int32_t，那么为了维持集合中数据类型的一致，那么所有的数据都会被转换成int32_t类型，涉及到内存的重新分配，这时插入的复杂度就为O(N)了。<br>intset不支持降级操作。</p>
-<ul>
-<li>有序集合对象</li>
-</ul>
-<p>有序集合的编码可能两种，一种是ziplist，另一种是skiplist与dict的结合。<br>ziplist作为集合和作为哈希对象是一样的，member和score顺序存放。按照score从小到大顺序排列<br>skiplist是一种跳跃表，它实现了有序集合中的快速查找，在大多数情况下它的速度都可以和平衡树差不多。但它的实现比较简单，可以作为平衡树的替代品。它的结构比较特殊。下面分别是跳跃表skiplist和它内部的节点skiplistNode的结构体：</p>
-<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">/* </span><br><span class="line"> * 跳跃表 </span><br><span class="line"> */  </span><br><span class="line">typedef struct zskiplist &#123;  </span><br><span class="line">    // 头节点，尾节点  </span><br><span class="line">    struct zskiplistNode *header, *tail;  </span><br><span class="line">    // 节点数量  </span><br><span class="line">    unsigned long length;  </span><br><span class="line">    // 目前表内节点的最大层数  </span><br><span class="line">    int level;  </span><br><span class="line">&#125; zskiplist;  </span><br><span class="line">/* ZSETs use a specialized version of Skiplists */  </span><br><span class="line">/* </span><br><span class="line"> * 跳跃表节点 </span><br><span class="line"> */  </span><br><span class="line">typedef struct zskiplistNode &#123;  </span><br><span class="line">    // member 对象  </span><br><span class="line">    robj *obj;  </span><br><span class="line">    // 分值  </span><br><span class="line">    double score;  </span><br><span class="line">    // 后退指针  </span><br><span class="line">    struct zskiplistNode *backward;  </span><br><span class="line">    // 层  </span><br><span class="line">    struct zskiplistLevel &#123;  </span><br><span class="line">        // 前进指针  </span><br><span class="line">        struct zskiplistNode *forward;  </span><br><span class="line">        // 这个层跨越的节点数量  </span><br><span class="line">        unsigned int span;  </span><br><span class="line">    &#125; level[];  </span><br><span class="line">&#125; zskiplistNode;</span><br></pre></td></tr></table></figure>
-
-<p>head和tail分别指向头节点和尾节点，然后每个skiplistNode里面的结构又是分层的(即level数组)<br>用图表示，大概是下面这个样子：</p>
-<p><img src="https://wt-box.worktile.com/public/b2457e1c-5910-422a-90c3-6f637924e557" alt="图-6.png"></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上简单介绍了Redis的简介，特性以及五种对象类型和五种对象类型的底层实现。事实上，Redis的高效性和灵活性正是得益于同一个对象类型采用不同的底层结构，并且在必要的时候对二者进行转换，还有就是各种底层结构对内存的合理利用。</p>
-<p>本文作者：Worktile高级工程师 龚林杰</p>
-<p>文章来源：<a href="https://worktile.com/blog/tech?utm_source=segmentfault&utm_medium=meiyang" target="_blank" rel="noopener">Worktile技术博客</a></p>
-
-        </div>
-        
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
 
     
 <div class="card card-transparent">
@@ -1391,7 +1276,7 @@
                     </p>
                     <a href="/archives">
                         <p class="title has-text-weight-normal">
-                            36
+                            37
                         </p>
                     </a>
                 </div>
@@ -1528,7 +1413,7 @@
         <h3 class="menu-label">
             Tag Cloud
         </h3>
-        <a href="/tags/DUBBO/" style="font-size: 10px;">DUBBO</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/I-O/" style="font-size: 12.5px;">I/O</a> <a href="/tags/J2EE/" style="font-size: 20px;">J2EE</a> <a href="/tags/JAVA/" style="font-size: 15px;">JAVA</a> <a href="/tags/JDK/" style="font-size: 15px;">JDK</a> <a href="/tags/JVM/" style="font-size: 12.5px;">JVM</a> <a href="/tags/LINUX/" style="font-size: 17.5px;">LINUX</a> <a href="/tags/LOG/" style="font-size: 10px;">LOG</a> <a href="/tags/MOCK/" style="font-size: 10px;">MOCK</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/MYSQL/" style="font-size: 12.5px;">MYSQL</a> <a href="/tags/NETTY/" style="font-size: 10px;">NETTY</a> <a href="/tags/REDIS/" style="font-size: 17.5px;">REDIS</a> <a href="/tags/SPRING/" style="font-size: 10px;">SPRING</a> <a href="/tags/THREAD/" style="font-size: 10px;">THREAD</a> <a href="/tags/ZK/" style="font-size: 15px;">ZK</a> <a href="/tags/eureka/" style="font-size: 10px;">eureka</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 12.5px;">设计模式</a>
+        <a href="/tags/DUBBO/" style="font-size: 10px;">DUBBO</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/I-O/" style="font-size: 12.5px;">I/O</a> <a href="/tags/J2EE/" style="font-size: 20px;">J2EE</a> <a href="/tags/JAVA/" style="font-size: 15px;">JAVA</a> <a href="/tags/JDK/" style="font-size: 15px;">JDK</a> <a href="/tags/JVM/" style="font-size: 12.5px;">JVM</a> <a href="/tags/LINUX/" style="font-size: 17.5px;">LINUX</a> <a href="/tags/LOG/" style="font-size: 10px;">LOG</a> <a href="/tags/MOCK/" style="font-size: 10px;">MOCK</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/MYSQL/" style="font-size: 15px;">MYSQL</a> <a href="/tags/NETTY/" style="font-size: 10px;">NETTY</a> <a href="/tags/REDIS/" style="font-size: 17.5px;">REDIS</a> <a href="/tags/SPRING/" style="font-size: 10px;">SPRING</a> <a href="/tags/THREAD/" style="font-size: 10px;">THREAD</a> <a href="/tags/ZK/" style="font-size: 15px;">ZK</a> <a href="/tags/eureka/" style="font-size: 10px;">eureka</a> <a href="/tags/linux/" style="font-size: 10px;">linux </a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 12.5px;">设计模式</a>
     </div>
 </div>
     
@@ -1540,6 +1425,25 @@
         <h3 class="menu-label">
             Recent
         </h3>
+        
+        <article class="media">
+            
+            <a href="/2020/01/17/mysql-join/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="mysql-join">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-17T03:26:04.000Z">2020-01-17</time></div>
+                    <a href="/2020/01/17/mysql-join/" class="title has-link-black-ter is-size-6 has-text-weight-normal">mysql-join</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -1617,25 +1521,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2020/01/08/java-threadlocal/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="java-threadlocal">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-08T02:58:20.000Z">2020-01-08</time></div>
-                    <a href="/2020/01/08/java-threadlocal/" class="title has-link-black-ter is-size-6 has-text-weight-normal">java-threadlocal</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
         
@@ -1653,7 +1538,7 @@
                     <span class="level-item">January 2020</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">11</span>
+                    <span class="level-item tag">12</span>
                 </span>
             </a>
         </li>
@@ -1773,7 +1658,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/MYSQL/">
                         <span class="tag">MYSQL</span>
-                        <span class="tag is-grey">2</span>
+                        <span class="tag is-grey">3</span>
                     </a>
                 </div>
                 
@@ -1864,6 +1749,25 @@
         
         <article class="media">
             
+            <a href="/2020/01/17/mysql-join/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="mysql-join">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-17T03:26:04.000Z">2020-01-17</time></div>
+                    <a href="/2020/01/17/mysql-join/" class="title has-link-black-ter is-size-6 has-text-weight-normal">mysql-join</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
             <a href="/2020/01/15/mysql-in-exists/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="/images/thumbnail.svg" alt="in exists 区别">
@@ -1938,25 +1842,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2020/01/08/java-threadlocal/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="java-threadlocal">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-08T02:58:20.000Z">2020-01-08</time></div>
-                    <a href="/2020/01/08/java-threadlocal/" class="title has-link-black-ter is-size-6 has-text-weight-normal">java-threadlocal</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
     
@@ -1974,7 +1859,7 @@
                     <span class="level-item">January 2020</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">11</span>
+                    <span class="level-item tag">12</span>
                 </span>
             </a>
         </li>
@@ -2094,7 +1979,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/MYSQL/">
                         <span class="tag">MYSQL</span>
-                        <span class="tag is-grey">2</span>
+                        <span class="tag is-grey">3</span>
                     </a>
                 </div>
                 
